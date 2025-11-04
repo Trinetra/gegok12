@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <x-filament::fieldset
     :label="$getLabel()"
     :label-hidden="$isLabelHidden()"

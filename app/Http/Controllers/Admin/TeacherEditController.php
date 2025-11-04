@@ -287,17 +287,17 @@ class TeacherEditController extends Controller
 
         if($request->designation == 'principal')
         {
-          $user->attachRole('principal');
+          $user->addRole('principal');
         }
 
         if( ($request->designation == 'principal') || ($request->designation == 'vice_principal') || ($request->designation == 'head_of_the_department') )
         {
-          $user->attachRole('leave_checker');
-          $user->attachRole('class_coordinator');
+          $user->addRole('leave_checker');
+          $user->addRole('class_coordinator');
         }
         else
         {
-          $user->attachRole('leave_applier');
+          $user->addRole('leave_applier');
         }
 
         $message=trans('messages.update_success_msg',['module' => 'Teacher']);

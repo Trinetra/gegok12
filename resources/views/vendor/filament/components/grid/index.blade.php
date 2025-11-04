@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @props([
     'isGrid' => true,
     'default' => 1,

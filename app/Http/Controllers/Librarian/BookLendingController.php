@@ -251,4 +251,28 @@ class BookLendingController extends Controller
             //dd($e->getMessage());
         }
     }
+    public function bookreturn()
+    {
+        $booklending = BookLending::where('status','returned');
+
+        $q = request('q');
+
+        if($q!= '')
+        {
+            $booklending = BookCategory::where(function ($query) use($q)
+            {
+                $query->where('book_code_no','LIKE','%'.$q.'%')->orWhere('library_card_no','LIKE','%'.$q.'%');
+            });                
+        }
+
+        $booklending = $booklending->paginate(10);
+        
+             
+
+        $booklending = $booklending->appends(array('q' =>request('q')));
+
+        $currentDate = date('Y-m-d');
+
+        return view('/library/booklending/return',['booklending' => $booklending , 'currentDate' => $currentDate , 'category' => $category]);
+    }
 }

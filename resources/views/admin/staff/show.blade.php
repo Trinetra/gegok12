@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.admin.layout')
 
 @section('content')
@@ -173,6 +172,17 @@
                 <div class="flex items-center lg:justify-between flex-row lg:flex-row relative">
 
                     <h3 class="font-semibold text-3xl text-gray-700">{{ ucwords($user->FullName) }}</h3>
+                    <div class="flex items-center">
+                        <div class="text-center pr-5 py-4">
+        <a href="{{url('/admin/staffs/id-card/'.$user->name)}}" class="text-xs">
+          <div class="bg-gray-200 rounded-full w-8 h-8 lg:w-10 md:h-10 md:w-10 md:h-10 flex items-center justify-center mx-auto hover:bg-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 lg:w-5 lg:h-5 md:w-5 md:h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+</svg>
+          </div>
+        <span class="hover:font-semibold hidden lg:block md:block">Id card<span>
+      </a>
+        </div>
                     <div onclick="showsidebar('teacher-profile-menu')" class="bg-white rounded-full w-6 h-6 ml-auto flex items-center justify-center cursor-pointer">
                      <svg id="Capa_1" enable-background="new 0 0 515.555 515.555" height="512" viewBox="0 0 515.555 515.555" width="512" xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 fill-current text-gray-600"><path d="m303.347 18.875c25.167 25.167 25.167 65.971 0 91.138s-65.971 25.167-91.138 0-25.167-65.971 0-91.138c25.166-25.167 65.97-25.167 91.138 0"></path><path d="m303.347 212.209c25.167 25.167 25.167 65.971 0 91.138s-65.971 25.167-91.138 0-25.167-65.971 0-91.138c25.166-25.167 65.97-25.167 91.138 0"></path><path d="m303.347 405.541c25.167 25.167 25.167 65.971 0 91.138s-65.971 25.167-91.138 0-25.167-65.971 0-91.138c25.166-25.167 65.97-25.167 91.138 0"></path></svg>
                      </div>
@@ -194,7 +204,12 @@
                         
                     </div>
                     </div>
+</div>
                 </div>
+
+
+                
+                
                 <div class="leading-relaxed">
                     <p class="text-lg text-gray-700 font-semibold">ID: {{ $user->id }}</p>
                     <change-credential url="{{url('/')}}" name="{{$user->name}}"  ></change-credential>

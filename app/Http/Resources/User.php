@@ -42,6 +42,8 @@ class User extends JsonResource
             'designation_display'   => $pro_design,
             'date_of_birth'         =>  $this->userprofile->date_of_birth == null ? null:date('d M Y',strtotime($this->userprofile->date_of_birth)),
             'status'                =>  $this->status,
+            'librarycard_number'        => $this->librarycard->library_card_no,
+            'book_limit' => $this->librarycard->book_limit,
         ];
     }
 }

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
  <fieldset class="shadow">
     <!-- <h2 class="fs-title">Select Standard</h2> -->
     <div>

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @props([
     'alpineDisabled' => null,
     'alpineValid' => null,

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @component('mail::layout')
     {{-- Header --}}
     @slot('header')

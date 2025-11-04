@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @props([
     'label' => null,
     'labelHidden' => false,

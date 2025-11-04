@@ -747,6 +747,24 @@ Route::get( '/emergency', 'SendEmergencyMessageController@create');
 Route::post( '/emergency/send', 'SendEmergencyMessageController@store');
 Route::post( '/student/shift', 'SendMessageController@shift' );
 
+//new add 
+Route::get( '/teacher/show/libraryactivity/{name}', 'TeacherShowController@showBookLent' );
+
+// Show single Bus Pass 
+Route::post('student/buspass', 'StudentDetailsController@create');
+Route::get('student/showbuspass/show/{name}', 'StudentDetailsController@showbus');
+Route::get('student/buspass/showprint/{name}', 'StudentDetailsController@showprint_buspass');
+
+//Teacher ID Card 
+Route::get( '/teacher/id-card', 'TeacherListController@idcard' );
+Route::get( '/teacher/id-card-print', 'TeacherListController@printidcard' );
+Route::get( '/teacher/id-card/{name}', 'TeacherShowController@showidcard' );
+Route::get( '/teacher/show-idcardprint/{name}', 'TeacherShowController@showprintidcard' );
+//Non-Teacher ID Card 
+Route::get( '/staffs/id-card', 'StaffController@idcard' );
+Route::get( '/staffs/id-card-print', 'StaffController@printidcard' );
+Route::get( '/staffs/id-card/{name}', 'StaffController@showidcard' );
+Route::get( '/staffs/show-idcardprint/{name}', 'StaffController@showprintidcard' );
 
 //Addons
 
@@ -754,8 +772,16 @@ Route::get('/addon', function () {
     return view('admin.addon.index');
 });
 
-Route::get('/addon/{name}/detail', function () {
-    return view('admin.addon.detail');
+Route::get('/addon/{slug}/detail', function ($slug) {
+    return view('admin.addon.detail',compact('slug'));
+});
+
+Route::get('/payment/razorpay/checkout', function () {
+    return view('admin.addon.razorpay');
+});
+
+Route::get('/purchase/addon/histories', function () {
+    return view('admin.addon.purchase-history');
 });
 
 

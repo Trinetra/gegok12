@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <x-filament-actions::action
     :action="$action"
     :badge="$getBadge()"

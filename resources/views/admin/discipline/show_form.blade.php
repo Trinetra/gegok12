@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <table class="w-full">
    <tr class="border-t-2 border-b-2">
       <td class="py-3 px-2">Student Name   : </td>

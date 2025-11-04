@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <div class="relative">
    <div class="flex flex-row justify-between custom-table  overflow-x-auto standard-list">
       <table class="w-full">

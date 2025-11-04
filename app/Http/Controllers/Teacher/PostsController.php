@@ -14,6 +14,7 @@ use App\Helpers\SiteHelper;
 use App\Models\PostComment;
 use App\Models\PostDetail;
 use App\Models\Post;
+use Carbon\Carbon;
 use Exception;
 
 class PostsController extends Controller
@@ -85,7 +86,7 @@ class PostsController extends Controller
 
         $array['description']       = $post->description;
         $array['visibility']        = $visibility;
-        $array['post_created_at']   = $post->post_created_at->diffForHumans();
+        $array['post_created_at']   = Carbon::parse($this->post_created_at)->diffForHumans(); //$post->post_created_at->diffForHumans();
         $array['created_by']        = $post->created_by;
         $array['is_posted']         = $post->is_posted;
         $array['attachments']       = $post->AttachmentPath;

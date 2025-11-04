@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <div class="justify-content-center">
   <div class="rounded-full"></div>
     <div class="card">

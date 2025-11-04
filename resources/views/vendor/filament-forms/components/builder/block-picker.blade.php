@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @props([
     'action',
     'afterItem' => null,

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @php
     use Filament\Support\Facades\FilamentView;
 

@@ -232,10 +232,10 @@ defined('LOGNAME_IMPORT_STUDENT_PROMOTION') or define('LOGNAME_IMPORT_STUDENT_PR
 
 //task
 defined('LOGNAME_ADD_TASK') or define('LOGNAME_ADD_TASK','addtask');
-defined('LOGNAME_EDIT_TASK,') or define('LOGNAME_EDIT_TASK,','edittask');
-defined('LOGNAME_SNOOZE_TASK,') or define('LOGNAME_SNOOZE_TASK,','snoozetask');
-defined('LOGNAME_MARK_TASK_COMPLETE,') or define('LOGNAME_MARK_TASK_COMPLETE,','marktaskcomplete');
-defined('LOGNAME_DELETE_TASK,') or define('LOGNAME_DELETE_TASK,','deletetask');
+defined('LOGNAME_EDIT_TASK') or define('LOGNAME_EDIT_TASK','edittask');
+defined('LOGNAME_SNOOZE_TASK') or define('LOGNAME_SNOOZE_TASK','snoozetask');
+defined('LOGNAME_MARK_TASK_COMPLETE') or define('LOGNAME_MARK_TASK_COMPLETE','marktaskcomplete');
+defined('LOGNAME_DELETE_TASK') or define('LOGNAME_DELETE_TASK','deletetask');
 
 //visitorlog
 defined('LOGNAME_ADD_VISITOR_LOG') or define('LOGNAME_ADD_VISITOR_LOG','addvisitorlog');
@@ -421,6 +421,8 @@ defined('LOGNAME_EDIT_telephonedirectory') or define('LOGNAME_EDIT_telephonedire
 defined('LOGNAME_DELETE_telephonedirectory') or define('LOGNAME_DELETE_telephonedirectory','deletetelephonedirectory');
 
 defined('LOGNAME_UPDATE_ADMISSION_FORM') or define('LOGNAME_UPDATE_ADMISSION_FORM','updateAdmissionform');
+
+defined('CURRENCY_SYMBOL') or define('CURRENCY_SYMBOL','₹');
 
 
 

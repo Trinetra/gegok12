@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @php
     $columns = $getGridColumns();
 @endphp

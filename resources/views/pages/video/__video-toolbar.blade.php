@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <div class="video-toolbar bottom-0  z-40">
 	<div class="rounded-full">
 		<ul class="list-reset flex items-center bg-white rounded-full">

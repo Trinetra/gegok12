@@ -63,8 +63,8 @@
       <attendances :url="this.url" :name="this.name" :mode="mode"></attendances>
       <medicalHistory :url="this.url" :name="this.name" :mode="mode"></medicalHistory>
             <fees :url="this.url" :name="this.name" :mode="mode"></fees>
-            <leaveHistory :url="this.url" :name="this.name"></leaveHistory>
-             <bankdetails :url="this.url" :name="this.name"></bankdetails>
+            <leaveHistory :url="this.url" :name="this.name" :mode="mode"></leaveHistory>
+             <bankdetails :url="this.url" :name="this.name" :mode="mode"></bankdetails>
     </portal>
     <portal to="notes">
       <div class="px-3 overflow-x-scroll lg:overflow-x-auto md:overflow-x-auto py-3" v-bind:class="[this.profile_tab==6?'block' :'hidden']">

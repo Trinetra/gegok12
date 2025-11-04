@@ -409,11 +409,21 @@ Route::group(['middleware' => ['role:student_leave_checker']], function () {
     Route::get( '/notice/show/list', 'NoticeBoardController@list' );
     Route::get( '/notices', 'NoticeBoardController@index' );
 
-
- 
-
-
 //Feed
 Route::get('/feeds', 'FeedController@index');
+
+//library activity
+Route::get( '/libraryactivity', 'LibraryActivityController@index' );
+Route::get( '/libraryactivity/show', 'LibraryActivityController@show' );
+
+Route::get( '/student/show/fees/{name}', 'StudentDetailsController@showFees' );
+Route::get( '/teacher/show/leave/{name}', 'StudentDetailsController@showLeaveHistory' );
+
+Route::get('/bankdetails/get/{name}', 'BankDetailController@index');
+Route::post('/bankdetails/add/{name}', 'BankDetailController@store');
+Route::get('/bankdetails/edit/{id}', 'BankDetailController@edit');
+Route::post('/bankdetails/update/{id}', 'BankDetailController@update');
+
+Route::get( '/notice/list', 'NoticeBoardController@noticelist' );
 
 

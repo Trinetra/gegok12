@@ -484,5 +484,257 @@ trait MemberProcess
             Log::info($e->getMessage());
             //dd($e->getMessage());
         } 
-    } 
+    }
+    //new
+    public function LibraryMemberFilter($request,$school_id,$usergroup_id,$status)
+    { 
+   
+        try
+        {
+            if($usergroup_id == 6 && $request->status == 'active')
+            {
+                $users = User::BySchool($school_id)->ByRole($usergroup_id)->ByStatus($status);
+            }
+            else
+            {
+                $users = User::BySchool($school_id)->ByRole($usergroup_id);
+            }
+           
+             
+            $alphabet = $request->alphabet ? $request->alphabet:'';
+            if($alphabet)
+            {
+                $users =$users->ByFirstName($alphabet);     
+            } 
+
+            $standard = $request->standard;
+            if($standard!='')
+            {
+                $users = $users->ByStandard($standard);
+            }
+
+            $status = $request->status;
+            if($status!='')
+            {
+                $users = $users->ByStatus($status);
+            }
+
+            if($status=='')
+            {
+                $users = $users->where('status','!=','exit');
+            }
+            
+            if(count((array)\Request::getQueryString())>0)
+            {
+                $firstname = $request->firstname;
+                 
+                if($firstname!='')
+                {
+                    $users = $users->ByFirstName($firstname);
+                }
+
+                $lastname = $request->lastname;
+                if($lastname!='')
+                {
+                    $users = $users->ByLastName($lastname);
+                }
+
+            //     $users = User::whereHas('libraryCard', function ($query) {
+            //   $query->where('library_card_no', 'LC12345');})->get();
+                                              
+
+                //  $users = User::where('school_id',$school_id)->ByRole($usergroup_id)->whereHas('librarycard', function($q){
+                //         $q->where('library_card_no','LC12345')->get();
+                //     });
+                $library_card_no = $request->library_card_no;
+                if($library_card_no!='')
+                {
+                    $users = $users->whereHas('librarycard', function($query) use ($library_card_no) {
+                        $query->where('library_card_no', $library_card_no);
+                    });
+
+                }
+                $issue_date = $request->issue_date;
+
+                if (!empty($issue_date)) {
+                    $users = $users->whereHas('lending', function ($query) use ($issue_date) {
+                        $query->whereDate('issue_date', $issue_date);  // use whereDate for date comparison
+                    });
+                }
+
+                $return_date = $request->return_date;
+                if (!empty($return_date)) {
+                    $users = $users->whereHas('lending', function ($query) use ($return_date) {
+                        $query->whereDate('return_date', $return_date);  
+                    });
+                }
+
+                $admission_number = $request->admission_number;
+                if($admission_number!='')
+                {
+                    $users = $users->ByAdmissionNumber($admission_number);
+                }
+
+            }
+            $users=$users->get()->sortBy('userprofile.firstname');
+            $users = UserResource::collection($users);
+
+            return $users;
+        }
+
+        catch(Exception $e)
+        {
+            Log::info($e->getMessage());
+        } 
+    }
+
+     public function LibraryTeacherFilter($request,$school_id,$usergroup_id)
+    {
+      
+        try
+        {
+            $users = User::where('school_id',$school_id)->ByRole($usergroup_id)->whereHas('userprofile', function($q){
+                        $q->where('status','active')->orWhere('status','inactive');
+                    });
+
+            $alphabet = $request->alphabet ? $request->alphabet:'';
+                if($alphabet)
+                {
+                    $users =$users->ByFirstName($alphabet);     
+                } 
+            if(count((array)\Request::getQueryString())>0)
+            {
+                $firstname = $request->firstname;
+                if($firstname!='')
+                {
+                    $users = $users->ByFirstName($firstname);
+                }
+
+                $lastname = $request->lastname;
+                if($lastname!='')
+                {
+                    $users = $users->ByLastName($lastname);
+                }
+
+                $library_card_no = $request->library_card_no;
+                    //    dd($library_card_no);
+                if($library_card_no!='')
+                {
+                                 $users = $users->whereHas('librarycard', function($query) use ($library_card_no) {
+                    $query->where('library_card_no', $library_card_no);
+                });
+
+                }
+
+                $employee_id = $request->employee_id;
+                if($employee_id!='')
+                {
+                    $users = $users->ByEmployeeId($employee_id);
+                    
+                }
+                $issue_date = $request->issue_date;
+
+                if (!empty($issue_date)) {
+                    $users = $users->whereHas('lending', function ($query) use ($issue_date) {
+                        $query->whereDate('issue_date', $issue_date);  
+                    });
+                }
+
+                $return_date = $request->return_date;
+
+                if (!empty($return_date)) {
+                    $users = $users->whereHas('lending', function ($query) use ($return_date) {
+                        $query->whereDate('return_date', $return_date);  
+                    });
+                }
+
+                
+                $email = $request->email;
+                if($email!='')
+                {
+                    $users = $users->ByEmailId($email);
+                }
+                
+            }
+
+            $users=$users->get();
+            $users = TeacherResource::collection($users);
+            return $users;
+        }
+
+        catch(Exception $e)
+        {
+            Log::info($e->getMessage());
+        } 
+    }
+
+     public function LibraryStaffFilter($request,$school_id,$usergroup_id)
+    {
+        try
+        {  
+            $users = User::where('school_id',$school_id)->whereIn('usergroup_id',$usergroup_id)->whereHas('userprofile', function($q){
+                        $q->where('status','active')->orWhere('status','inactive');
+                    });
+            
+            $alphabet = $request->alphabet ? $request->alphabet:'';
+                if($alphabet)
+                {
+                    $users =$users->ByFirstName($alphabet);     
+                } 
+            if(count((array)\Request::getQueryString())>0)
+            {
+                $firstname = $request->firstname;
+                if($firstname!='')
+                {
+                    $users = $users->ByFirstName($firstname);
+                }
+
+                $lastname = $request->lastname;
+                if($lastname!='')
+                {
+                    $users = $users->ByLastName($lastname);
+                }
+                 $library_card_no = $request->library_card_no;
+
+                if($library_card_no!='')
+                {
+                                 $users = $users->whereHas('librarycard', function($query) use ($library_card_no) {
+                    $query->where('library_card_no', $library_card_no);
+                });
+
+                }
+
+                $employee_id = $request->employee_id;
+                if($employee_id!='')
+                {
+                    $users = $users->ByEmployeeId($employee_id);
+                    
+                }
+                $issue_date = $request->issue_date;
+
+                if (!empty($issue_date)) {
+                    $users = $users->whereHas('lending', function ($query) use ($issue_date) {
+                        $query->whereDate('issue_date', $issue_date);  
+                    });
+                }
+
+                $return_date = $request->return_date;
+                if (!empty($return_date)) {
+                    $users = $users->whereHas('lending', function ($query) use ($return_date) {
+                        $query->whereDate('return_date', $return_date);  
+                    });
+                }
+
+              
+            }
+
+            $users=$users->get();
+            $users = TeacherResource::collection($users);
+            return $users;   
+        }
+        catch(Exception $e)
+        {
+            Log::info($e->getMessage());
+        }
+    }  
 }

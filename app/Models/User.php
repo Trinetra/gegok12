@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Laracasts\Presenter\PresentableTrait;
 use Illuminate\Notifications\Notifiable;
-use Laratrust\Traits\LaratrustUserTrait;
+use Laratrust\Traits\HasRolesAndPermissions;  //LaratrustUserTrait
 use Spatie\MediaLibrary\Models\Media;
 use Laravel\Sanctum\HasApiTokens;
 use App\Presenters\UserPresenter;
@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class User extends Authenticatable implements HasMedia
 {
     use \Nckg\Impersonate\Traits\CanImpersonate;
-    use LaratrustUserTrait;
+    use HasRolesAndPermissions; //LaratrustUserTrait;
     use PresentableTrait;
    // use HasMediaTrait;
     use InteractsWithMedia;
@@ -963,4 +963,15 @@ class User extends Authenticatable implements HasMedia
 
         return $query;
     }
+    public function latestTeacherProfile()
+    {
+        return $this->hasOne(TeacherProfile::class, 'user_id', 'id')->latestOfMany();
+    }
+    public function scopeByEmployeeId($query, $employeeId)
+    {
+         return $query->whereHas('latestTeacherProfile', function ($q) use ($employeeId) {
+            $q->where('employee_id', $employeeId); 
+        });
+    }
+
 }

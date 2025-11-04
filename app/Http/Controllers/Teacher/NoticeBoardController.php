@@ -6,8 +6,11 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Resources\Teacher\Notice as NoticeResource;
+use App\Http\Resources\StandardLink as StandardLinkResource; //new
+use App\Http\Resources\backgroundImagesResource;  //new
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Models\BackgroundImage; //new
 use Illuminate\Http\Request;
 use App\Models\StandardLink;
 use App\Models\Teacherlink;
@@ -46,6 +49,15 @@ class NoticeBoardController extends Controller
             { 
                 $notices = $notices->orWhere([['status',0],['expire_date','<=',date('Y-m-d')]]);
             }
+            if($request->standardLink_id != '')
+            { 
+                $notices = $notices->where('standardLink_id',$request->standardLink_id);
+            }
+
+            if($request->search != '')
+            { 
+                $notices = $notices->where('title','LIKE','%'.$request->search.'%')->orWhere('description','LIKE','%'.$request->search.'%');
+            }
         }
 
         $notices = $notices->get();
@@ -65,5 +77,22 @@ class NoticeBoardController extends Controller
         $query = \Request::getQueryString();
 
         return view('/teacher/noticeboard/index' ,['query' => $query]);
-    }  
+    }
+
+    //new 
+    public function noticelist()
+    {
+        //
+        $standardLink = StandardLink::with('standard','section')->where('school_id',Auth::user()->school_id)->get();
+        $backgroundimages=BackgroundImage::where('school_id',Auth::user()->school_id)->latest()->get();
+        $backgroundimages=backgroundImagesResource::collection($backgroundimages);
+        $standardLink = StandardLinkResource::collection($standardLink);
+
+        $array = [];
+
+        $array['standardLinklist']=$standardLink;
+        $array['backgroundimages']=$backgroundimages;
+        
+        return $array;
+    }   
 }

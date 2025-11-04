@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @if ($this instanceof \Filament\Actions\Contracts\HasActions && (! $this->hasActionsModalRendered))
     <form wire:submit.prevent="callMountedAction">
         @php

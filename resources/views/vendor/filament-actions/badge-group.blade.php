@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <x-filament-actions::group
     dynamic-component="filament::badge"
     :group="$group"

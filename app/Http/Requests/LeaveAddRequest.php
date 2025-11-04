@@ -62,6 +62,7 @@ class LeaveAddRequest extends FormRequest
 
         Validator::extend('check_from_date',function($attribute,$value,$parameters,$validator)
         {
+            $school_id = Auth::user()->school_id;
             $academic_year = SiteHelper::getAcademicYear($school_id);
             $start_date = date('Y-m-d H:i:s',strtotime($academic_year->start_date));
             $end_date   = date('Y-m-d H:i:s',strtotime($academic_year->end_date));
@@ -76,6 +77,7 @@ class LeaveAddRequest extends FormRequest
 
         Validator::extend('check_to_date',function($attribute,$value,$parameters,$validator)
         {
+            $school_id = Auth::user()->school_id;
             $academic_year = SiteHelper::getAcademicYear($school_id);
             $start_date = date('Y-m-d H:i:s',strtotime($academic_year->start_date));
             $end_date   = date('Y-m-d H:i:s',strtotime($academic_year->end_date));

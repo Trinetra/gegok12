@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <div>
   <div class="flex items-center justify-start">
     <div class="bg-gray-200 p-1 rounded-full">

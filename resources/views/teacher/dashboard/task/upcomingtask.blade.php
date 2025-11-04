@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 
   @foreach($tasks as $key => $tasklist)
 @if($key==2)

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
   <div>
 
     <div class="flex items-center py-3">

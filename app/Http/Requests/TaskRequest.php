@@ -45,7 +45,7 @@ class TaskRequest extends FormRequest
 
         Validator::extend('check_teacher_count',function($attribute,$value,$parameters,$validator)
         {
-            if( count(request('selectedTeachersCount')) > 0 )
+            if(request('selectedTeachersCount') > 0 ) //if( count(request('selectedTeachersCount')) > 0 )
             {
                 return true;
             }

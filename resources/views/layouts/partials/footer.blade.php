@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
  <footer class="border-t border-gray-800">
 <div class="bg-white">
  <div class="container mx-auto py-4 px-4 lg:px-0 ">

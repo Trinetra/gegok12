@@ -36,6 +36,16 @@ class Kernel extends ConsoleKernel
             \App\Console\Commands\DataSeeder\SeedAttendance::class,
 
             \App\Console\Commands\AddStandard::class,
+            \App\Console\Commands\Addon\InstallAlumniModule::class,
+            \App\Console\Commands\Addon\InstallCertificateModule::class,
+            \App\Console\Commands\Addon\InstallChatModule::class,
+            \App\Console\Commands\Addon\InstallExamModule::class,
+            \App\Console\Commands\Addon\InstallFeeModule::class,
+            \App\Console\Commands\Addon\InstallInventoryModule::class,
+            \App\Console\Commands\Addon\InstallQuizModule::class,
+            \App\Console\Commands\Addon\InstallTimetableModule::class,
+            \App\Console\Commands\Addon\InstallTransportModule::class,
+            \App\Console\Commands\Addon\InstallVideoroomModule::class,
     ];
 
     /**

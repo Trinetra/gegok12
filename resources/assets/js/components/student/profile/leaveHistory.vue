@@ -64,7 +64,7 @@
 <script>
     import { bus } from "../../../app";
     export default {
-        props:['url' , 'name'],
+        props:['url' , 'name', 'mode'],
         data () {
             return {
                 profile_tab:'',  
@@ -81,7 +81,7 @@
         {
             getData(page=1)
             {
-                axios.get('/admin/teacher/show/leave/'+this.name+'?page='+page).then(response => {
+                axios.get('/'+this.mode+'/teacher/show/leave/'+this.name+'?page='+page).then(response => {
                     this.leaves = response.data.data;
                     this.page_count = response.data.meta.last_page;
                     this.total = response.data.meta.total;

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <div class="relative">
     @if($teacher_count > 0)
        <div class="flex flex-row justify-between custom-table overflow-x-auto standard-list tableFixHead" style="    max-height: 500px;">

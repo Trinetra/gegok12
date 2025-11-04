@@ -21,8 +21,8 @@ class AttendanceUser extends JsonResource
             'session'           =>  ucfirst($this->session),
             'reason'            =>  $this->reason_id==null ? '--':$this->absentReason->title,
             'remarks'           =>  $this->remarks,
-            'recorded_by_name'  =>  $this->admin->name,
-            'recorded_by'       =>  $this->admin->FullName,
+            'recorded_by_name'  =>  $this->recordedby->name, //$this->admin->name,
+            'recorded_by'       =>  $this->recordedby->FullName, //$this->admin->FullName,
             'recorded_on'       =>  date('d M Y',strtotime($this->created_at)),
         ];
     }

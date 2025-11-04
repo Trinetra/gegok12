@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <div class="w-1/2">
 	<form method="post" action="{{ url('admin/feedback/edit/'.$feedback->id)}}" class="form-horizontal" id="contact">
 	{{ csrf_field() }} 

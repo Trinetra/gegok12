@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <nav class="navbar bg-white w-full flex  lg:flex-row px-4 lg:px-8 py-2 justify-between items-center">
   <div class="nav-brand flex items-center">
     @if(\Auth::user())

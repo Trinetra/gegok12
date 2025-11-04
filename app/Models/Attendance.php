@@ -71,6 +71,11 @@ class Attendance extends Model
         return $this->belongsTo('App\Models\User','recorded_by')->where('usergroup_id',3);
     }
 
+    public function recordedby()
+    {
+        return $this->belongsTo('App\Models\User','recorded_by');
+    }
+
     public function scopeByRole($query,$usergroup_id)
    {
        $query->wherehas('user',function ($query) use($usergroup_id)

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @php
     use Filament\Tables\Columns\IconColumn\IconColumnSize;
 @endphp

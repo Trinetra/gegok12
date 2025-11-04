@@ -24,12 +24,22 @@ class AdmissionFormRequest extends FormRequest
     public function rules()
     {
 
-        return [
-            //
-            'section_id'       => 'required',           
-            'payment_status'   => 'required',           
-            'fee_group_id'     => 'required',           
+        // return [
+        //     //
+        //     'section_id'       => 'required',           
+        //     'payment_status'   => 'required',           
+        //     'fee_group_id'     => 'required',           
+        // ];
+        $rules = [
+            'section_id' => 'required',
         ];
+
+        if (config('gfee.enabled', false)) {
+            $rules['payment_status'] = 'required';
+            $rules['fee_group_id'] = 'required';
+        }
+
+        return $rules;
     }
 
      public function messages()

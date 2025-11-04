@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <div>
 
     <div class="bg-white shadow px-4 py-3">

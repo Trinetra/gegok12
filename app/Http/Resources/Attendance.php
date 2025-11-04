@@ -25,7 +25,7 @@ class Attendance extends JsonResource
             'session'       =>  ucfirst($this->session),
             'reason'        =>  $this->absentReason->title,
             'remarks'       =>  $this->remarks,
-            'recorded_by'   =>  $this->admin->FullName == null ? ucfirst($this->admin->name):ucfirst($this->admin->FullName),
+            'recorded_by'   =>  $this->recordedby->FullName == null ? ucfirst($this->recordedby->name):ucfirst($this->recordedby->FullName), //$this->admin->FullName == null ? ucfirst($this->admin->name):ucfirst($this->admin->FullName),
             'created_at'    =>  date('d M Y',strtotime($this->created_at)),
             'class'         =>  $this->standardLink->StandardSection,
             'class_id'      =>  $this->standardLink_id,

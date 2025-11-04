@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @props([
     'field' => null,
     'hasInlineLabel' => null,

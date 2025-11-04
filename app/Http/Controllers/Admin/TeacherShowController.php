@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Resources\TeacherTimeTable as TeacherTimeTableResource;
 use App\Http\Resources\TeacherClasses as TeacherClassesResource;
+use App\Http\Resources\API\BookLending as BookLendingResource;
 use App\Http\Resources\TeacherDetail as TeacherDetailResource;
 use App\Http\Resources\LeaveHistory as LeaveHistoryResource;
 use App\Http\Resources\ActivityLog as ActivityLogResource;
@@ -17,6 +18,8 @@ use Illuminate\Http\Request;
 use App\Models\ActivityLog;
 use App\Helpers\SiteHelper;
 use App\Models\User;
+use App\Models\AcademicYear;
+use PDF;
 
 class TeacherShowController extends Controller
 {
@@ -141,5 +144,35 @@ class TeacherShowController extends Controller
       $user = User::where('name',$name)->first(); 
 
       return view('/admin/teacher/show',['user' => $user]);
+    }
+
+    public function showidcard($name)
+    {
+     
+      $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+
+      $teacher = User::where('name',$name)->first();
+       
+      return view('/admin/teacher/showidcard',['teacher' => $teacher,'academic'=>$academic]);
+    }
+
+    public function showprintidcard($name)
+    {
+      $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+      $teacher = User::where('name',$name)->first();
+
+      $pdf = PDF::loadView('admin/teacher/show-idcardprint', ['teacher' => $teacher,'academic'=>$academic]);
+
+      return $pdf->stream('result.pdf', array('Attachment'=>0)); 
+    }
+
+    public function showBookLent($name)
+    {
+
+      $teacher = User::with('lending')->where('name', $name)->first();
+
+      $lent = BookLendingResource::collection($teacher->lending);
+
+      return $lent;
     }
 }

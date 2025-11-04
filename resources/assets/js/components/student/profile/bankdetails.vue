@@ -181,7 +181,7 @@
 <script>
   import { bus } from "../../../app";
   export default {
-    props:['url' , 'name'],
+    props:['url' , 'name', 'mode'],
     data () {
       return {
         profile_tab:'',
@@ -201,7 +201,7 @@
     {
       getData()
       {
-        axios.get('/admin/bankdetails/get/'+this.name).then(response => {
+        axios.get('/'+this.mode+'/bankdetails/get/'+this.name).then(response => {
           this.lists = response.data;
           console.log(this.lists)
         });
@@ -215,7 +215,7 @@
       editModal(id)
       {
         this.tab = 'edit';
-        axios.get('/admin/bankdetails/edit/'+id).then(response => {
+        axios.get('/'+this.mode+'/bankdetails/edit/'+id).then(response => {
           this.edit=response.data;
           this.bank_name = response.data.name;
           this.account_number = response.data.account_number;
@@ -243,7 +243,7 @@
         formData.append('ifsc_code',this.ifsc_code);
         formData.append('key',this.key); 
 
-        axios.post('/admin/bankdetails/add/'+this.name,formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {     
+        axios.post('/'+this.mode+'/bankdetails/add/'+this.name,formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {     
           this.success = response.data.success;
           this.closeModal();
           this.reset();
@@ -265,7 +265,7 @@
         formData.append('ifsc_code',this.ifsc_code);
         formData.append('key',this.key);
 
-        axios.post('/admin/bankdetails/update/'+id,formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {     
+        axios.post('/'+this.mode+'/bankdetails/update/'+id,formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {     
           this.success = response.data.success;
           this.closeModal();
           this.reset();

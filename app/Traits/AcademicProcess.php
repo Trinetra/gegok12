@@ -178,7 +178,7 @@ trait AcademicProcess
 
             $class_teacher = User::where('id',$standardLink->class_teacher_id)->first();
 
-            $class_teacher->attachRole('student_leave_checker');
+            $class_teacher->addRole('student_leave_checker');
 
             for($i=0 ; $i<$data->count ; $i++)
             {
@@ -218,18 +218,18 @@ trait AcademicProcess
             {
                 $old_class_teacher = User::where('id',$standardLink->class_teacher_id)->first();
 
-                $old_class_teacher->detachRole('student_leave_checker');
+                $old_class_teacher->removeRole('student_leave_checker');
 
                 $class_teacher = User::where('id',$data->class_teacher_id)->first();
 
-                $class_teacher->attachRole('student_leave_checker');
+                $class_teacher->addRole('student_leave_checker');
             }
             else
             {
                 $class_teacher = User::where('id',$standardLink->class_teacher_id)->first();
                 if(!$class_teacher->hasRole('student_leave_checker'))
                 {
-                    $class_teacher->attachRole('student_leave_checker');
+                    $class_teacher->addRole('student_leave_checker');
                 }
             }
 

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <div>
 
   <div class="relative flex flex-row lg:flex-row md:flex-row bg-white shadow border">

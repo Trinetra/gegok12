@@ -54,8 +54,8 @@ class EventsController extends Controller
         //
         $school_id      =   Auth::user()->school_id;
         $academic_year  =   SiteHelper::getAcademicYear($school_id);
-        $events         =   Events::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['status','active']]);
-        $count          =   Events::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['category','!=','holidays'],['status','active']])->count();
+        $events         =   Events::where([['school_id',$school_id],['academic_year_id',$academic_year->id]]); //,['status','active']
+        $count          =   Events::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['category','!=','holidays']])->count(); //,['status','active']
         $subscription   =   Subscription::where('school_id',$school_id)->first();
 
         if(count((array)\Request::getQueryString())>0)

@@ -102,6 +102,10 @@ class Userprofile extends Model
 
     public function getAvatarPathAttribute()
     {
-      return $this->getFilePath($this->avatar);
+      if($this->avatar!=null)
+      {
+        return $this->getFilePath($this->avatar);
+
+      }
     }
 }

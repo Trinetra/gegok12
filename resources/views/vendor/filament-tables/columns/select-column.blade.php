@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @php
     $canSelectPlaceholder = $canSelectPlaceholder();
     $isDisabled = $isDisabled();

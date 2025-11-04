@@ -8,7 +8,7 @@
           <th>Teacher</th>
           <th>Incident date</th>
           <th>Attachment</th>
-          <th>Actions</th>
+          <th v-if="mode === 'admin'">Actions</th>
         </tr>
       </thead>
       <tbody v-if="Object.keys(disciplines).length > 0">
@@ -28,7 +28,7 @@
             </p>
             <p v-else>--</p>
           </td>
-          <td>
+          <td v-if="mode === 'admin'">
             <ul class="list-reset flex">
               <li>
                 <a :href="url+'/admin/discipline/edit/'+discipline.id">

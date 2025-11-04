@@ -48,15 +48,28 @@ class TaskController extends Controller
         $tasks = TaskResource::collection($tasks)->groupby('Flag');
 
          //dd($tasks['Today']);
-        if($tasks['Today']!=null)
+        // if($tasks['Today']!=null)
+        // {
+        //     $tasks['Today'] = [];
+        // }
+        // if($tasks['Overdue']!=null)
+        // {
+        //     $tasks['Overdue'] = [];
+        // }
+        // if( $tasks['Upcoming']!=null )
+        // {
+        //     $tasks['Upcoming'] = [];
+        // }
+
+        if (!isset($tasks['Today'])) 
         {
             $tasks['Today'] = [];
         }
-        if($tasks['Overdue']!=null)
+        if (!isset($tasks['Overdue'])) 
         {
             $tasks['Overdue'] = [];
         }
-        if( $tasks['Upcoming']!=null )
+        if (!isset($tasks['Upcoming'])) 
         {
             $tasks['Upcoming'] = [];
         }
@@ -89,15 +102,29 @@ class TaskController extends Controller
 
        
 
-          if($tasks['Today']!=null)
+        //   if($tasks['Today']!=null)
+        // {
+        //     $tasks['Today'] = [];
+        // }
+        // if($tasks['Overdue']!=null)
+        // {
+        //     $tasks['Overdue'] = [];
+        // }
+        // if( $tasks['Upcoming']!=null )
+        // {
+        //     $tasks['Upcoming'] = [];
+        // }
+
+        //add new
+        if (!isset($tasks['Today'])) 
         {
             $tasks['Today'] = [];
         }
-        if($tasks['Overdue']!=null)
+        if (!isset($tasks['Overdue'])) 
         {
             $tasks['Overdue'] = [];
         }
-        if( $tasks['Upcoming']!=null )
+        if (!isset($tasks['Upcoming'])) 
         {
             $tasks['Upcoming'] = [];
         }
@@ -127,15 +154,29 @@ class TaskController extends Controller
             ])->ByType('to_me',Auth::id())->ByStatus(0)->get();
 
         $tasks = TaskResource::collection($tasks)->groupby('Flag');
-        if( count($tasks['Today']) == 0 )
+        // if( count($tasks['Today']) == 0 )
+        // {
+        //     $tasks['Today'] = [];
+        // }
+        // if( count($tasks['Overdue']) == 0 )
+        // {
+        //     $tasks['Overdue'] = [];
+        // }
+        // if( count($tasks['Upcoming']) == 0 )
+        // {
+        //     $tasks['Upcoming'] = [];
+        // }
+
+        // new
+        if (count($tasks['Today'] ?? []) == 0) 
         {
             $tasks['Today'] = [];
         }
-        if( count($tasks['Overdue']) == 0 )
+        if (count($tasks['Overdue'] ?? []) == 0) 
         {
             $tasks['Overdue'] = [];
         }
-        if( count($tasks['Upcoming']) == 0 )
+        if (count($tasks['Upcoming'] ?? []) == 0) 
         {
             $tasks['Upcoming'] = [];
         }
@@ -165,15 +206,29 @@ class TaskController extends Controller
             ])->ByType('to_me',Auth::id())->ByStatus(1)->get();
 
         $tasks = TaskResource::collection($tasks)->groupby('Flag');
-        if( count($tasks['Today']) == 0 )
+        // if( count($tasks['Today']) == 0 )
+        // {
+        //     $tasks['Today'] = [];
+        // }
+        // if( count($tasks['Overdue']) == 0 )
+        // {
+        //     $tasks['Overdue'] = [];
+        // }
+        // if( count($tasks['Upcoming']) == 0 )
+        // {
+        //     $tasks['Upcoming'] = [];
+        // }
+
+        //new
+        if (count($tasks['Today'] ?? []) == 0) 
         {
             $tasks['Today'] = [];
         }
-        if( count($tasks['Overdue']) == 0 )
+        if (count($tasks['Overdue'] ?? []) == 0) 
         {
             $tasks['Overdue'] = [];
         }
-        if( count($tasks['Upcoming']) == 0 )
+        if (count($tasks['Upcoming'] ?? []) == 0) 
         {
             $tasks['Upcoming'] = [];
         }

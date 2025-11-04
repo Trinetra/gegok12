@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <div class="w-full lg:w-48 md:w-48 bg-blue-700 text-white h-full librarian-sidebar">
   <div class="min-h-full header-wrapper-b hidden lg:block md:block ">
    @include('layouts.library.menu')

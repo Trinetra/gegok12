@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -17,7 +16,7 @@
          <script>
         window.User = {!! json_encode(optional(auth()->user())->only('id')) !!}
     </script>
-
+   
     <!-- <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script> -->
     
     <!-- new -->

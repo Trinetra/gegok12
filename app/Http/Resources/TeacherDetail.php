@@ -38,6 +38,7 @@ class TeacherDetail extends JsonResource
             'class_teacher'     => $this->standardLink->StandardSection,
             'job_type'          => $details['job_type'],
             'interested_in'     => $details['interested_in'],
+            'librarycard_number' => $this->librarycard->library_card_no,
         ];
     }
 }

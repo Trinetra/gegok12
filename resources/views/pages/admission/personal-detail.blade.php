@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <fieldset class="shadow">
     <!-- <h2 class="fs-title">Social Profiles</h2> -->
     <!-- ***medical*** -->

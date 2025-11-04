@@ -37,6 +37,9 @@ use App\Models\Mark;
 use App\Models\Fee;
 use Exception;
 use Log;
+use Redirect;
+use PDF;
+use App\Models\Standard;
 
 class StudentDetailsController extends Controller
 {
@@ -460,5 +463,46 @@ class StudentDetailsController extends Controller
          $finas=array_merge($subjects_array,$data);
 
           return view('/admin/exammark/markgraph' , ['subjects'=>$finas,'user'=>$users[0]]);
+    }
+    public function create()
+    {
+
+        try {
+
+            foreach ($request->selectedUsers as $user) {
+            $studentAcademic = StudentAcademic::where('user_id',$user)->first();
+            $studentAcademic->bus_pass ="yes";
+            $studentAcademic->update();
+        }
+            
+           return Redirect::to('admin/student/buspass/show');
+        } catch (Exception $e) {
+            Log::info($e->getMessage());
+            
+        } 
+        
+    }
+      public function showbus($name)
+    {
+
+     
+        $studentlist=StudentAcademic::where('bus_pass', 'yes')->first();
+        $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+        $user = User::where('name',$name)->first();
+
+        return view('admin.buspass.show-bus_pass',compact('user','academic'));
+        
+    }
+    public function showprint_buspass($name)
+    {
+
+        $studentlist=StudentAcademic::where('bus_pass', 'yes')->get();
+        $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+        $student = User::where('name',$name)->first();
+
+        $pdf = PDF::loadView('admin/buspass/showprint', compact('student','academic'));
+ 
+        return $pdf->stream('buspass.pdf', array('Attachment'=>0)); 
+        
     }
 }

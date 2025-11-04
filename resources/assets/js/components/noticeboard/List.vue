@@ -8,7 +8,7 @@
                 </div>
                 <div class="relative flex items-center w-full lg:w-1/2 md:w-1/4 justify-end">
                     <div class="flex items-center w-full justify-end">
-                        <select name="standardLink_id" v-model="standardLink_id" class="tw-form-control mx-2" v-on:change="selectClass()">
+                        <select v-if="mode !== 'student'" name="standardLink_id" v-model="standardLink_id" class="tw-form-control mx-2" v-on:change="selectClass()">
                             <option value="">Select Class</option>
                             <option v-for="list in standardLinklist" v-bind:value="list.id">{{ list.standard_section }}</option>
                         </select>
@@ -127,6 +127,7 @@
                 params:{},
                 errors:[],
                 success:null,
+                currentScope: this.scope,
             }
         },
 
@@ -134,7 +135,7 @@
         {
             getData()
             {
-                axios.get('/'+this.mode+'/notice/show/list/?standardLink_id='+this.scope+'&search='+this.search).then(response => {
+                axios.get('/'+this.mode+'/notice/show/list/?standardLink_id='+this.currentScope+'&search='+this.search).then(response => {
                     this.notices    = response.data.data;
                     //console.log(this.notices);    
                     //console.log(this.hidecolumns);    
@@ -157,13 +158,13 @@
             resetForm()
             {
                 this.search = '';
-                this.scope = '';
+                this.currentScope = '';
                 this.getData();
             },
 
             selectClass()
             {
-                this.scope = this.standardLink_id;
+                this.currentScope = this.standardLink_id;
                 this.getData();
             },
 

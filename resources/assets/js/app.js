@@ -334,7 +334,17 @@ Vue.component('slider-image', require('./components/feed/slider.vue').default);
 Vue.component('homeslider', require('./components/Slider.vue').default);
 Vue.component('nav-bar', require('./components/Navigation.vue').default);
 
+//new
 
+Vue.component('teacherlist-lentbook', require('./components/booklending/TeacherList.vue').default);
+
+//Library cards 
+Vue.component('librarymembersearch-filter', require('./components/librarycard/Filter.vue').default);
+Vue.component('librarymember-list', require('./components/librarycard/List.vue').default);
+Vue.component('libraryteachersearch-filter', require('./components/librarycard/TeacherFilter.vue').default);
+Vue.component('libraryteacher-list', require('./components/librarycard/TeacherList.vue').default);
+Vue.component('librarystaff-list', require('./components/librarycard/StaffList.vue').default);
+Vue.component('librarystaff-filter', require('./components/librarycard/StaffFilter.vue').default);
 
 
 

@@ -67,8 +67,11 @@ class AdmissionController extends Controller
         $admission = Admission::where('school_id',Auth::user()->school_id)->where('id',$id)->where('application_status','Draft')->orWhere('application_status','Pending')->first();
 
         $sections = StandardLink::where('standard_id',$admission->standard_id)->get();
-
-        $fee = FeeGroup::where('school_id',Auth::user()->school_id)->get();
+        
+        if(config('gfee.enabled', false))
+        {
+            $fee = FeeGroup::where('school_id',Auth::user()->school_id)->get();
+        }    
 
         $array=[];
         $array['id']                    =   $admission->id;
@@ -77,7 +80,11 @@ class AdmissionController extends Controller
         $array['application_no']        =   $admission->application_no;
         $array['application_status']    =   $admission->application_status;
         $array['sectionlist']           =   SectionResource::collection($sections);
-        $array['feelist']               =   FeeGroupResource::collection($fee);
+
+        if(config('gfee.enabled', false))
+        {
+            $array['feelist']               =   FeeGroupResource::collection($fee);
+        }    
 
         return $array;  
     }

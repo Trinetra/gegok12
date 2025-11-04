@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <ul class="list-reset text-sm"> 
     <li class="py-3 px-3  {{Request::segment ('2') == 'dashboard' ? 'active':''}}"> <!-- hover:bg-red-900 -->
         <a href="{{url('admin/dashboard')}}" class="flex items-center">
@@ -747,11 +746,29 @@
     <!--activity log-->
 
     <!--add on new-->
-    <li class="py-3 px-3 {{Request::segment ('2') == 'addon' ? 'active':''}}">
-        <a href="{{ url('/admin/addon') }}" class="flex  items-center">
-            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" height="512px" viewBox="-1 0 512 512" width="512px"><g><path d="m360 242.839844v-207.839844c0-19.300781-15.699219-35-35-35h-290c-19.300781 0-35 15.699219-35 35v381c0 19.300781 15.699219 35 35 35h227.148438c24.152343 36.710938 65.714843 61 112.851562 61 74.4375 0 135-60.5625 135-135 0-79.980469-69.660156-143.085938-150-134.160156zm-325 178.160156c-2.757812 0-5-2.242188-5-5v-381c0-2.757812 2.242188-5 5-5h290c2.757812 0 5 2.242188 5 5v214.722656c-14.539062 5.15625-27.941406 12.734375-39.71875 22.253906-3.734375-1.410156 6.6875-.976562-155.28125-.976562-8.285156 0-15 6.714844-15 15s6.714844 15 15 15h128.484375c-6.320313 9.242188-11.523437 19.308594-15.410156 30h-113.074219c-8.285156 0-15 6.714844-15 15s6.714844 15 15 15h105.953125c-2.425781 20.433594-.191406 40.886719 6.414063 60zm340 61c-57.898438 0-105-47.101562-105-105s47.101562-105 105-105 105 47.101562 105 105-47.101562 105-105 105zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m135 121h150c8.285156 0 15-6.714844 15-15s-6.714844-15-15-15h-150c-8.285156 0-15 6.714844-15 15s6.714844 15 15 15zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m135 181h150c8.285156 0 15-6.714844 15-15s-6.714844-15-15-15h-150c-8.285156 0-15 6.714844-15 15s6.714844 15 15 15zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m135 241h150c8.285156 0 15-6.714844 15-15s-6.714844-15-15-15h-150c-8.285156 0-15 6.714844-15 15s6.714844 15 15 15zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m90 106c0 8.285156-6.714844 15-15 15s-15-6.714844-15-15 6.714844-15 15-15 15 6.714844 15 15zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m90 166c0 8.285156-6.714844 15-15 15s-15-6.714844-15-15 6.714844-15 15-15 15 6.714844 15 15zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m90 226c0 8.285156-6.714844 15-15 15s-15-6.714844-15-15 6.714844-15 15-15 15 6.714844 15 15zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m90 286c0 8.285156-6.714844 15-15 15s-15-6.714844-15-15 6.714844-15 15-15 15 6.714844 15 15zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m90 346c0 8.285156-6.714844 15-15 15s-15-6.714844-15-15 6.714844-15 15-15 15 6.714844 15 15zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m375 301c-8.285156 0-15 6.714844-15 15v45h-30c-8.285156 0-15 6.714844-15 15s6.714844 15 15 15h45c8.285156 0 15-6.714844 15-15v-60c0-8.285156-6.714844-15-15-15zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/></g> </svg>
-            <span class="mx-3 whitespace-no-wrap">Add On</span>
+    
+    <li class="relative py-3 px-3 {{Request::segment ('2') == 'addon' ? 'active':''}} || {{Request::segment ('3') == 'addon' ? 'active':''}}{{$class}}">
+        <a href="#" class="flex items-center">
+            <svg class="w-5 h-5 fill-current text-white" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 407.51 407.51" style="enable-background:new 0 0 407.51 407.51;" xml:space="preserve"><g><g><g><path d="M365.714,57.469c-0.542-5.937-5.533-10.474-11.494-10.449H83.069c-5.162-0.577-9.814,3.139-10.391,8.301 c-0.041,0.366-0.06,0.735-0.058,1.103l-2.09,246.596H11.494C5.196,303.987,0.416,309.201,0,315.559V332.8 c0.79,37.441,30.505,67.842,67.918,69.486h228.833c38.087,0.001,68.964-30.874,68.965-68.961c0-0.175-0.001-0.35-0.002-0.524 V57.469z M70.531,381.388c-27.008,0.006-49.064-21.585-49.633-48.588v-8.882h203.755v8.882 c0.054,18.367,7.602,35.916,20.898,48.588H70.531z M344.816,332.8c0,27.411-22.221,49.633-49.633,49.633 c-27.411,0-49.633-22.221-49.633-49.633v-17.241c0-5.747-3.657-12.539-9.404-12.539H91.429l2.09-235.102h251.298V332.8z"/><path d="M126.955,141.061h80.98c5.771,0,10.449-4.678,10.449-10.449c0-5.771-4.678-10.449-10.449-10.449h-80.98 c-5.771,0-10.449,4.678-10.449,10.449C116.506,136.383,121.184,141.061,126.955,141.061z"/><path d="M126.955,198.531h164.571c5.771,0,10.449-4.678,10.449-10.449s-4.678-10.449-10.449-10.449H126.955 c-5.771,0-10.449,4.678-10.449,10.449S121.184,198.531,126.955,198.531z"/><path d="M126.955,261.225h164.571c5.771,0,10.449-4.678,10.449-10.449s-4.678-10.449-10.449-10.449H126.955 c-5.771,0-10.449,4.678-10.449,10.449S121.184,261.225,126.955,261.225z"/><path d="M396.016,5.225H124.865c-5.771,0-10.449,4.678-10.449,10.449c0,5.771,4.678,10.449,10.449,10.449h261.747v264.882 c0,5.771,4.678,10.449,10.449,10.449s10.449-4.678,10.449-10.449V15.674C406.968,9.737,401.978,5.2,396.016,5.225z"/></g></g></g></svg>
+            <span class="mx-3 whitespace-no-wrap flex items-center justify-between w-10/12">Upgrades <img src="{{url('images/right-arrow.svg')}}" class="w-2 h-2"></span>
         </a>
+        <ul class="list-reset sites-sidebar">
+            
+            <li class="py-3 px-3 hover:font-semibold {{Request::segment ('2') == 'addon' ? 'active':''}} || {{Request::segment ('2') == 'addon' ? 'active':''}}">
+                <a href="{{ url('admin/addon') }}" class="flex items-center">
+                    <svg class="w-5 h-5" fill="white" viewBox="0 0 24 24"><path d="M4 3h16a1 1 0 0 1 1 1v4H3V4a1 1 0 0 1 1-1zm0 7h18v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10zm4 2v6h2v-6H8zm4 0v6h2v-6h-2zm4 0v6h2v-6h-2z"/></svg>
+                    <span class="mx-3 whitespace-no-wrap">Purchase Modules</span>
+                </a>
+            </li>
+
+            <li class="py-3 px-3 hover:font-semibold {{Request::segment ('2') == 'purchase' ? 'active':''}} && {{Request::segment ('3') == 'addon' ? 'active':''}}">
+                <a href="{{ url('admin/purchase/addon/histories') }}" class="flex  items-center">
+                    <!--  <img src="{{asset('uploads/icons/sidebar/magazine.svg')}}" class="w-5 h-5"> -->
+                  <svg class="w-5 h-5" fill="white" viewBox="0 0 24 24"><path d="M12 8v5l4.3 2.6.7-1.2-3.5-2.1V8z"/><path d="M12 1a11 11 0 1 0 9.95 6.68l-1.86.75A9 9 0 1 1 12 3c2.21 0 4.23.81 5.79 2.14L15 8h7V1l-2.44 2.44A10.95 10.95 0 0 0 12 1z"/></svg>
+                    <span class="mx-3 whitespace-no-wrap">Purchase History</span>
+                </a>
+            </li>
+        </ul>
     </li>
     <!--add-on-->
 

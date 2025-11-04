@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @if (isset($data))
     <script>
         window.filamentData = @js($data)

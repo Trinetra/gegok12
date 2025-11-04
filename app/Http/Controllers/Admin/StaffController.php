@@ -20,6 +20,7 @@ use App\Models\User;
 use League\Csv\Writer;
 use Exception;
 use Log;
+use PDF;
 
 class StaffController extends Controller
 {
@@ -292,16 +293,16 @@ class StaffController extends Controller
 
         if($request->designation == 'principal')
         {
-          $user->attachRole('principal');
+          $user->addRole('principal');
         }
 
         if( ($request->designation == 'principal') || ($request->designation == 'vice_principal') || ($request->designation == 'head_of_the_department') )
         {
-          $user->attachRole('leave_checker');
+          $user->addRole('leave_checker');
         }
         else
         {
-          $user->attachRole('leave_applier');
+          $user->addRole('leave_applier');
         }
 */
         $message=trans('messages.update_success_msg',['module' => 'Staff']);
@@ -475,4 +476,39 @@ class StaffController extends Controller
         );
 
    }
+   public function idcard()
+    {
+       $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+       $staffs   =User::where('school_id',Auth::user()->school_id)->whereIn('usergroup_id',[8,10,11,12,13])->get();
+
+        return view('/admin/staff/idcard', compact('staffs','academic'));
+    }
+
+    public function printidcard()
+    {
+       $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+       $staffs   =User::where('school_id',Auth::user()->school_id)->whereIn('usergroup_id',[8,10,11,12,13])->get();
+        $pdf = PDF::loadView('admin/staff/idcard-print', compact('staffs','academic'));
+
+        return $pdf->stream('result.pdf', array('Attachment'=>0)); 
+    }
+    public function showidcard($name)
+    {
+     
+        $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+
+        $staffs = User::where('name',$name)->first();
+       
+        return view('/admin/staff/showidcard',['staffs' => $staffs,'academic'=>$academic]);
+    }
+
+    public function showprintidcard($name)
+    {
+        $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+        $staffs = User::where('name',$name)->first();
+
+        $pdf = PDF::loadView('admin/staff/show-idcardprint', ['staffs' => $staffs,'academic'=>$academic]);
+
+        return $pdf->stream('result.pdf', array('Attachment'=>0)); 
+    }
 }

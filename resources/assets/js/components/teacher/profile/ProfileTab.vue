@@ -30,6 +30,9 @@
       <li class="px-2 mx-3 py-2" v-bind:class="[{'active' : profile_tab === '8'}]">
         <a href="#" class="text-gray-700 font-medium" @click="setProfileTab('8')">Attendance</a>
       </li>
+      <li class="px-2 mx-3 py-2" v-bind:class="[{'active' : profile_tab === '9'}]">
+        <a href="#" class="text-gray-700 font-medium" @click="setProfileTab('9')">Library Activities</a>
+      </li>
 
     </ul>
 
@@ -41,6 +44,7 @@
       <documents :url="this.url" :name="this.name"></documents>
       <attendance :url="this.url" :name="this.name"></attendance>
       <bankdetails :url="this.url" :name="this.name"></bankdetails>
+      <libraryactivity :url="this.url" :name="this.name"></libraryactivity>
       <div class="px-3 overflow-x-scroll lg:overflow-x-auto md:overflow-x-auto py-3" v-bind:class="[this.profile_tab==5?'block' :'hidden']">
         <notes :url="this.url" :entity_id="this.entity_id" entity_name="user" :school_id="this.school_id"></notes>
       </div>
@@ -59,6 +63,7 @@
   import documents from './documents';
   import bankdetails from './bankdetails';
   import attendance from './attendance';
+  import libraryactivity from './libraryactivity';
 
   export default {
     props:['url','name','entity_id','school_id','mode'],
@@ -75,7 +80,8 @@
       leaveHistory,
       documents,
       bankdetails,
-      attendance
+      attendance,
+      libraryactivity
     },
 
     methods:

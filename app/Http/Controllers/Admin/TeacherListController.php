@@ -12,7 +12,10 @@ use Illuminate\Http\Request;
 use App\Traits\LogActivity;
 use App\Traits\Common;
 use App\Models\User;
+use App\Models\AcademicYear;
+use App\Helpers\SiteHelper;
 use Exception;
+use PDF;
 
 class TeacherListController extends Controller
 {
@@ -75,5 +78,22 @@ class TeacherListController extends Controller
         {
             //dd($e->getMessage());
         } 
+    }
+    public function idcard()
+    {
+   
+        $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+        $teachers    = User::ByRole(5)->where('school_id',Auth::user()->school_id)->get();
+
+        return view('/admin/teacher/idcard', compact('teachers','academic'));
+    }
+
+    public function printidcard()
+    {
+        $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+        $teachers    = User::ByRole(5)->where('school_id',Auth::user()->school_id)->get();
+        $pdf = PDF::loadView('admin/teacher/idcard-print', compact('teachers','academic'));
+
+        return $pdf->stream('result.pdf', array('Attachment'=>0)); 
     }
 }
