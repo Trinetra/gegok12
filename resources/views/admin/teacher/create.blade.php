@@ -56,11 +56,10 @@
             </portal>
         </form>
     @else
-        <a href="{{ url('/pricing') }}"> 
-            <button type="submit" class="no-underline text-white  px-4 my-3 mx-1 flex items-center custom-green py-1 justify-center">
-                Upgrade Plan to Add More Teachers
-            </button>
-        </a>
+        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+            <p class="font-semibold">Teacher limit reached</p>
+            <p class="text-sm">Please contact your administrator to increase the teacher limit.</p>
+        </div>
     @endif
 </div>
 

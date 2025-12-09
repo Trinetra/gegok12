@@ -36,7 +36,6 @@
             <!-- Authentication Links -->
             <!-- <li class="mx-2"><a href="">{{ __('Features') }}</a></li> -->
             <!-- <li class="mx-2"><a href="">{{ __('Demo') }}</a></li> -->
-            <li class="mx-2 hidden lg:block"><a href="{{ url('/pricing') }}">{{ __('Pricing') }}</a></li>
             @guest
                 <li class="nav-item px-2">
                     <a class="nav-link" href="{{ route('login') }}" id="login">{{ __('Login') }}</a>

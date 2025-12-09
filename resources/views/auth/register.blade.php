@@ -317,9 +317,7 @@
               <div class="form-check flex items-center">
                 <input type="checkbox" class="form-check-input" name="termsandcondn" value="1" @if(old('termsandcondn')==1) checked @endif>
                 <label for="termsandcondn" class="form-control px-2 py-2 w-full text-sm">I Agree to
-                  <a href="{{ url('/terms-of-service') }}" target="_blank">
                     <b>Terms and Conditions</b>
-                  </a>
                 </label>
               </div>
               @if ($errors->has('termsandcondn'))
