@@ -53,7 +53,7 @@
                 <h4 class="font-semibold text-amber-800 mb-1">Before you begin</h4>
                 <ul class="text-sm text-amber-700 space-y-1">
                     <li>• Make sure you have your database credentials ready</li>
-                    <li>• Ensure your server meets the minimum PHP 8.1 requirement</li>
+                    <li>• Ensure your server meets the minimum PHP 8.4 requirement</li>
                     <li>• The storage and bootstrap/cache directories must be writable</li>
                 </ul>
             </div>
