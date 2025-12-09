@@ -26,10 +26,10 @@ class DatabaseSeeder extends Seeder
         $this->call(QualificationTableSeeder::class);
         $this->call(AbsentReasonsTableSeeder::class);
         $this->call(RolesTableSeeder::class);
-       
+
         // Removed for single-school version - no longer need SiteAdmin
         // $this->call(UsersSiteAdminTableSeeder::class);
-        
+
         $this->call(SchoolsTableSeeder::class);  //test //
         $this->call(SchoolDetailsTableSeeder::class);  //test //
         $this->call(AcademicYearsTableSeeder::class);  //test //
@@ -41,11 +41,11 @@ class DatabaseSeeder extends Seeder
         // $this->call(UsersTeacherTableSeeder::class);  //Experimental //
        // $this->call(StandardsLinkTableSeeder::class); //test //
         // $this->call(UsersStudentTableSeeder::class);  //Experimental //
-       
+
         $this->call(SubscriptionsTableSeeder::class);  //test //
 
         // $this->call(TeacherTableSeeder::class); //test //
-       
+
         $this->call(BooksCategoryTableSeeder::class); //test //
         $this->call(BooksTableSeeder::class); //test //
         // $this->call(TimetableTableSeeder::class); //test //
@@ -57,27 +57,27 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleUsersTableSeeder::class);
         //$this->call(FeesTableSeeder::class); //test
         //$this->call(FeePaymentsTableSeeder::class); //test
-   
+
         $this->call(HolidaySeeder::class);//test //
         //$this->call(LessonPlanTableSeeder::class);//test
         $this->call(PageCategoryTableSeeder::class);//test
-  
+
        /* $this->call(CategoryTableSeeder::class); //test //
         $this->call(VendorsTableSeeder::class); //test //
         $this->call(CategoryVendorsTableSeeder::class); //test //
         $this->call(ProductsTableSeeder::class); //test //
         $this->call(ProductCodesTableSeeder::class); //test //
-        $this->call(LocationsTableSeeder::class); //test // */ 
+        $this->call(LocationsTableSeeder::class); //test // */
 
         $this->call(PayCategoryTableSeeder::class);
         $this->call(PayrollItemTableSeeder::class);
         $this->call(TransactionTypeTableSeeder::class);
-        
+
         $this->call(TrasactionAccountTableSeeder::class);
 
         // $this->call(HomeworkSeeder::class); //test
         // $this->call(NoticeBoardSeeder::class); //test
 
-          
+
     }
 }

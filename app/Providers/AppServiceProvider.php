@@ -47,42 +47,42 @@ class AppServiceProvider extends ServiceProvider {
     * @return void
     */
 
-    public function boot() { 
+    public function boot() {
 
 
-     Validator::extend('check_logoutdevice_id', function ($attribute, $value, $parameters, $validator) 
+     Validator::extend('check_logoutdevice_id', function ($attribute, $value, $parameters, $validator)
         {
             $inputs = $validator->getData();
             $email = $inputs['email'];
             $user = User::where('mobile_no', $email)->where('usergroup_id',7)->first();
-            
-            if ($user!=null) 
+
+            if ($user!=null)
             {
-                if ($user->device_id == null) 
+                if ($user->device_id == null)
                 {
 
                     return true;
                 }
                 return false;
             }
-        });     
+        });
 
-        Validator::extend('teacher_logoutdevice_id', function ($attribute, $value, $parameters, $validator) 
+        Validator::extend('teacher_logoutdevice_id', function ($attribute, $value, $parameters, $validator)
         {
             $inputs = $validator->getData();
             $email = $inputs['email'];
             $user = User::where('mobile_no', $email)->where('usergroup_id',5)->first();
-            
-            if ($user!=null) 
+
+            if ($user!=null)
             {
-                if ($user->device_id == null) 
+                if ($user->device_id == null)
                 {
 
                     return true;
                 }
                 return false;
             }
-        });        
+        });
 
         Events::observe( EventObserver::class );
         Bulletin::observe( BulletinObserver::class );
@@ -90,9 +90,9 @@ class AppServiceProvider extends ServiceProvider {
         Userprofile::observe( UserprofileObserver::class );
         TeacherProfile::observe( TeacherProfileObserver::class );
         School::observe( SchoolObserver::class );
- 
 
-       
+
+
         StandardLink::observe(StandardLinkObserver::class);
         User::observe(UserObserver::class);
         Task::observe(TaskObserver::class);
@@ -106,6 +106,11 @@ class AppServiceProvider extends ServiceProvider {
             // Maybe this is enough
         }
         //
+
+        // Skip database operations if app is not installed yet
+        if ( !file_exists( storage_path( 'installed' ) ) || !file_exists( base_path( '.env' ) ) ) {
+            return;
+        }
 
         if ( !\App::runningInConsole() && count( Schema::getColumnListing( 'settings' ) ) ) {
 
