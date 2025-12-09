@@ -1,4 +1,4 @@
-git <?php
+<?php
 
 use App\Http\Controllers\Superadmin\DashboardController;
 
