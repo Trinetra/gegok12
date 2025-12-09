@@ -159,7 +159,7 @@
           </div>
 
           <div class="form-group py-3">
-          <div class="relative"> 
+          <div class="relative">
             <div class="input-group flex w-full">
               <span class="input-group-addon w-6 flex items-center justify-center" style="color: #aaa;">
                <svg class="w-4 h-4 fill-current" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -271,7 +271,7 @@
               </span>
                 <input id="password" type="password" class="form-control{{ $errors->has('password') ? ' is-invalid' : '' }} px-2 py-2 w-full text-sm inputAnimation focus:outline-none" name="password" placeholder="" required>
                  <label for="password" class="control-label text-sm">Password</label>
-            </div>     
+            </div>
 
             </div>
             @if ($errors->has('password'))
@@ -334,7 +334,7 @@
             <span class="invalid-feedback text-red-500 text-xs font-semibold" role="alert">
               <p>{{ $errors->first('g-recaptcha-response') }}</p>
             </span>
-          @endif     
+          @endif
         </div>
         <div class="form-group my-6">
             <div class="w-full z-40">
@@ -358,5 +358,5 @@
 @endsection
 
 @push('scripts')
-  
+
 @endpush
