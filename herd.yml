@@ -1,0 +1,11 @@
+name: gegok12-opensource
+php: '8.4'
+secured: true
+aliases:
+    - ga
+services:
+    mysql:
+        version: 8.4.2
+        port: '${DB_PORT}'
+integrations:
+    forge: {  }

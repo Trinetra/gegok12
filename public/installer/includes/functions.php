@@ -196,20 +196,75 @@ function saveDatabaseConfig($data) {
  * Save admin configuration
  */
 function saveAdminConfig($data) {
-    $required = ['app_name', 'app_url'];
+    $required = ['app_name', 'app_url', 'admin_email', 'admin_password', 'admin_password_confirm'];
     foreach ($required as $field) {
         if (empty($data[$field])) {
             return ['success' => false, 'message' => ucfirst(str_replace('_', ' ', $field)) . ' is required'];
         }
     }
 
+    // Validate email format
+    $email = trim($data['admin_email']);
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return ['success' => false, 'message' => 'Please enter a valid email address'];
+    }
+
+    // Validate password
+    $password = $data['admin_password'];
+    if (strlen($password) < 8) {
+        return ['success' => false, 'message' => 'Password must be at least 8 characters long'];
+    }
+
+    // Check password confirmation
+    if ($password !== $data['admin_password_confirm']) {
+        return ['success' => false, 'message' => 'Passwords do not match'];
+    }
+
     $_SESSION['admin_config'] = [
         'app_name' => trim($data['app_name']),
         'app_url' => rtrim(trim($data['app_url']), '/'),
-        'timezone' => isset($data['timezone']) ? $data['timezone'] : 'UTC'
+        'timezone' => isset($data['timezone']) ? $data['timezone'] : 'UTC',
+        'admin_email' => $email,
+        'admin_password' => $password
     ];
 
     return ['success' => true, 'message' => 'Application configuration saved'];
+}
+
+/**
+ * Update admin user credentials after seeding
+ */
+function updateAdminCredentials() {
+    if (!isset($_SESSION['admin_config']['admin_email']) || !isset($_SESSION['admin_config']['admin_password'])) {
+        return ['success' => false, 'message' => 'Admin credentials not found in session'];
+    }
+
+    if (!isset($_SESSION['db_config'])) {
+        return ['success' => false, 'message' => 'Database configuration not found'];
+    }
+
+    $db = $_SESSION['db_config'];
+    $email = $_SESSION['admin_config']['admin_email'];
+    $password = password_hash($_SESSION['admin_config']['admin_password'], PASSWORD_BCRYPT);
+
+    try {
+        $dsn = "mysql:host={$db['host']};port={$db['port']};dbname={$db['database']}";
+        $pdo = new PDO($dsn, $db['username'], $db['password']);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        // Update user with ID 1 (the seeded admin)
+        $stmt = $pdo->prepare("UPDATE users SET email = ?, password = ?, updated_at = NOW() WHERE id = 1");
+        $stmt->execute([$email, $password]);
+
+        if ($stmt->rowCount() > 0) {
+            return ['success' => true, 'message' => 'Admin credentials updated'];
+        } else {
+            return ['success' => false, 'message' => 'No user found with ID 1'];
+        }
+
+    } catch (PDOException $e) {
+        return ['success' => false, 'message' => $e->getMessage()];
+    }
 }
 
 /**
@@ -573,7 +628,17 @@ function runInstallationStep($step) {
 
         case 'seed':
             $result = runCommand('php artisan db:seed --force 2>&1');
-            $result['message'] = $result['success'] ? 'Database seeded successfully' : 'Failed to seed database';
+            if ($result['success']) {
+                // Update admin user credentials after seeding
+                $adminUpdate = updateAdminCredentials();
+                if (!$adminUpdate['success']) {
+                    $result['message'] = 'Database seeded but failed to update admin: ' . $adminUpdate['message'];
+                } else {
+                    $result['message'] = 'Database seeded and admin account updated successfully';
+                }
+            } else {
+                $result['message'] = 'Failed to seed database';
+            }
             break;
 
         case 'cache':

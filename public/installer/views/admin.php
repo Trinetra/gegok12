@@ -61,15 +61,50 @@ $baseUrl = str_replace('/installer', '', $baseUrl);
             </div>
         </div>
 
+        <!-- Admin Account Settings -->
+        <div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                Admin Account
+            </h3>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <label for="admin_email" class="block text-sm font-medium text-gray-700 mb-2">Admin Email</label>
+                    <input type="email" id="admin_email" name="admin_email" required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                        placeholder="admin@yourschool.com">
+                    <p class="mt-1 text-xs text-gray-500">This will be your login email</p>
+                </div>
+
+                <div>
+                    <label for="admin_password" class="block text-sm font-medium text-gray-700 mb-2">Admin Password</label>
+                    <input type="password" id="admin_password" name="admin_password" required minlength="8"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                        placeholder="Minimum 8 characters">
+                    <p class="mt-1 text-xs text-gray-500">Choose a strong password</p>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label for="admin_password_confirm" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
+                <input type="password" id="admin_password_confirm" name="admin_password_confirm" required minlength="8"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    placeholder="Re-enter your password">
+            </div>
+        </div>
+
         <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
             <div class="flex items-start">
                 <svg class="w-5 h-5 text-blue-500 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <div>
-                    <h4 class="font-semibold text-blue-800 mb-1">Default Admin Credentials</h4>
+                    <h4 class="font-semibold text-blue-800 mb-1">Admin Account</h4>
                     <p class="text-sm text-blue-700">
-                        After installation, you can login with the default super admin account that will be created during database seeding.
+                        The email and password you enter here will be used to update the default super admin account after installation.
                     </p>
                 </div>
             </div>
