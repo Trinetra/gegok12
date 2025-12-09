@@ -7,6 +7,22 @@
  * @author   Taylor Otwell <taylor@laravel.com>
  */
 
+/*
+|--------------------------------------------------------------------------
+| Check If Application Is Installed
+|--------------------------------------------------------------------------
+|
+| If the application has not been installed yet, redirect to the
+| installation wizard. This check runs before Laravel boots.
+|
+*/
+
+if (!file_exists(__DIR__.'/../storage/installed') && !file_exists(__DIR__.'/../vendor/autoload.php')) {
+    // Redirect to installer if not installed and vendor doesn't exist
+    header('Location: installer/');
+    exit;
+}
+
 define('LARAVEL_START', microtime(true));
 
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
