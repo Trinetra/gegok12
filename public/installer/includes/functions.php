@@ -10,9 +10,9 @@ function checkRequirements() {
     $requirements = [
         'php' => [
             'name' => 'PHP Version',
-            'required' => '8.1.0',
+            'required' => '8.4.0',
             'current' => PHP_VERSION,
-            'status' => version_compare(PHP_VERSION, '8.1.0', '>='),
+            'status' => version_compare(PHP_VERSION, '8.4.0', '>='),
             'type' => 'php'
         ],
         'pdo' => [
@@ -493,29 +493,29 @@ function checkInstallationTools() {
  */
 function runCommand($command, $cwd = null) {
     $cwd = $cwd ?: BASE_PATH;
-    
+
     $descriptors = [
         0 => ['pipe', 'r'],
         1 => ['pipe', 'w'],
         2 => ['pipe', 'w'],
     ];
-    
+
     $process = proc_open($command, $descriptors, $pipes, $cwd);
-    
+
     if ($process === false) {
         return ['success' => false, 'output' => 'Failed to start process', 'error' => ''];
     }
-    
+
     fclose($pipes[0]);
-    
+
     $output = stream_get_contents($pipes[1]);
     $error = stream_get_contents($pipes[2]);
-    
+
     fclose($pipes[1]);
     fclose($pipes[2]);
-    
+
     $exitCode = proc_close($process);
-    
+
     return [
         'success' => $exitCode === 0,
         'output' => $output,
@@ -529,13 +529,13 @@ function runCommand($command, $cwd = null) {
  */
 function runInstallationStep($step) {
     $result = ['success' => false, 'message' => '', 'output' => ''];
-    
+
     switch ($step) {
         case 'composer':
-            $result = runCommand('composer install --no-dev --optimize-autoloader --no-interaction 2>&1');
+            $result = runCommand('composer install --optimize-autoloader --no-interaction 2>&1');
             $result['message'] = $result['success'] ? 'Composer packages installed successfully' : 'Failed to install Composer packages';
             break;
-            
+
         case 'npm':
             if (commandExists('npm')) {
                 $result = runCommand('npm install 2>&1');
@@ -544,7 +544,7 @@ function runInstallationStep($step) {
                 $result = ['success' => true, 'message' => 'NPM not available, skipping...', 'output' => ''];
             }
             break;
-            
+
         case 'npm_build':
             if (commandExists('npm') && file_exists(BASE_PATH . '/node_modules')) {
                 $result = runCommand('npm run production 2>&1');
@@ -553,44 +553,46 @@ function runInstallationStep($step) {
                 $result = ['success' => true, 'message' => 'NPM not available or node_modules missing, skipping...', 'output' => ''];
             }
             break;
-            
+
         case 'key_generate':
             $result = runCommand('php artisan key:generate --force 2>&1');
             $result['message'] = $result['success'] ? 'Application key generated' : 'Failed to generate application key';
             break;
-            
+
         case 'storage_link':
             $result = runCommand('php artisan storage:link 2>&1');
             $result['message'] = $result['success'] ? 'Storage link created' : 'Failed to create storage link';
             break;
-            
+
         case 'migrate':
-            $result = runCommand('php artisan migrate --force 2>&1');
+            // Clear any cached config first to ensure .env is read fresh
+            runCommand('php artisan config:clear 2>&1');
+            $result = runCommand('php artisan migrate:fresh --force 2>&1');
             $result['message'] = $result['success'] ? 'Database migrated successfully' : 'Failed to run migrations';
             break;
-            
+
         case 'seed':
             $result = runCommand('php artisan db:seed --force 2>&1');
             $result['message'] = $result['success'] ? 'Database seeded successfully' : 'Failed to seed database';
             break;
-            
+
         case 'cache':
             runCommand('php artisan config:cache 2>&1');
             runCommand('php artisan route:cache 2>&1');
             runCommand('php artisan view:cache 2>&1');
             $result = ['success' => true, 'message' => 'Cache cleared and rebuilt', 'output' => ''];
             break;
-            
+
         case 'finalize':
             // Create installed marker
             file_put_contents(BASE_PATH . '/storage/installed', date('Y-m-d H:i:s'));
             $result = ['success' => true, 'message' => 'Installation finalized', 'output' => ''];
             break;
-            
+
         default:
             $result = ['success' => false, 'message' => 'Unknown installation step', 'output' => ''];
     }
-    
+
     return $result;
 }
 

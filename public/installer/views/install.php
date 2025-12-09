@@ -101,13 +101,13 @@ $allToolsAvailable = $tools['composer']['available'] && $tools['php']['available
     <!-- Error Display -->
     <div id="errorDisplay" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
         <div class="flex items-start">
-            <svg class="w-5 h-5 text-red-500 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
-            <div>
+            <div class="flex-1 min-w-0">
                 <h4 class="font-semibold text-red-800 mb-1">Installation Error</h4>
-                <p id="errorMessage" class="text-sm text-red-700"></p>
-                <pre id="errorOutput" class="text-xs text-red-600 mt-2 bg-red-100 p-2 rounded overflow-x-auto hidden"></pre>
+                <p id="errorMessage" class="text-sm text-red-700 break-words"></p>
+                <pre id="errorOutput" class="text-xs text-red-600 mt-2 bg-red-100 p-3 rounded overflow-auto max-h-64 whitespace-pre-wrap break-words hidden"></pre>
             </div>
         </div>
     </div>
@@ -162,14 +162,14 @@ let isInstalling = false;
 function startInstallation() {
     if (isInstalling) return;
     isInstalling = true;
-    
+
     // Show progress section
     document.getElementById('installationProgress').classList.remove('hidden');
     document.getElementById('installButton').disabled = true;
     document.getElementById('installButtonText').textContent = 'Installing...';
     document.getElementById('backButton').classList.add('pointer-events-none', 'opacity-50');
     document.getElementById('errorDisplay').classList.add('hidden');
-    
+
     // Start first step
     runNextStep();
 }
@@ -180,17 +180,17 @@ function runNextStep() {
         installationComplete();
         return;
     }
-    
+
     const stepKey = installationSteps[currentStepIndex];
     const stepElement = document.getElementById('step-' + stepKey);
-    
+
     // Update UI to show running
     updateStepStatus(stepElement, 'running');
-    
+
     // Run the step via AJAX
     const formData = new FormData();
     formData.append('step', stepKey);
-    
+
     fetch('run-step.php', {
         method: 'POST',
         body: formData
@@ -217,12 +217,12 @@ function updateStepStatus(element, status, message = '') {
     const iconContainer = element.querySelector('.step-icon');
     const statusElement = element.querySelector('.step-status');
     const descElement = element.querySelector('.step-description');
-    
+
     // Hide all icons
     element.querySelectorAll('.pending-icon, .running-icon, .success-icon, .error-icon').forEach(el => {
         el.classList.add('hidden');
     });
-    
+
     switch (status) {
         case 'running':
             iconContainer.className = 'step-icon w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center mr-4';
@@ -251,15 +251,15 @@ function showError(message, output) {
     const errorDisplay = document.getElementById('errorDisplay');
     const errorMessage = document.getElementById('errorMessage');
     const errorOutput = document.getElementById('errorOutput');
-    
+
     errorDisplay.classList.remove('hidden');
     errorMessage.textContent = message;
-    
+
     if (output && output.trim()) {
         errorOutput.textContent = output;
         errorOutput.classList.remove('hidden');
     }
-    
+
     // Re-enable buttons
     document.getElementById('installButton').disabled = false;
     document.getElementById('installButtonText').textContent = 'Retry Installation';

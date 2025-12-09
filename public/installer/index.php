@@ -54,20 +54,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = saveAdminConfig($_POST);
             if ($result['success']) {
                 $_SESSION['admin_configured'] = true;
-                header('Location: ?step=5');
-                exit;
+
+                // Create .env file immediately after saving config
+                $envResult = createEnvFile();
+                if (!$envResult['success']) {
+                    $error = $envResult['message'];
+                } else {
+                    header('Location: ?step=5');
+                    exit;
+                }
             } else {
                 $error = $result['message'];
             }
             break;
 
         case 5:
-            // Create .env file before automated installation
-            $result = createEnvFile();
-            if (!$result['success']) {
-                $error = $result['message'];
-            }
-            // Don't redirect - the page will handle automated installation via AJAX
+            // Automated installation handled via AJAX - no POST action needed here
             break;
     }
 }
@@ -90,6 +92,12 @@ switch ($step) {
         require_once INSTALLER_PATH . '/views/admin.php';
         break;
     case 5:
+        // Create .env file before showing the install page
+        require_once INSTALLER_PATH . '/includes/functions.php';
+        $envResult = createEnvFile();
+        if (!$envResult['success']) {
+            $error = $envResult['message'];
+        }
         require_once INSTALLER_PATH . '/views/install.php';
         break;
     case 6:
