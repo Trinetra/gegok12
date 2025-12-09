@@ -32,6 +32,7 @@ class ResetPassword extends Mailable implements ShouldQueue
     */
    public function __construct(User $userdetails, $token)
    {
+       $this->queue='emails';
        $this->userdetails = $userdetails;
        $this->token = $token;
    }

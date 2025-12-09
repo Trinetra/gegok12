@@ -39,19 +39,29 @@ class LeaveAddRequest extends FormRequest
             $academic_year = SiteHelper::getAcademicYear($school_id);
 
             $from_date = date('Y-m-d',strtotime(request('from_date')));
+            // $application = TeacherLeaveApplication::where([
+            //     ['user_id',Auth::id()],
+            //     ['school_id',$school_id],
+            //     ['academic_year_id',$academic_year->id],
+            //     ['status','!=','cancelled'],
+            //     [\DB::raw("(DATE_FORMAT(from_date,'%Y-%m-%d'))"),'=',$from_date]
+            // ])->orWhere([
+            //     ['user_id',Auth::id()],
+            //     ['school_id',$school_id],
+            //     ['academic_year_id',$academic_year->id],
+            //     ['status','!=','cancelled'],
+            //     [\DB::raw("(DATE_FORMAT(to_date,'%Y-%m-%d'))"),'=',$from_date]
+            // ])->latest()->first();
             $application = TeacherLeaveApplication::where([
-                ['user_id',Auth::id()],
-                ['school_id',$school_id],
-                ['academic_year_id',$academic_year->id],
-                ['status','!=','cancelled'],
-                [\DB::raw("(DATE_FORMAT(from_date,'%Y-%m-%d'))"),'=',$from_date]
-            ])->orWhere([
-                ['user_id',Auth::id()],
-                ['school_id',$school_id],
-                ['academic_year_id',$academic_year->id],
-                ['status','!=','cancelled'],
-                [\DB::raw("(DATE_FORMAT(to_date,'%Y-%m-%d'))"),'=',$from_date]
-            ])->latest()->first();
+                    ['user_id', Auth::id()],
+                    ['school_id', $school_id],
+                    ['academic_year_id', $academic_year->id],
+                    ['status', '!=', 'cancelled'],
+                ])
+                ->whereDate('from_date', '<=', $from_date)
+                ->whereDate('to_date', '>=', $from_date)
+                ->latest()
+                ->first();
 
             if( $application == null)
             {

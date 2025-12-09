@@ -22,7 +22,7 @@ class SendMessageMail extends Mailable implements ShouldQueue
      */
     public function __construct(SendMail $sendMail)
     {
-        //
+        $this->queue='emails';
         $this->sendMail = $sendMail;
     }
 

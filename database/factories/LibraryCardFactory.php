@@ -1,20 +1,25 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
 namespace Database\Factories;
 
 use App\Models\LibraryCard;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(LibraryCard::class, function (Faker $faker) {
+class LibraryCardFactory extends Factory
+{
+    protected $model = LibraryCard::class;
 
-	$library_card_no= $faker->unique()->numberBetween($min = 1000, $max = 9000);
+    public function definition()
+    {
+        do {
+        $number = $this->faker->numberBetween(1000, 9000);
+    } while (LibraryCard::where('library_card_no', $number)->exists());
 
-    return [
-
-    'library_card_no'=>$library_card_no,
-    'book_limit'=>5,
-    'expiry_date'=>'2021-03-30 00:00:00',
-    'status' => 1,
-    ];
-});
+        return [
+            'library_card_no' => $number,
+            'book_limit'      => 5,
+            'expiry_date'     => '2026-03-30 00:00:00',
+            'status'          => 1,
+        ];
+    }
+}

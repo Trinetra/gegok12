@@ -262,6 +262,7 @@ defined('LOGNAME_DELETE_BOOK') or define('LOGNAME_DELETE_BOOK','deletebook');
 
 //book lending
 defined('LOGNAME_ADD_BOOK_LENDING') or define('LOGNAME_ADD_BOOK_LENDING','addbooklending');
+defined('LOGNAME_EDIT_BOOKLENDING') or define('LOGNAME_EDIT_BOOKLENDING','editbooklending');
 
 //creating room
 defined('LOGNAME_ADD_ROOM') or define('LOGNAME_ADD_ROOM','addroom');
@@ -424,6 +425,7 @@ defined('LOGNAME_UPDATE_ADMISSION_FORM') or define('LOGNAME_UPDATE_ADMISSION_FOR
 
 defined('CURRENCY_SYMBOL') or define('CURRENCY_SYMBOL','₹');
 
+defined('LOGNAME_DOWNLOAD_SAMPLE_FORMAT_LIBRARYCARD') or define('LOGNAME_DOWNLOAD_SAMPLE_FORMAT_LIBRARYCARD','downloadsampleformatlibrary');
 
 
 

@@ -21,7 +21,7 @@ class BirthdayReminderMail extends Mailable implements ShouldQueue
      */
     public function __construct(Reminder $reminder)
     {
-        //
+        $this->queue='emails';
         $this->reminder = $reminder;
     }
 

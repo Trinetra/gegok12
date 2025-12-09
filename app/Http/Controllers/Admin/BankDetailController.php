@@ -25,6 +25,9 @@ class BankDetailController extends Controller
         $account = TransactionAccount::where('user_id',$user->id)->first();
 
         //$documents = UserDocumentResource::collection($documents);
+        if (!$account) {
+            $account= []; 
+        }
 
         return $account;
     }

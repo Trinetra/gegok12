@@ -6,9 +6,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class LibraryCard extends Model
 {
+  use HasFactory;
+
      protected $table = 'library_card';
 
        protected $fillable = [

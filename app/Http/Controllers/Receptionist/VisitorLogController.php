@@ -364,10 +364,12 @@ class VisitorLogController extends Controller
             if($visitorlog->relation=='parent')
             {
                 $pdf = PDF::loadView('/reception/visitorlog/parent', $array);
+
             }
             else
             {
                 $pdf = PDF::loadView('/reception/visitorlog/other', $array);
+                
             }
 
             $folder = Auth::user()->school->slug.'/visitorlog';

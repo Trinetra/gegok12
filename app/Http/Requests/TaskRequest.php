@@ -108,7 +108,7 @@ class TaskRequest extends FormRequest
 
             'selectedUsersCount.check_student_count'    =>  'Select Atleast One Student',
 
-            'teachers.check_teacher_count'              =>  'Select Atleast One Teacher', 
+            'selectedTeachersCount.check_teacher_count'              =>  'Select Atleast One Teacher', 
             
             'reminder.required'                         =>  'Reminder Is Required', 
         ];

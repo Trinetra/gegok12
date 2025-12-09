@@ -22,7 +22,7 @@ class Calendarmail extends Mailable implements ShouldQueue
      */
     public function __construct($events)
     {
-        
+       $this->queue='emails';
        $this->events=$events;
 
     }

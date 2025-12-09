@@ -87,15 +87,10 @@ class DashboardController extends Controller
         //
         $school_id = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
-
+        $feelists=[];
         if(class_exists('Gegok12\Fee\Models\FeeGroup'))//new
         {
             $feelists = \Gegok12\Fee\Models\FeeGroup::where('school_id',$school_id)->whereHas('fee',function($query) use($school_id,$academic_year){
-                $query->where([['school_id',$school_id],['academic_year_id',$academic_year->id]]);//,['fee_type','structural']
-            })->get();
-        }
-        else{
-                $feelists = FeeGroup::where('school_id',$school_id)->whereHas('fee',function($query) use($school_id,$academic_year){
                 $query->where([['school_id',$school_id],['academic_year_id',$academic_year->id]]);//,['fee_type','structural']
             })->get();
         }
@@ -103,9 +98,6 @@ class DashboardController extends Controller
         if(class_exists('Gegok12\Fee\Http\Resources\FeeGroup'))
         {
             $feelists = \Gegok12\Fee\Http\Resources\FeeGroup::collection($feelists);
-        }
-        else{
-            $feelists = FeeGroupResource::collection($feelists);
         }
 
         return $feelists;
@@ -123,12 +115,21 @@ class DashboardController extends Controller
         {
             $school_id = Auth::user()->school_id;
             $academic_year = SiteHelper::getAcademicYear($school_id);
-            $feelists = FeeGroup::where('school_id',$school_id)->whereIn('id',$request->feegroup)->whereHas('fee',function($query) use($school_id,$academic_year){
-                $query->where([['school_id',$school_id],['academic_year_id',$academic_year->id]]);//,['fee_type','structural']
-            })->get();
+            if(class_exists('Gegok12\Fee\Models\FeeGroup'))//new
+            {
+                $feelists = \Gegok12\Fee\Models\FeeGroup::where('school_id',$school_id)->whereIn('id',$request->feegroup)->whereHas('fee',function($query) use($school_id,$academic_year){
+                    $query->where([['school_id',$school_id],['academic_year_id',$academic_year->id]]);//,['fee_type','structural']
+                })->get();
+            }
             \Session::put('amount',0);
+             if(class_exists('Gegok12\Fee\Http\Resources\FeeList'))
+            {
+                $feelists = \Gegok12\Fee\Http\Resources\FeeList::collection($feelists);
+            }
+            else{
+                $feelists=[];
+            }
 
-            $feelists = FeeListResource::collection($feelists);
 
             return $feelists;
         }

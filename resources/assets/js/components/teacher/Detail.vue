@@ -49,7 +49,7 @@
                   </tbody>
                 </table>
               </div>   
-              <div class="my-4 p-2 member-contact">
+              <div class="my-4 p-2 member-contact" v-else>
                 <table class="w-full">
                   <thead class="">
                     <tr class="">

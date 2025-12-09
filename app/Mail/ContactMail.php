@@ -20,7 +20,8 @@ class ContactMail extends Mailable implements ShouldQueue
    protected $contact;
     public function __construct($contact)
     {
-         $this->contact = $contact;
+        $this->queue='emails';
+        $this->contact = $contact;
     }
 
     /**

@@ -21,7 +21,7 @@ class AfterSubscriptionExpiredMail extends Mailable implements ShouldQueue
      */
     public function __construct(Subscription $subscription)
     {
-        //
+        $this->queue='emails';
         $this->subscription = $subscription;
     }
 

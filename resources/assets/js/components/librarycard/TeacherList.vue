@@ -43,8 +43,8 @@
                   <div class="flex-grow px-2">
                     <h2 class="font-bold text-base text-gray-700">{{user['fullname']}}</h2>
                     <p class="text-sm">{{user['designation_name']}}</p>
-                    <p>Card No :{{ user['librarycard_number'] }}</p>
-                      <p>Card Limit :{{ user['book_limit'] }}</p>
+                    <p class="text-xs">Card No :{{ user['librarycard_number'] }}</p>
+                      <p class="text-xs">Card Limit :{{ user['book_limit'] }}</p>
 
 
                     <p v-if="birthday == 'true'">{{ user['date_of_birth'] }}</p>

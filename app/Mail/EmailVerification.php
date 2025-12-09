@@ -23,7 +23,7 @@ class EmailVerification extends Mailable
 
     public function __construct(User $user)
     {
-        //
+        $this->queue='emails';
         $this->user = $user;
     }
 

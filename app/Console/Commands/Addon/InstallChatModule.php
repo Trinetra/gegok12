@@ -24,7 +24,7 @@ class InstallChatModule extends Command
             $username = $this->ask('Enter your Git username');
             $token =$this->secret('Enter your Git token');
             $repo='https://github.com/gego-k12/chat.git';
-            $package='gegok12/chat:dev-main';
+            $package='gegok12/chat:v1.0.x-dev';
 
             // Step 2: Validate
             $validator = Validator::make([

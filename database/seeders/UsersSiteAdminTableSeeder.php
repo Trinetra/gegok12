@@ -19,7 +19,7 @@ class UsersSiteAdminTableSeeder extends Seeder
     {
        $siteAdmin = User::factory()->create([
             'name'         =>   'siteadmin',
-            'email'        =>   'siteadmin@gegok12.com',
+            'email'        =>   'sitemanager@mailinator.com',
             'password'     =>   bcrypt('password'),
             'mobile_no'    =>   '1230456789',
             'usergroup_id' =>   "1"

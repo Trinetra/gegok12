@@ -64,8 +64,13 @@ class PromotionController extends Controller
         
         $next_academic_year = AcademicYear::where([['school_id',Auth::user()->school_id],['status',2]])->first();
 
-        $exam = Exam::where([['school_id',Auth::user()->school_id],['academic_year_id',$curr_academic_year->id],['exam_type','final']])->get();
-        $exam = ExamResource::collection($exam)->groupby('standard_id');
+        if(class_exists('Gegok12\Exam\Models\Exam'))
+        {
+            $exam = \Gegok12\Exam\Models\Exam::where([['school_id',Auth::user()->school_id],['academic_year_id',$curr_academic_year->id],['exam_type','final']])->get();
+            $exam = \Gegok12\Exam\Http\Resources\Exam::collection($exam)->groupby('standard_id');
+            //ExamResource
+        } 
+        
 
         $array=[];
 
@@ -73,7 +78,11 @@ class PromotionController extends Controller
         $array['next_academic_yearlist']    =   $next_academic_year;
         $array['next_standardLinklist']     =   $next_standardLink;
         $array['standardLinklist']          =   $standardLink;
-        $array['examlist']                  =   $exam;
+
+        if(config('gexam.enabled', false))
+        {
+            $array['examlist']                  =   $exam;
+        }    
 
         return $array;
     }
@@ -96,69 +105,87 @@ class PromotionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function export(PromotionAddRequest $request)
+{
+    try
     {
-        //
-        try
-        {
-            $standardLink   =   StandardLink::where('id',$request->curr_standardlink_id)->first();
-            $standard_name  =   $standardLink->StandardSection;
-            $exam           =   Exam::where('id',$request->exam_id)->where('standard_id',$request->curr_standardlink_id)->first();
-            $users          = User::where('school_id',Auth::user()->school_id)->ByRole(6)->whereHas('studentAcademic',function ($q) use ($standardLink) 
-            {
+        $standardLink   = StandardLink::find($request->curr_standardlink_id);
+        $standard_name  = $standardLink->StandardSection;
+
+        if(class_exists('Gegok12\Exam\Models\Exam')) {
+            $exam = \Gegok12\Exam\Models\Exam::where('id',$request->exam_id)
+                ->where('standard_id',$request->curr_standardlink_id)
+                ->first();
+        }
+
+        $users = User::where('school_id',Auth::user()->school_id)
+            ->ByRole(6)
+            ->whereHas('studentAcademic',function ($q) use ($standardLink) {
                 $q->where('standardLink_id',$standardLink->id);
             })->get();
-            
-            if(count($users) > 0)
-            { 
-                $location_path   = public_path().'/uploads/promotion';
-                if( ! \File::isDirectory($location_path)) 
-                {
-                    \File::makeDirectory($location_path,0777, true);
-                }
 
-                $file   =   'uploads/promotion/promotionlist'.$standard_name.date('_d-m-Y_H_i_s').'.csv';
-                $file_open = fopen($file, 'w');
-
-                fputcsv($file_open,['roll_number','student_name','academic_status','comments']);
-      
-                foreach($users as $user)
-                { 
-                    $studentAcademic = StudentAcademic::where([['user_id',$user->id],['school_id',Auth::user()->school_id],['academic_year_id',$request->curr_academic_year_id]])->first();
-                    $csv_file=[];
-
-                    $csv_file[] = $studentAcademic->roll_number;
-                    $csv_file[] = $user->userprofile->firstname.' '.$user->userprofile->lastname;
-                    $csv_file[] = 'P';
-                    $csv_file[] = '';
-                
-                    fputcsv($file_open,$csv_file);
-                }
-                $res['path'] = url($file);
-            }
-            else
-            {
-                $res['success'] = "No Students Found";
-            }
-            return $res;
-
-            $message=('Student Promotionlist Exported Successfully');
-
-            $ip= $this->getRequestIP();
-            $this->doActivityLog(
-                Auth::user(),
-                Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
-                LOGNAME_EXPORT_STUDENT_PROMOTION,
-                $message
-            );
-
+        if(count($users) == 0) {
+            return ['success' => "No Students Found"];
         }
-        catch(Exception $e)
+
+        $filename = 'promotion/promotionlist_' . $standard_name . date('d-m-Y_H_i_s') . '.csv';
+
+        $handle = fopen('php://temp', 'r+');
+
+
+        fputcsv($handle, ['roll_number', 'student_name', 'academic_status', 'comments']);
+
+        foreach($users as $user)
         {
-            Log::info($e->getMessage());
-            //dd($e->getMessage());
+            $studentAcademic = StudentAcademic::where([
+                ['user_id',$user->id],
+                ['school_id',Auth::user()->school_id],
+                ['academic_year_id',$request->curr_academic_year_id]
+            ])->first();
+
+            $row = [
+                $studentAcademic->roll_number ?? '',
+                $user->userprofile->firstname.' '.$user->userprofile->lastname,
+                'P',
+                ''
+            ];
+
+            fputcsv($handle, $row);
         }
+
+        rewind($handle);
+        $csvData = stream_get_contents($handle);
+        fclose($handle);
+
+        // \Storage::disk('s3')->put($filename, $csvData, 'public');
+        $path = $this->fileUpload($filename,$csvData); 
+
+        // $fileUrl = \Storage::disk('s3')->url($filename);
+         $fileUrl = $this->getFilePath($filename);
+
+        return [
+            'success' => true,
+            'path' => $fileUrl
+        ];
+
+   
+        $message = 'Student Promotionlist Exported Successfully';
+        $ip = $this->getRequestIP();
+        $this->doActivityLog(
+            Auth::user(),
+            Auth::user(),
+            ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
+            LOGNAME_EXPORT_STUDENT_PROMOTION,
+            $message
+        );
+
     }
+    catch(Exception $e)
+    {
+        Log::error($e->getMessage());
+        return ['error' => $e->getMessage()];
+    }
+}
+
 
     public function import(PromotionImportRequest $request)
     { 

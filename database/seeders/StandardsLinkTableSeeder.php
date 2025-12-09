@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use DB;
 use Illuminate\Database\Seeder;
 use App\Helpers\SiteHelper;
+use App\Models\StandardLink;
+use App\Models\RoleUser;
 use App\Models\Standard;
 use App\Models\Section;
 use App\Models\School;
@@ -33,7 +35,7 @@ class StandardsLinkTableSeeder extends Seeder
                 {
                     $academic_year = SiteHelper::getAcademicyear($school->id);
                     $sectionRef = $stdKey * $sections->count() + $secKey + 1;
-                    factory(\App\Models\StandardLink::class, 1)->create([
+                    StandardLink::factory(1)->create([
 
                         'school_id'         =>  $standard->school_id,
                         'academic_year_id'  =>  $academic_year->id,
@@ -42,7 +44,7 @@ class StandardsLinkTableSeeder extends Seeder
                         'class_teacher_id'  =>  $teachers[$sectionRef]
                     ]);
 
-                    factory(\App\Models\RoleUser::class, 1)->create([
+                    RoleUser::factory(1)->create([
                         'user_id'   =>  $teachers[$sectionRef],
                         'role_id'   =>  4, 
                     ]);

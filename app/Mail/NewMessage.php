@@ -27,6 +27,7 @@ class NewMessage extends Mailable implements ShouldQueue
     */
    public function __construct($subject,$content,$user)
    {
+       $this->queue='emails';
        $this->content = $content;
        $this->sub = $subject;
        $this->user = $user;

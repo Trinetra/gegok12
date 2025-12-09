@@ -37,13 +37,13 @@ class DatabaseSeeder extends Seeder
         $this->call(SubjectsTableSeeder::class); //test //
         //$this->call(UsersTableSeeder::class);  //test
         $this->call(UsersSchoolAdminTableSeeder::class);  //Experimental //
-        $this->call(UsersTeacherTableSeeder::class);  //Experimental //
+        // $this->call(UsersTeacherTableSeeder::class);  //Experimental //
        // $this->call(StandardsLinkTableSeeder::class); //test //
-        $this->call(UsersStudentTableSeeder::class);  //Experimental //
+        // $this->call(UsersStudentTableSeeder::class);  //Experimental //
        
         $this->call(SubscriptionsTableSeeder::class);  //test //
 
-        $this->call(TeacherTableSeeder::class); //test //
+        // $this->call(TeacherTableSeeder::class); //test //
        
         $this->call(BooksCategoryTableSeeder::class); //test //
         $this->call(BooksTableSeeder::class); //test //
@@ -73,6 +73,10 @@ class DatabaseSeeder extends Seeder
         $this->call(TransactionTypeTableSeeder::class);
         
         $this->call(TrasactionAccountTableSeeder::class);
+
+        // $this->call(HomeworkSeeder::class); //test
+        // $this->call(NoticeBoardSeeder::class); //test
+
           
     }
 }

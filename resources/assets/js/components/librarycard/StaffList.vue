@@ -38,18 +38,23 @@
           <template class="" v-for="user in users">
             <!-- <a :href="url+'/library/staff/show/'+user['name']"> -->
             <div class="w-full lg:w-full md:w-full my-2 relative p-2">
-              <div class="person-card  border rounded flex justify-between relative" v-bind:class="[user['status']=='active' ? 'bg-white': 'bg-red-300' ]">
+              <div class="person-card  border rounded relative" v-bind:class="[user['status']=='active' ? 'bg-white': 'bg-red-300' ]">
                 <div class="flex-grow w-full flex p-2 cursor-pointer hover:shadow" :id="user['id']" >
                   <img :src="user['avatar']" class="w-16 h-16">
                   <div class="flex-grow px-2">
                     <h2 class="font-bold text-base text-gray-700">{{user['fullname']}}</h2>
                     <p class="text-sm">{{user['designation_name']}}</p>
-                    <p class="text-sm">Card NO:{{user['librarycard_number']}}</p>
-                    <p>Card Limit :{{ user['book_limit'] }}</p>
+                    
 
 
                     <p v-if="birthday == 'true'">{{ user['date_of_birth'] }}</p>
                   </div>
+                </div>
+                <div class="flex items-center px-3 py-2">
+                  <p class="text-xs py-1 px-2" style="background-color: #00800030;
+    border-radius: 17px;">Card NO:{{user['librarycard_number']}}</p>
+                    <p class="text-xs py-1 ml-3 px-2" style="background-color:rgb(255 15 15 / 19%);
+    border-radius: 17px;">Card Limit :{{ user['book_limit'] }}</p>
                 </div>
               </div>
             </div>

@@ -7,12 +7,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Helpers\SiteHelper;
 use App\Traits\Common;
 
 class Homework extends Model
 {
     use SoftDeletes;
+    use HasFactory;
     use Common;
 
     /**
