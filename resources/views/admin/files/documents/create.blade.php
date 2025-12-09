@@ -79,7 +79,7 @@
                <th class="text-left text-sm px-2 py-2 text-grey-darker">Name</th>
                <th class="text-left text-sm px-2 py-2 text-grey-darker">Description</th>
                <th class="text-left text-sm px-2 py-2 text-grey-darker">Path</th>
- 
+
          </tr>
          </thead>
          <tbody>
@@ -90,7 +90,7 @@
             <td>{{ $file->name }}</td>
             <td>{{ $file->description }}</td>
             <td><a href="{{ url('/admin/download/files/'.$file->id) }}" id="download">Download</a>
-            </td> 
+            </td>
           </tr>
          @endforeach
           </tbody>

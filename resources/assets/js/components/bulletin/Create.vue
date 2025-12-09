@@ -9,7 +9,7 @@
                     </div>
                     <div class="w-full lg:w-2/5 my-2">
                         <input type="text" class="tw-form-control w-full" placeholder="Enter name of Magazine" :maxlength="max" id="name" v-model="name">
-                        <div class="text-gray-700 text-xs my-1" v-text="(max - name.length)+'/'+max" style="text-align: right"></div>             
+                        <div class="text-gray-700 text-xs my-1" v-text="(max - name.length)+'/'+max" style="text-align: right"></div>
                     </div>
                     <span v-if="errors.name" class="text-red-500 text-xs font-semibold">{{ errors.name[0] }}</span>
                 </div>
@@ -17,7 +17,7 @@
 
             <div class="my-5">
                 <div class="">
-                    <div class="w-full lg:w-1/4"> 
+                    <div class="w-full lg:w-1/4">
                         <label for="year" class="tw-form-label">Select Year</label>
                     </div>
                     <div class="my-2 w-full lg:w-2/5">
@@ -85,27 +85,27 @@
                 success:null,
             }
         },
-        
+
         methods:
         {
             resetForm()
             {
-                window.location.reload();     
-            }, 
+                window.location.reload();
+            },
 
             checkForm()
             {
                 this.errors=[];
-                this.success=null; 
+                this.success=null;
 
                 let formData=new FormData();
 
-                formData.append('name',this.name);                
-                formData.append('year',this.year);                   
-                formData.append('cover_image',this.cover_image);                   
-                formData.append('bulletin_file',this.bulletin_file);          
-              
-                axios.post('/admin/magazine/create',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {     
+                formData.append('name',this.name);
+                formData.append('year',this.year);
+                formData.append('cover_image',this.cover_image);
+                formData.append('bulletin_file',this.bulletin_file);
+
+                axios.post('/admin/magazine/create',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {
                     this.success = response.data.success;
                     this.resetForm();
                 }).catch(error => {
@@ -127,7 +127,7 @@
             {
                 axios.get('/admin/magazine/getDate').then(response => {
                     this.bulletin = response.data;
-                    this.setData();   
+                    this.setData();
                 });
             },
 

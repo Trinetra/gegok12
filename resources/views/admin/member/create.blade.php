@@ -23,7 +23,7 @@
                                 <label for="address" class="tw-form-label">Address<span class="text-red-500">*</span> </label>
                             </div>
                             <div class="mb-2 w-full relative">
-                                <input type="text" name="address" class="tw-form-control w-full" id="address" value="{{old('address')}}" required> 
+                                <input type="text" name="address" class="tw-form-control w-full" id="address" value="{{old('address')}}" required>
                                 <span class="absolute m-2 top-0 right-0">
                                     <a href="#" onclick="codeAddress(); return false;" dusk="getCords" id="getCords">
                                       <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="30.239px" height="30.239px" viewBox="0 0 30.239 30.239" xml:space="preserve" class="w-4 h-4 fill-current text-gray-600"><g><path d="M20.194,3.46c-4.613-4.613-12.121-4.613-16.734,0c-4.612,4.614-4.612,12.121,0,16.735
@@ -34,20 +34,20 @@
                                     </a>
                                 </span>
                             </div>
-                        </div>   
+                        </div>
                     </div>
 
                     <div class="tw-form-group w-full lg:w-1/2 md:w-1/2">
                         <div class="lg:mr-8 md:mr-8">
                             <div id="map_canvas" class="tw-form-control w-full" style="height: 250px;"></div>
                         </div>
-                    </div> 
+                    </div>
 
                     <div class="form-group" hidden>
                         <label for="latitude" class="col-md-4 control-label">Latitude
                         </label>
                         <div class="col-md-6">
-                            <input id="latitude" type="text" class="tw-form-control w-1/2" name="latitude" value="{{old('latitude')}}"> 
+                            <input id="latitude" type="text" class="tw-form-control w-1/2" name="latitude" value="{{old('latitude')}}">
                         </div>
                     </div>
 
@@ -55,7 +55,7 @@
                         <label for="longitude" class="col-md-4 control-label">Longitude
                         </label>
                         <div class="col-md-6">
-                            <input id="longitude" type="text" class="tw-form-control w-1/2" name="longitude" value="{{old('longitude')}}"> 
+                            <input id="longitude" type="text" class="tw-form-control w-1/2" name="longitude" value="{{old('longitude')}}">
                         </div>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
 
 var map;
 
-function initialize() 
+function initialize()
 {
     var address = (document.getElementById('address'));
     var autocomplete = new google.maps.places.Autocomplete(address);
@@ -100,7 +100,7 @@ function initialize()
     longlat(9.9252007, 78.11977539999998);
 }
 
-function longlat(lat, lng) 
+function longlat(lat, lng)
 {
     //Map
     var myLatlng = new google.maps.LatLng(lat, lng);
@@ -127,20 +127,20 @@ function longlat(lat, lng)
     //map
 }
 
-function codeAddress() 
+function codeAddress()
 {
     geocoder = new google.maps.Geocoder();
     var address = document.getElementById("address").value;
     geocoder.geocode({ 'address': address }, function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) 
+        if (status == google.maps.GeocoderStatus.OK)
         {
             //alert("Latitude: "+results[0].geometry.location.lat());
             // alert("Longitude: "+results[0].geometry.location.lng());
             document.getElementById('latitude').value = results[0].geometry.location.lat();
             document.getElementById('longitude').value = results[0].geometry.location.lng();
             longlat(results[0].geometry.location.lat(), results[0].geometry.location.lng());
-        } 
-        else 
+        }
+        else
         {
             //alert("Geocode was not successful for the following reason: " + status);
         }

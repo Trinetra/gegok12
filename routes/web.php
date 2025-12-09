@@ -1,4 +1,4 @@
-<?php
+git <?php
 
 use App\Http\Controllers\Superadmin\DashboardController;
 
@@ -6,7 +6,9 @@ use App\Http\Controllers\Superadmin\DashboardController;
   return redirect()->route('login');
     //return view('welcome');
 });*/
-Route::get('/', 'WelcomeController');
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
 
 Auth::routes();
@@ -42,17 +44,13 @@ Route::group(['middleware' => ['siteadmin'], 'namespace' => 'Admin'], function (
 //    Route::get('/superadmin/dashboard', 'DashboardController@index')->name('dashboard');
 // });
 //test pages hidden
-  /*video chat room*/ 
+  /*video chat room*/
   /*Route::view('/video-chat-grid', 'pages.video.grid');
   Route::view('/video-chat-collaboration', 'pages.video.collaboration');
   Route::view('/video-chat-tile', 'pages.video.tile');
   Route::view('/video-chat-presentation', 'pages.video.presentation');*/
   /*Route::view('/admission-form', 'pages.admission.admission');*/
 //test pages hidden
-
-//user list
-Route::get('/demo/schoolList', 'Demo\WelcomeController@schoolList');
-Route::get('/demo/list/{school_id}', 'Demo\WelcomeController@list');
 
 Route::get('/cache-clear', function () {
     Artisan::call('cache:clear');
@@ -80,7 +78,7 @@ Route::post( '/{slug}/admission-form/validationPersonalDetail', 'AdmissionContro
 Route::group(['middleware' => ['superadmin','auth'],'prefix'=>'superadmin', 'namespace' => 'Superadmin'], function () {
 
       Route::get('/dashboard', 'DashboardSuperController@index')->name('superadmin.dashboard');
-      
+
    //Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
    //Contact
