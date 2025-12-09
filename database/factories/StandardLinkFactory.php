@@ -1,14 +1,18 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
 namespace Database\Factories;
 
-use Faker\Generator as Faker;
+use App\Models\StandardLink;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(App\Models\StandardLink::class, function (Faker $faker) {
+class StandardLinkFactory extends Factory
+{
+    protected $model = StandardLink::class;
 
-    return [
-        //
-        'status'            =>  '1',
-    ];
-});
+    public function definition()
+    {
+        return [
+            'status' => 1,
+        ];
+    }
+}

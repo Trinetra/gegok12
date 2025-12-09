@@ -160,7 +160,7 @@ Route::group([
 
     //Timetable
 
-    Route::get('/timetable/{student_id}','TimetableController@index');
+    // Route::get('/timetable/{student_id}','TimetableController@index');
 
     //LessonPlan
 
@@ -174,11 +174,11 @@ Route::group([
 
     //Fees
 
-    Route::get('/fees/paid/{student_id}','FeesController@paid');
+    // Route::get('/fees/paid/{student_id}','FeesController@paid');
 
-    Route::get('/fees/unpaid/{student_id}','FeesController@unpaid');
+    // Route::get('/fees/unpaid/{student_id}','FeesController@unpaid');
 
-    Route::get('/fees/show/{id}','FeesController@show');
+    // Route::get('/fees/show/{id}','FeesController@show');
 
     //Notice
 
@@ -199,16 +199,16 @@ Route::group([
 
     //Exam
 
-    Route::get('/exams/upcoming/{student_id}','ExamController@upcomingExam');
+    // Route::get('/exams/upcoming/{student_id}','ExamController@upcomingExam');
 
-    Route::get('/exams/past/{student_id}','ExamController@pastExam');
+    // Route::get('/exams/past/{student_id}','ExamController@pastExam');
 
     //Mark
 
-    Route::get('/marks/{student_id}/{exam_id}','MarksController@index');
-    Route::get('/marks/graph/{student_id}/{exam_id}','MarksController@getmarks');
+    // Route::get('/marks/{student_id}/{exam_id}','MarksController@index');
+    // Route::get('/marks/graph/{student_id}/{exam_id}','MarksController@getmarks');
 
-    Route::get('/mark/show/{mark_id}','MarksController@show');
+    // Route::get('/mark/show/{mark_id}','MarksController@show');
 
     //Teacher
 
@@ -260,6 +260,8 @@ Route::group([
     //viewers details
         
     Route::post('/student/modules','StudentHistoryController@update');
+
+    Route::get('/addons','PurchaseHistoryController@index');
 
     
 

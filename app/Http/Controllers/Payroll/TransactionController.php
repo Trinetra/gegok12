@@ -116,7 +116,8 @@ class TransactionController extends Controller
          $transaction=new PayrollTransaction;
          $transaction->school_id=Auth::user()->school_id;
          $transaction->transaction_no=$request->transaction_no;
-         $transaction->account_id=$request->account_id;
+         // $transaction->account_id=$request->account_id;
+         $request->account_id === "null" ? null : $request->account_id;
          $transaction->paytype_id=$request->paytype;
          if($request->paytype==1)
          {
@@ -133,7 +134,7 @@ class TransactionController extends Controller
          $file   =   $request->file('attachment');
             if($file)
             {
-                $path = $this->uploadFile('/uploads/admin/transaction/',$file);
+                $path = $this->uploadFile('/uploads/admin/transaction',$file);
                 $transaction->attachment = $path; 
             }
 
@@ -145,8 +146,8 @@ class TransactionController extends Controller
       catch(Exception $e)
         {
              \DB::rollBack();
-            //Log::info($e->getMessage());
-            dd($e->getMessage());
+            \Log::info($e->getMessage());
+            // dd($e->getMessage());
         } 
     }
 
@@ -194,7 +195,8 @@ class TransactionController extends Controller
             }
          $transaction=PayrollTransaction::find($id);
          $transaction->school_id=Auth::user()->school_id;
-         $transaction->account_id=$request->account_id;
+         // $transaction->account_id=$request->account_id;
+         $request->account_id === "null" ? null : $request->account_id;
         /* $transaction->paytype=$request->paytype;
          $transaction->staff_id=$request->staff_id;*/
          $transaction->amount=$request->amount;

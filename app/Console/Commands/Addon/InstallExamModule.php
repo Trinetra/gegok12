@@ -23,7 +23,7 @@ class InstallExamModule extends Command
             $username = $this->ask('Enter your Git username');
             $token =$this->secret('Enter your Git token');
             $repo='https://github.com/gego-k12/exam.git';
-            $package='gegok12/exam:dev-main';
+            $package='gegok12/exam:v1.0.x-dev';
 
             // Step 2: Validate
             $validator = Validator::make([
@@ -94,16 +94,31 @@ class InstallExamModule extends Command
             }
 
             // Step 5: Update route loader
-            $routesPath = base_path('routes/web.php');
+            // $routesPath = base_path('routes/web.php');
+            // $customRoutes = [
+            //     "if (file_exists(base_path('routes/gexam.php'))) {\n    require base_path('routes/gexam.php');\n}",
+            //     "if (file_exists(base_path('routes/gexamteacherapi.php'))) {\n    require base_path('routes/gexamteacherapi.php');\n}"
+            // ];
+
+            // foreach ($customRoutes as $line) {
+            //     if (!str_contains(file_get_contents($routesPath), trim($line))) {
+            //         file_put_contents($routesPath, "\n{$line}\n", FILE_APPEND);
+            //         $this->info("Appended to routes/web.php");
+            //     }
+            // }
+            //new
             $customRoutes = [
-                "if (file_exists(base_path('routes/gexam.php'))) {\n    require base_path('routes/gexam.php');\n}",
-                "if (file_exists(base_path('routes/gexamteacherapi.php'))) {\n    require base_path('routes/gexamteacherapi.php');\n}"
+                "routes/web.php"=>"if (file_exists(base_path('routes/gexam.php'))) {\n    require base_path('routes/gexam.php');\n}",
+                "routes/api.php"=>"if (file_exists(base_path('routes/gexamteacherapi.php'))) {\n    require base_path('routes/gexamteacherapi.php');\n}"
             ];
 
-            foreach ($customRoutes as $line) {
+            foreach ($customRoutes as $file=>$line) 
+            {
+                $routesPath = base_path($file);
+
                 if (!str_contains(file_get_contents($routesPath), trim($line))) {
                     file_put_contents($routesPath, "\n{$line}\n", FILE_APPEND);
-                    $this->info("Appended to routes/web.php");
+                    $this->info("Appended to ".$file);
                 }
             }
 

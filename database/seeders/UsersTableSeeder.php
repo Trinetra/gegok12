@@ -164,7 +164,7 @@ class UsersTableSeeder extends Seeder
         $librarian =  factory(App\Models\User::class)->create([
             'school_id'    =>   '1',
             'name'         =>   'librarian',
-            'email'        =>   'librarian@gegok12.com',
+            'email'        =>   'librarian@mailinator.com',
             'mobile_no'    =>   '2230456701',
             'usergroup_id' =>   "8"
           ]);

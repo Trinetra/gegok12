@@ -63,6 +63,11 @@ Route::get( '/activity', 'ActivityLogController@index' );
     Route::get('/task/{id}/delete', 'TaskController@destroy');
 
     //library card import teacher 
+    Route::get( '/import/library', 'LibraryImportController@create' );
+        Route::post( '/import/library', 'LibraryImportController@import' );
+        Route::get( '/students', 'StudentController@index' );
+            Route::get( '/students/find', 'StudentController@find' );
+            Route::get( '/downloadformat', 'LibraryImportController@downloadFormat' );
     // Route::post( '/import/library', 'LibraryImportController@import' );
     Route::get( '/teachers/find', 'TeacherListController@find' );
     Route::get( '/teachers', 'TeacherListController@index' );

@@ -23,13 +23,15 @@ class PromotionAddRequest extends FormRequest
      */
     public function rules()
     {
-        return 
-        [
-            //
-            'curr_academic_year_id' =>  'required',
-            'curr_standardlink_id'  =>  'required',
-            'exam_id'               =>  'required',
+        $rules = [
+            'curr_academic_year_id' => 'required',
+            'curr_standardlink_id'  => 'required',
         ];
+        if (config('gexam.enabled', false)) {
+            $rules['exam_id'] = 'required';
+        }
+
+        return $rules;
     }
 
     public function messages()

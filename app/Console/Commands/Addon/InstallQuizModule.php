@@ -24,7 +24,7 @@ class InstallQuizModule extends Command
             $username = $this->ask('Enter your Git username');
             $token =$this->secret('Enter your Git token');
             $repo='https://github.com/gego-k12/quiz.git';
-            $package='gegok12/quiz:dev-main';
+            $package='gegok12/quiz:v1.0.x-dev';
 
             // Step 2: Validate
             $validator = Validator::make([

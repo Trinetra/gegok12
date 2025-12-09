@@ -11,11 +11,11 @@
                 <a class="h-10 object-contain" href="{{ route('dashboard') }}">
                     <img src="{{ Auth::user()->SchoolLogoPath }}" class="h-10 w-auto object-cover">
                 </a>
-            @endif
-
-             <a class="h-10 object-contain" href="{{ route('dashboard') }}">
+                @else
+                <a class="h-10 object-contain" href="{{ route('dashboard') }}">
                     <img src="/uploads/demologo.png" class="h-10 w-auto object-cover mr-3">
                 </a>
+            @endif
             <a class="text-lg lg:text-3xl font-exo font-medium text-gray-600" href="{{ route('dashboard') }}">
                 <strong>{{ ucwords(Auth::user()->school->name) }}</strong>
             </a>

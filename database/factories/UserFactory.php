@@ -22,10 +22,15 @@ class UserFactory extends Factory
 
     public function definition()
     {
+        $first = $this->faker->firstName;
+        $last  = $this->faker->lastName;
+        $uniqueId = $this->faker->unique()->numberBetween(1000, 9999);
 
     return [
-        'name' => $this->faker->unique()->userName,
-        'email' => $this->faker->unique()->safeEmail,
+        'name' => $first . ' ' . $last .$uniqueId,
+        // $this->faker->unique()->userName,
+        'email' => strtolower($first . $last .$uniqueId) . '@mailinator.com',
+        // $this->faker->unique()->safeEmail,
         'mobile_no' => $this->faker->unique()->randomNumber($nbDigits = 9, $strict = false),
         'password' => bcrypt('password'),
         'email_verification_code' =>str_random(40),

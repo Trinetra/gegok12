@@ -21,7 +21,7 @@ class AdmissionApprovalMail extends Mailable implements ShouldQueue
      */
     public function __construct($data)
     {
-        //
+        $this->queue='emails';
         $this->data = $data;
     }
 

@@ -7,12 +7,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\Common;
 class Assignment extends Model
 {
     //
     use Common;
     use SoftDeletes;
+    use HasFactory;
 
     /**
      * The table associated with the model.

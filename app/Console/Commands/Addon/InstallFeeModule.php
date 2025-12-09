@@ -24,7 +24,7 @@ class InstallFeeModule extends Command
             $username = $this->ask('Enter your Git username');
             $token =$this->secret('Enter your Git token');
             $repo='https://github.com/gego-k12/fee.git';
-            $package='gegok12/fee:dev-main';
+            $package='gegok12/fee:v1.0.x-dev';
 
             // Step 2: Validate
             $validator = Validator::make([
@@ -87,22 +87,38 @@ class InstallFeeModule extends Command
             $this->info("Package installed: {$package}");
 
             // Step 4: Publish assets
-            foreach (['fee-routes', 'fee-components', 'fee-views', 'fee-migrations', 'fee-config'] as $tag) {
+            foreach (['fee-routes', 'fee-components', 'fee-views', 'fee-migrations', 'fee-config', 'feeapi-routes'] as $tag) {
                 // Artisan::call('vendor:publish', ['--tag' => $tag, '--force' => true]);
                 exec("php artisan vendor:publish --tag='".$tag."' --force", $output);
                 $this->info("Published: {$tag}");
             }
 
             // Step 5: Update route loader
-            $routesPath = base_path('routes/web.php');
+            // $routesPath = base_path('routes/web.php');
+            // $customRoutes = [
+            //     "if (file_exists(base_path('routes/gfee.php'))) {\n    require base_path('routes/gfee.php');\n}"
+            // ];
+
+            // foreach ($customRoutes as $line) {
+            //     if (!str_contains(file_get_contents($routesPath), trim($line))) {
+            //         file_put_contents($routesPath, "\n{$line}\n", FILE_APPEND);
+            //         $this->info("Appended to routes/web.php");
+            //     }
+            // }
+
             $customRoutes = [
-                "if (file_exists(base_path('routes/gfee.php'))) {\n    require base_path('routes/gfee.php');\n}"
+                "routes/web.php"=>"if (file_exists(base_path('routes/gfee.php'))) {\n    require base_path('routes/gfee.php');\n}",
+                "routes/api.php"=>"if (file_exists(base_path('routes/gfeeapi.php'))) {\n    require base_path('routes/gfeeapi.php');\n}"
             ];
 
-            foreach ($customRoutes as $line) {
+            foreach ($customRoutes as $file=>$line) 
+            {
+
+                $routesPath = base_path($file);
+
                 if (!str_contains(file_get_contents($routesPath), trim($line))) {
                     file_put_contents($routesPath, "\n{$line}\n", FILE_APPEND);
-                    $this->info("Appended to routes/web.php");
+                    $this->info("Appended to ".$file);
                 }
             }
 

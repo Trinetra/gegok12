@@ -24,7 +24,7 @@ class InstallAlumniModule extends Command
             $username = $this->ask('Enter your Git username');
             $token =$this->secret('Enter your Git token');
             $repo='https://github.com/gego-k12/alumni.git';
-            $package='gegok12/alumni:dev-main';
+            $package='gegok12/alumni:v1.0.x-dev';
 
             // Step 2: Validate
             $validator = Validator::make([

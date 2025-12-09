@@ -29,7 +29,7 @@ class UsersSchoolAdminTableSeeder extends Seeder
             $schoolAdmin = User::factory()->create([
                 'school_id'    =>   $school->id,
                 'name'         =>   'demoschool',
-                'email'        =>   'demoschool@gegok12.com',
+                'email'        =>   'demoschool@mailinator.com',
                 'mobile_no'    =>   '2230456789',
                 'usergroup_id' =>   3
             ]);
@@ -52,7 +52,7 @@ class UsersSchoolAdminTableSeeder extends Seeder
             $librarian =  User::factory()->create([
                 'school_id'    =>   $school->id,
                 'name'         =>   'librarian'.$school->id,
-                'email'        =>   'librarian'.$school->id.'@gegok12.com',
+                'email'        =>   'librarian'.$school->id.'@mailinator.com',
                 'mobile_no'    =>   '2230456701',
                 'usergroup_id' =>   8
             ]);
@@ -84,7 +84,7 @@ class UsersSchoolAdminTableSeeder extends Seeder
             $receptionist =  User::factory()->create([
                 'school_id'    =>   $school->id,
                 'name'         =>   'receptionist'.$school->id,
-                'email'        =>   'receptionist'.$school->id.'@gegok12.com',
+                'email'        =>   'receptionist'.$school->id.'@mailinator.com',
                 'mobile_no'    =>   '2230456702',
                 'usergroup_id' =>   10
             ]);
@@ -116,7 +116,7 @@ class UsersSchoolAdminTableSeeder extends Seeder
             $accountant =  User::factory()->create([
                 'school_id'    =>   $school->id,
                 'name'         =>   'accountant'.$school->id,
-                'email'        =>   'accountant'.$school->id.'@gegok12.com',
+                'email'        =>   'accountant'.$school->id.'@mailinator.com',
                 'mobile_no'    =>   '2230456703',
                 'usergroup_id' =>   11
             ]);
@@ -148,7 +148,7 @@ class UsersSchoolAdminTableSeeder extends Seeder
             $stock_keeper =  User::factory()->create([
                 'school_id'    =>   $school->id,
                 'name'         =>   'stock_keeper'.$school->id,
-                'email'        =>   'stock_keeper'.$school->id.'@gegok12.com',
+                'email'        =>   'stock_keeper'.$school->id.'@mailinator.com',
                 'mobile_no'    =>   '2230456704',
                 'usergroup_id' =>   12
             ]);

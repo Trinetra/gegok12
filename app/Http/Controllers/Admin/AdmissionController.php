@@ -68,9 +68,9 @@ class AdmissionController extends Controller
 
         $sections = StandardLink::where('standard_id',$admission->standard_id)->get();
         
-        if(config('gfee.enabled', false))
+        if(class_exists('Gegok12\Fee\Models\FeeGroup'))
         {
-            $fee = FeeGroup::where('school_id',Auth::user()->school_id)->get();
+            $fee = \Gegok12\Fee\Models\FeeGroup::where('school_id',Auth::user()->school_id)->get();
         }    
 
         $array=[];
@@ -81,9 +81,9 @@ class AdmissionController extends Controller
         $array['application_status']    =   $admission->application_status;
         $array['sectionlist']           =   SectionResource::collection($sections);
 
-        if(config('gfee.enabled', false))
+        if(class_exists('Gegok12\Fee\Http\Resources\FeeGroup'))
         {
-            $array['feelist']               =   FeeGroupResource::collection($fee);
+            $array['feelist']               =   \Gegok12\Fee\Http\Resources\FeeGroup::collection($fee);
         }    
 
         return $array;  
@@ -126,8 +126,11 @@ class AdmissionController extends Controller
                 $admission->save();
 
                 $standardLink_id=StandardLink::where([['school_id',Auth::user()->school_id],['standard_id',$admission->standard_id],['section_id',$admission->section_id]])->first();
-
-                $fee = Fee::where([['school_id',Auth::user()->school_id],['fee_group_id',$request->fee_group_id]])->first();
+                
+                if(class_exists('Gegok12\Fee\Models\Fee'))
+                { 
+                    $fee = \Gegok12\Fee\Models\Fee::where([['school_id',Auth::user()->school_id],['fee_group_id',$request->fee_group_id]])->first();
+                }    
 
                 if($request->payment_status == 'paid')
                 {

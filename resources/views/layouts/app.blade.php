@@ -22,7 +22,6 @@
     <!-- new -->
     <script>
        window.AppConfig = {
-          gtimetable_enabled: @json(config('gtimetable.enabled')),
           gquiz_enabled: @json(config('gquiz.enabled')),
           gexam_enabled: @json(config('gexam.enabled')),
           ginventory_enabled: @json(config('ginventory.enabled')),

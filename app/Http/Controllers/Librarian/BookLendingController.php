@@ -37,12 +37,11 @@ class BookLendingController extends Controller
 
         $q = request('q');
 
-        if($q!= '')
-        {
-            $booklending = BookCategory::where(function ($query) use($q)
-            {
-                $query->where('book_code_no','LIKE','%'.$q.'%')->orWhere('library_card_no','LIKE','%'.$q.'%');
-            });                
+        if ($q != '') {
+            $booklending = $booklending->where(function ($query) use ($q) {
+                $query->where('book_code_no', 'LIKE', '%' . $q . '%')
+                  ->orWhere('library_card_no', 'LIKE', '%' . $q . '%');
+            });
         }
 
         $booklending = $booklending->paginate(10);
@@ -50,7 +49,7 @@ class BookLendingController extends Controller
 
         $currentDate = date('Y-m-d');
 
-        return view('/library/booklending/index',['booklending' => $booklending , 'currentDate' => $currentDate , 'category' => $category]);
+        return view('/library/booklending/index',['booklending' => $booklending , 'currentDate' => $currentDate]);
     }
 
     /**
@@ -259,10 +258,10 @@ class BookLendingController extends Controller
 
         if($q!= '')
         {
-            $booklending = BookCategory::where(function ($query) use($q)
-            {
-                $query->where('book_code_no','LIKE','%'.$q.'%')->orWhere('library_card_no','LIKE','%'.$q.'%');
-            });                
+            $booklending = $booklending->where(function ($query) use ($q) {
+                $query->where('book_code_no', 'LIKE', '%' . $q . '%')
+                  ->orWhere('library_card_no', 'LIKE', '%' . $q . '%');
+            });               
         }
 
         $booklending = $booklending->paginate(10);

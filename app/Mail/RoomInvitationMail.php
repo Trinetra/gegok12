@@ -27,6 +27,7 @@ class RoomInvitationMail extends Mailable implements ShouldQueue
     */
    public function __construct($user, $info)
    {
+       $this->queue='emails';
        $this->user = $user;
        $this->info = $info;
    }

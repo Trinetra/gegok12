@@ -28,7 +28,7 @@
 	import axios from 'axios';
   import VueImageUploadCroppi from 'vue-image-upload-croppie'
   export default {
-    props:['url'],
+    props:['url','mode'],
     components: 
     { 
       VueImageUploadCroppi,
@@ -50,7 +50,7 @@
     {
       getdata()
       {
-        axios.get('/teacher/getavatar').then(response => {
+        axios.get('/'+this.mode+'/getavatar').then(response => {
           this.avatar = response.data.avatar;
         });
       },
@@ -63,7 +63,7 @@
 
         formData.append('avatar',this.avatar);
 
-        axios.post('/teacher/changeavatar',formData).then(response => {
+        axios.post('/'+this.mode+'/changeavatar',formData).then(response => {
           this.success = response.data.message;
           window.location.reload();
 		    }).catch(error => {

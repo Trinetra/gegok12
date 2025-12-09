@@ -51,7 +51,7 @@
     </li>
 
     <!-- payroll start -->
-    <!-- @php
+ @php
         $class='';
         $array=array('template','templates','payslip','payslips');
         if(in_array(\Request()->segment('3'),$array))
@@ -90,7 +90,7 @@
                 </a>
             </li>
         </ul>
-    </li> -->
+    </li> 
     <!-- payroll end -->  <!-- have to enable when payroll integrated-->
 
     <li class="py-3 px-3 hover:font-semibold bg-light-green-900 {{ Request::segment ('2') == 'activity' ? 'active':'' }}">

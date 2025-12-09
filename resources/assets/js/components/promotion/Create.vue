@@ -34,7 +34,7 @@
             </div>
         </div>
     
-        <div class="my-5">
+        <div class="my-5" v-if="gexamEnabled">
             <div class="tw-form-group w-full lg:w-2/5 md:w-2/5">
                 <div class="lg:mr-8 md:mr-8">
                     <div class="mb-2">
@@ -138,9 +138,13 @@
                 promotion_file:'',
                 errors:[],
                 success:null,
+                gexamEnabled:false,
             }
         },
-
+        mounted() 
+        {
+          this.gexamEnabled = window.AppConfig?.gexam_enabled ?? false;
+        },
         created()
         {
             this.getData();

@@ -13,6 +13,7 @@ class AcademicYearObserver
      */
     public function created(AcademicYear $academicYear): void
     {
+
         if(config('gexam.enabled', false)) //new
         {
             if($academicYear)
@@ -40,14 +41,18 @@ class AcademicYearObserver
                         'status'            =>  1,
                         'created_by'        =>  Auth::Id(),
                     ];
-
-                    $grade=Grade::create($create);
+                    if(class_exists('Gegok12\Exam\Models\Grade'))
+                    {
+                        $grade=\Gegok12\Exam\Models\Grade::create($create);
+                    }
+                    
                 }
 
                 //end foreach
-
+                if(class_exists('Gegok12\Exam\Models\Grade'))
+                {
                 // First Grade - Pass
-                Grade::create([
+                \Gegok12\Exam\Models\Grade::create([
                     'school_id'         => $academicYear->school_id,
                     'academic_year_id'  => $academicYear->id,
                     'name'              => 'passfail',
@@ -60,7 +65,7 @@ class AcademicYearObserver
                 ]);
 
                 // Second Grade - Fail
-                Grade::create([
+                \Gegok12\Exam\Models\Grade::create([
                     'school_id'         => $academicYear->school_id,
                     'academic_year_id'  => $academicYear->id,
                     'name'              => 'passfail',
@@ -71,6 +76,7 @@ class AcademicYearObserver
                     'created_by'        => 1,
                     'updated_by'        => 1,
                 ]);
+                }
 
             }
         }

@@ -24,7 +24,7 @@ class InstallCertificateModule extends Command
             $username = $this->ask('Enter your Git username');
             $token =$this->secret('Enter your Git token');
             $repo='https://github.com/gego-k12/certificate.git';
-            $package='gegok12/certificate:dev-main';
+            $package='gegok12/certificate:v1.0.x-dev';
 
             // Step 2: Validate
             $validator = Validator::make([

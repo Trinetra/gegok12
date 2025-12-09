@@ -4,9 +4,15 @@ namespace Database\Seeders;
 
 use DB;
 use Illuminate\Database\Seeder;
+use App\Models\StudentParentLink;
+use App\Models\StudentAcademic;
+use App\Models\ParentProfile;
 use App\Models\StandardLink;
 use App\Helpers\SiteHelper;
+use App\Models\Userprofile;
+use App\Models\LibraryCard;
 use App\Models\School;
+use App\Models\User;
 use Carbon\Carbon;
 
 class UsersStudentTableSeeder extends Seeder
@@ -28,25 +34,25 @@ class UsersStudentTableSeeder extends Seeder
             {
                 $studentCountPerSection = rand(10,12);
 
-                $students = factory(App\Models\User::class, $studentCountPerSection)->create([
+                $students = User::factory($studentCountPerSection)->create([
                     'school_id'    =>   $classRoom->school_id,
                     'usergroup_id' =>   6
                 ]);
 
                 foreach ($students as $student) 
                 {
-                    factory(\App\Models\Userprofile::class, 1)->create([
+                    Userprofile::factory(1)->create([
                         'school_id'     =>  $student->school_id,
                         'user_id'       =>  $student->id,
                         'usergroup_id'  =>  $student->usergroup_id
                     ]);
 
-                    $father = factory(App\Models\User::class)->create([
+                    $father = User::factory()->create([
                         'school_id'     => $student->school_id,
                         'usergroup_id'  => 7
                     ]);
 
-                    factory(\App\Models\Userprofile::class)->create([
+                    Userprofile::factory()->create([
                         'school_id'     =>  $student->school_id,
                         'user_id'       =>  $father->id,
                         'usergroup_id'  =>  $father->usergroup_id,
@@ -56,23 +62,23 @@ class UsersStudentTableSeeder extends Seeder
                         'date_of_birth' =>  Carbon::now()->subYears(rand(25, 45))
                     ]);
 
-                    factory(App\Models\StudentParentLink::class)->create([
+                    StudentParentLink::factory()->create([
                         'school_id'  => $student->school_id,
                         'parent_id'  => $father->id,
                         'student_id' => $student->id
                     ]);
 
-                    factory(App\Models\ParentProfile::class)->create([
+                    ParentProfile::factory()->create([
                         'school_id'  => $father->school_id,
                         'user_id'    => $father->id
                     ]);
 
-                    $mother = factory(App\Models\User::class)->create([
+                    $mother = User::factory()->create([
                         'school_id'     => $student->school_id,
                         'usergroup_id'  => 7
                     ]);
 
-                    factory(\App\Models\Userprofile::class)->create([
+                    Userprofile::factory()->create([
                         'school_id'     =>  $student->school_id,
                         'user_id'       =>  $mother->id,
                         'usergroup_id'  =>  $mother->usergroup_id,
@@ -82,23 +88,23 @@ class UsersStudentTableSeeder extends Seeder
                         'date_of_birth' =>  Carbon::now()->subYears(rand(25, 40)),
                     ]);
 
-                    factory(App\Models\StudentParentLink::class)->create([
+                    StudentParentLink::factory()->create([
                         'school_id'  => $student->school_id,
                         'parent_id'  => $mother->id,
                         'student_id' => $student->id
                     ]);
 
-                    factory(App\Models\ParentProfile::class)->create([
+                    ParentProfile::factory()->create([
                         'school_id'  => $mother->school_id,
                         'user_id'    => $mother->id
                     ]);
 
-                    factory(\App\Models\LibraryCard::class)->create([
+                    LibraryCard::factory()->create([
                         'school_id'  => $student->school_id,
                         'user_id'  => $student->id,
                     ]);
 
-                    factory(\App\Models\StudentAcademic::class, 1)->create([
+                    StudentAcademic::factory(1)->create([
                         'school_id'         =>  $student->school_id,
                         'user_id'           =>  $student->id,
                         'standardLink_id'   =>  $classRoom->id,

@@ -48,6 +48,23 @@ trait Common
         return $path;
     }
 
+    public function fileUpload($folder,$file)
+    {
+        $path = '';
+
+        try
+        {
+            $path = \Storage::put($folder, $file,'public');
+        }
+        catch(Exception $e)
+        {
+            Log::info($e->getMessage());
+            //dd($e->getMessage());
+        }
+
+        return $path;
+    }
+
     public function getRequestIP()
     {
         $ip = request()->ip();

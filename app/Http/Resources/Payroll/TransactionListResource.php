@@ -3,9 +3,11 @@
 namespace App\Http\Resources\Payroll;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Traits\Common;
 
 class TransactionListResource extends JsonResource
 {
+    use Common;
     /**
      * Transform the resource into an array.
      *
@@ -16,7 +18,8 @@ class TransactionListResource extends JsonResource
     {
         if($this->attachment != null)
         {
-            $attachment = url($this->attachment);
+            // $attachment = url($this->attachment);
+            $attachment = $this->getFilePath($this->attachment);
         }
         else
         {

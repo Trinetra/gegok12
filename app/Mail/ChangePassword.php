@@ -27,7 +27,7 @@ class ChangePassword extends Mailable implements ShouldQueue
      */
     public function __construct(User $user)
     {
-        //
+        $this->queue='emails';
         $this->user = $user;
     }
 

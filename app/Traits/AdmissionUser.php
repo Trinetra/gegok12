@@ -162,31 +162,34 @@ trait AdmissionUser
             $academic->medication_problems  = $data->medical_details;
 
             $academic->save();
-
-            if($data->payment_status == 'paid')
+            if(config('gfee.enabled', false))
             {
-                $feepayment = new FeePayment;
 
-                $feepayment->fee_id           = $fee->id;
-                $feepayment->user_id          = $user->id;
-                $feepayment->paid_amount      = $fee->amount;
-                $feepayment->paid_on          = date('Y-m-d');
-                $feepayment->notify_parent    = '1';
-                $feepayment->status           = '1';
-                $feepayment->created_by       = $admin->id;
-                $feepayment->updated_by       = $admin->id;
+                if($data->payment_status == 'paid')
+                {
+                    $feepayment = new \Gegok12\Fee\Models\FeePayment;
 
-                $feepayment->save();
-            }
-            else
-            {
-                $feepayment = new FeePayment;
+                    $feepayment->fee_id           = $fee->id;
+                    $feepayment->user_id          = $user->id;
+                    $feepayment->paid_amount      = $fee->amount;
+                    $feepayment->paid_on          = date('Y-m-d');
+                    $feepayment->notify_parent    = '1';
+                    $feepayment->status           = '1';
+                    $feepayment->created_by       = $admin->id;
+                    $feepayment->updated_by       = $admin->id;
 
-                $feepayment->fee_id           = $fee->id;
-                $feepayment->user_id          = $user->id;
-                $feepayment->status           = 0;
+                    $feepayment->save();
+                }
+                else
+                {
+                    $feepayment = new \Gegok12\Fee\Models\FeePayment;
 
-                $feepayment->save();
+                    $feepayment->fee_id           = $fee->id;
+                    $feepayment->user_id          = $user->id;
+                    $feepayment->status           = 0;
+
+                    $feepayment->save();
+                }
             }
             \DB::commit();
             return $user;
