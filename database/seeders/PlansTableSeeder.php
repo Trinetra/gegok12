@@ -9,7 +9,7 @@ class PlansTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     * 
+     *
      * For open-source single school version, we create one unlimited plan
      *
      * @return void
@@ -31,7 +31,7 @@ class PlansTableSeeder extends Seeder
             'no_of_groups'      => '999999',
             'is_active'         => 1,
             'created_at'        => date("Y-m-d H:i:s"),
-            'updated_at'        => date("Y-m-d H:i:s"), 
+            'updated_at'        => date("Y-m-d H:i:s"),
         ]);
     }
 }
