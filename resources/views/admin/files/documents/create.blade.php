@@ -63,11 +63,10 @@
 </form>
 </div>
 @else
-    <a href="{{ url('/pricing') }}"> 
-        <button type="submit" class="no-underline text-white  px-4 my-3 mx-1 flex items-center custom-green py-1 justify-center">
-            Upgrade Plan to Add More Files
-        </button>
-    </a>
+    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+        <p class="font-semibold">File limit reached</p>
+        <p class="text-sm">Please contact your administrator to increase the file limit.</p>
+    </div>
 @endif
 
 </div>

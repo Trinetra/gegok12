@@ -60,10 +60,9 @@
             </div>
         </div>
 
-        <div v-if="parseInt(this.count) > parseInt(this.no_of_bulletins)">
-            <a href="/pricing"> 
-                <button type="submit" class="no-underline text-white px-4 my-3 mx-1 flex items-center custom-green py-1 justify-center">Upgrade Plan to Add More Magazines</button>
-            </a>
+        <div v-if="parseInt(this.count) > parseInt(this.no_of_bulletins)" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+            <p class="font-semibold">Magazine limit reached</p>
+            <p class="text-sm">Please contact your administrator to increase the magazine limit.</p>
         </div>
     </div>
 </template>
