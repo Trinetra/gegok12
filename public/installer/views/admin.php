@@ -102,9 +102,9 @@ $baseUrl = str_replace('/installer', '', $baseUrl);
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <div>
-                    <h4 class="font-semibold text-blue-800 mb-1">Admin Account</h4>
+                    <h4 class="font-semibold text-blue-800 mb-1">School Admin Account</h4>
                     <p class="text-sm text-blue-700">
-                        The email and password you enter here will be used to update the default super admin account after installation.
+                        The email and password you enter here will be used to create your school admin account. This will be your primary login to manage the school.
                     </p>
                 </div>
             </div>

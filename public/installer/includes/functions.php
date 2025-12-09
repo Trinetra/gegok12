@@ -232,7 +232,8 @@ function saveAdminConfig($data) {
 }
 
 /**
- * Update admin user credentials after seeding
+ * Update school and admin user credentials after seeding
+ * For single-school version: updates School info and SchoolAdmin (usergroup_id=3)
  */
 function updateAdminCredentials() {
     if (!isset($_SESSION['admin_config']['admin_email']) || !isset($_SESSION['admin_config']['admin_password'])) {
@@ -246,20 +247,28 @@ function updateAdminCredentials() {
     $db = $_SESSION['db_config'];
     $email = $_SESSION['admin_config']['admin_email'];
     $password = password_hash($_SESSION['admin_config']['admin_password'], PASSWORD_BCRYPT);
+    $schoolName = $_SESSION['admin_config']['app_name'] ?? 'My School';
 
     try {
         $dsn = "mysql:host={$db['host']};port={$db['port']};dbname={$db['database']}";
         $pdo = new PDO($dsn, $db['username'], $db['password']);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Update user with ID 1 (the seeded admin)
-        $stmt = $pdo->prepare("UPDATE users SET email = ?, password = ?, updated_at = NOW() WHERE id = 1");
-        $stmt->execute([$email, $password]);
+        // Generate slug from school name
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $schoolName)));
+
+        // 1. Update school with ID 1 (the seeded default school)
+        $stmt = $pdo->prepare("UPDATE schools SET name = ?, email = ?, slug = ?, updated_at = NOW() WHERE id = 1");
+        $stmt->execute([$schoolName, $email, $slug]);
+
+        // 2. Update SchoolAdmin user (usergroup_id = 3, school_id = 1)
+        $stmt = $pdo->prepare("UPDATE users SET email = ?, password = ?, name = ?, updated_at = NOW() WHERE school_id = 1 AND usergroup_id = 3");
+        $stmt->execute([$email, $password, 'Admin']);
 
         if ($stmt->rowCount() > 0) {
-            return ['success' => true, 'message' => 'Admin credentials updated'];
+            return ['success' => true, 'message' => 'School and admin credentials updated'];
         } else {
-            return ['success' => false, 'message' => 'No user found with ID 1'];
+            return ['success' => false, 'message' => 'No school admin user found'];
         }
 
     } catch (PDOException $e) {
