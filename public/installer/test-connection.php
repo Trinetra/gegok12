@@ -25,14 +25,14 @@ try {
     $dsn = "mysql:host={$host};port={$port}";
     $pdo = new PDO($dsn, $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
+
     // Try to create database if it doesn't exist
     $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$database}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-    
+
     // Test connection to the specific database
     $dsn = "mysql:host={$host};port={$port};dbname={$database}";
     $pdo = new PDO($dsn, $username, $password);
-    
+
     echo json_encode(['success' => true, 'message' => 'Connection successful! Database is ready.']);
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'message' => 'Connection failed: ' . $e->getMessage()]);

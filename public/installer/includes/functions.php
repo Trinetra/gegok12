@@ -100,7 +100,7 @@ function checkRequirements() {
             'type' => 'extension'
         ],
     ];
-    
+
     return $requirements;
 }
 
@@ -119,7 +119,7 @@ function checkPermissions() {
         'bootstrap/cache' => BASE_PATH . '/bootstrap/cache',
         'public/uploads' => PUBLIC_PATH . '/uploads',
     ];
-    
+
     $permissions = [];
     foreach ($folders as $name => $path) {
         $permissions[$name] = [
@@ -130,7 +130,7 @@ function checkPermissions() {
             'current' => is_writable($path) ? 'Writable' : 'Not Writable'
         ];
     }
-    
+
     return $permissions;
 }
 
@@ -142,14 +142,14 @@ function testDatabaseConnection($host, $port, $database, $username, $password) {
         $dsn = "mysql:host={$host};port={$port}";
         $pdo = new PDO($dsn, $username, $password);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
+
         // Try to create database if it doesn't exist
         $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$database}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
-        
+
         // Test connection to the specific database
         $dsn = "mysql:host={$host};port={$port};dbname={$database}";
         $pdo = new PDO($dsn, $username, $password);
-        
+
         return ['success' => true, 'message' => 'Connection successful'];
     } catch (PDOException $e) {
         return ['success' => false, 'message' => $e->getMessage()];
@@ -167,19 +167,19 @@ function saveDatabaseConfig($data) {
             return ['success' => false, 'message' => "Field {$field} is required"];
         }
     }
-    
+
     $host = trim($data['db_host']);
     $port = trim($data['db_port']);
     $database = trim($data['db_name']);
     $username = trim($data['db_user']);
     $password = isset($data['db_pass']) ? $data['db_pass'] : '';
-    
+
     // Test connection
     $test = testDatabaseConnection($host, $port, $database, $username, $password);
     if (!$test['success']) {
         return ['success' => false, 'message' => 'Database connection failed: ' . $test['message']];
     }
-    
+
     // Store in session for later use
     $_SESSION['db_config'] = [
         'host' => $host,
@@ -188,7 +188,7 @@ function saveDatabaseConfig($data) {
         'username' => $username,
         'password' => $password
     ];
-    
+
     return ['success' => true, 'message' => 'Database configuration saved'];
 }
 
@@ -196,34 +196,20 @@ function saveDatabaseConfig($data) {
  * Save admin configuration
  */
 function saveAdminConfig($data) {
-    $required = ['app_name', 'app_url', 'admin_email', 'admin_password', 'admin_password_confirm'];
+    $required = ['app_name', 'app_url'];
     foreach ($required as $field) {
         if (empty($data[$field])) {
             return ['success' => false, 'message' => ucfirst(str_replace('_', ' ', $field)) . ' is required'];
         }
     }
-    
-    if ($data['admin_password'] !== $data['admin_password_confirm']) {
-        return ['success' => false, 'message' => 'Passwords do not match'];
-    }
-    
-    if (strlen($data['admin_password']) < 8) {
-        return ['success' => false, 'message' => 'Password must be at least 8 characters'];
-    }
-    
-    if (!filter_var($data['admin_email'], FILTER_VALIDATE_EMAIL)) {
-        return ['success' => false, 'message' => 'Invalid email address'];
-    }
-    
+
     $_SESSION['admin_config'] = [
         'app_name' => trim($data['app_name']),
         'app_url' => rtrim(trim($data['app_url']), '/'),
-        'admin_email' => trim($data['admin_email']),
-        'admin_password' => $data['admin_password'],
         'timezone' => isset($data['timezone']) ? $data['timezone'] : 'UTC'
     ];
-    
-    return ['success' => true, 'message' => 'Admin configuration saved'];
+
+    return ['success' => true, 'message' => 'Application configuration saved'];
 }
 
 /**
@@ -240,31 +226,64 @@ function runInstallation() {
     if (!isset($_SESSION['db_config']) || !isset($_SESSION['admin_config'])) {
         return ['success' => false, 'message' => 'Configuration missing. Please start over.'];
     }
-    
+
     $db = $_SESSION['db_config'];
     $admin = $_SESSION['admin_config'];
-    
+
     try {
         // 1. Create .env file
         $envContent = createEnvContent($db, $admin);
         if (file_put_contents(BASE_PATH . '/.env', $envContent) === false) {
             return ['success' => false, 'message' => 'Could not write .env file'];
         }
-        
+
         // 2. Create storage directories if they don't exist
         createStorageDirectories();
-        
+
         // 3. Create installed marker file
         file_put_contents(BASE_PATH . '/storage/installed', date('Y-m-d H:i:s'));
-        
+
         // Clear session
         unset($_SESSION['db_config']);
         unset($_SESSION['admin_config']);
-        
+
         return ['success' => true, 'message' => 'Installation completed successfully'];
-        
+
     } catch (Exception $e) {
         return ['success' => false, 'message' => 'Installation failed: ' . $e->getMessage()];
+    }
+}
+
+/**
+ * Create .env file only (for step 5, before automated install)
+ */
+function createEnvFile() {
+    if (!isset($_SESSION['db_config']) || !isset($_SESSION['admin_config'])) {
+        return ['success' => false, 'message' => 'Configuration missing. Please start over.'];
+    }
+
+    $db = $_SESSION['db_config'];
+    $admin = $_SESSION['admin_config'];
+
+    try {
+        // Check if .env already exists
+        if (file_exists(BASE_PATH . '/.env')) {
+            return ['success' => true, 'message' => '.env file already exists'];
+        }
+
+        // Create .env file
+        $envContent = createEnvContent($db, $admin);
+        if (file_put_contents(BASE_PATH . '/.env', $envContent) === false) {
+            return ['success' => false, 'message' => 'Could not write .env file. Check directory permissions.'];
+        }
+
+        // Create storage directories if they don't exist
+        createStorageDirectories();
+
+        return ['success' => true, 'message' => '.env file created successfully'];
+
+    } catch (Exception $e) {
+        return ['success' => false, 'message' => 'Failed to create .env: ' . $e->getMessage()];
     }
 }
 
@@ -273,7 +292,7 @@ function runInstallation() {
  */
 function createEnvContent($db, $admin) {
     $appKey = generateAppKey();
-    
+
     $env = <<<ENV
 APP_NAME="{$admin['app_name']}"
 APP_ENV=production
@@ -385,7 +404,7 @@ function createStorageDirectories() {
         BASE_PATH . '/storage/logs',
         BASE_PATH . '/bootstrap/cache',
     ];
-    
+
     foreach ($directories as $dir) {
         if (!is_dir($dir)) {
             mkdir($dir, 0775, true);
@@ -413,5 +432,208 @@ function getTimezones() {
         'America/Los_Angeles' => 'America/Los_Angeles (PST)',
         'Australia/Sydney' => 'Australia/Sydney (AEST)',
         'Pacific/Auckland' => 'Pacific/Auckland (NZST)',
+    ];
+}
+
+/**
+ * Check if a command exists
+ */
+function commandExists($command) {
+    $whereIsCommand = PHP_OS_FAMILY === 'Windows' ? 'where' : 'which';
+    $process = proc_open(
+        "$whereIsCommand $command",
+        [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w'],
+        ],
+        $pipes
+    );
+    if ($process !== false) {
+        $stdout = stream_get_contents($pipes[1]);
+        fclose($pipes[0]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        proc_close($process);
+        return !empty(trim($stdout));
+    }
+    return false;
+}
+
+/**
+ * Check installation tools availability
+ */
+function checkInstallationTools() {
+    return [
+        'composer' => [
+            'name' => 'Composer',
+            'available' => commandExists('composer'),
+            'required' => true
+        ],
+        'node' => [
+            'name' => 'Node.js',
+            'available' => commandExists('node'),
+            'required' => false
+        ],
+        'npm' => [
+            'name' => 'NPM',
+            'available' => commandExists('npm'),
+            'required' => false
+        ],
+        'php' => [
+            'name' => 'PHP CLI',
+            'available' => commandExists('php'),
+            'required' => true
+        ]
+    ];
+}
+
+/**
+ * Run a shell command and return the output
+ */
+function runCommand($command, $cwd = null) {
+    $cwd = $cwd ?: BASE_PATH;
+    
+    $descriptors = [
+        0 => ['pipe', 'r'],
+        1 => ['pipe', 'w'],
+        2 => ['pipe', 'w'],
+    ];
+    
+    $process = proc_open($command, $descriptors, $pipes, $cwd);
+    
+    if ($process === false) {
+        return ['success' => false, 'output' => 'Failed to start process', 'error' => ''];
+    }
+    
+    fclose($pipes[0]);
+    
+    $output = stream_get_contents($pipes[1]);
+    $error = stream_get_contents($pipes[2]);
+    
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+    
+    $exitCode = proc_close($process);
+    
+    return [
+        'success' => $exitCode === 0,
+        'output' => $output,
+        'error' => $error,
+        'exit_code' => $exitCode
+    ];
+}
+
+/**
+ * Run installation step
+ */
+function runInstallationStep($step) {
+    $result = ['success' => false, 'message' => '', 'output' => ''];
+    
+    switch ($step) {
+        case 'composer':
+            $result = runCommand('composer install --no-dev --optimize-autoloader --no-interaction 2>&1');
+            $result['message'] = $result['success'] ? 'Composer packages installed successfully' : 'Failed to install Composer packages';
+            break;
+            
+        case 'npm':
+            if (commandExists('npm')) {
+                $result = runCommand('npm install 2>&1');
+                $result['message'] = $result['success'] ? 'NPM packages installed successfully' : 'Failed to install NPM packages';
+            } else {
+                $result = ['success' => true, 'message' => 'NPM not available, skipping...', 'output' => ''];
+            }
+            break;
+            
+        case 'npm_build':
+            if (commandExists('npm') && file_exists(BASE_PATH . '/node_modules')) {
+                $result = runCommand('npm run production 2>&1');
+                $result['message'] = $result['success'] ? 'Assets compiled successfully' : 'Failed to compile assets';
+            } else {
+                $result = ['success' => true, 'message' => 'NPM not available or node_modules missing, skipping...', 'output' => ''];
+            }
+            break;
+            
+        case 'key_generate':
+            $result = runCommand('php artisan key:generate --force 2>&1');
+            $result['message'] = $result['success'] ? 'Application key generated' : 'Failed to generate application key';
+            break;
+            
+        case 'storage_link':
+            $result = runCommand('php artisan storage:link 2>&1');
+            $result['message'] = $result['success'] ? 'Storage link created' : 'Failed to create storage link';
+            break;
+            
+        case 'migrate':
+            $result = runCommand('php artisan migrate --force 2>&1');
+            $result['message'] = $result['success'] ? 'Database migrated successfully' : 'Failed to run migrations';
+            break;
+            
+        case 'seed':
+            $result = runCommand('php artisan db:seed --force 2>&1');
+            $result['message'] = $result['success'] ? 'Database seeded successfully' : 'Failed to seed database';
+            break;
+            
+        case 'cache':
+            runCommand('php artisan config:cache 2>&1');
+            runCommand('php artisan route:cache 2>&1');
+            runCommand('php artisan view:cache 2>&1');
+            $result = ['success' => true, 'message' => 'Cache cleared and rebuilt', 'output' => ''];
+            break;
+            
+        case 'finalize':
+            // Create installed marker
+            file_put_contents(BASE_PATH . '/storage/installed', date('Y-m-d H:i:s'));
+            $result = ['success' => true, 'message' => 'Installation finalized', 'output' => ''];
+            break;
+            
+        default:
+            $result = ['success' => false, 'message' => 'Unknown installation step', 'output' => ''];
+    }
+    
+    return $result;
+}
+
+/**
+ * Get all installation steps
+ */
+function getInstallationSteps() {
+    return [
+        'composer' => [
+            'name' => 'Installing Composer Dependencies',
+            'description' => 'Installing PHP packages via Composer'
+        ],
+        'key_generate' => [
+            'name' => 'Generating Application Key',
+            'description' => 'Creating secure encryption key'
+        ],
+        'storage_link' => [
+            'name' => 'Creating Storage Link',
+            'description' => 'Linking storage to public directory'
+        ],
+        'migrate' => [
+            'name' => 'Running Database Migrations',
+            'description' => 'Creating database tables'
+        ],
+        'seed' => [
+            'name' => 'Seeding Database',
+            'description' => 'Adding initial data and admin account'
+        ],
+        'npm' => [
+            'name' => 'Installing NPM Dependencies',
+            'description' => 'Installing Node.js packages (optional)'
+        ],
+        'npm_build' => [
+            'name' => 'Compiling Assets',
+            'description' => 'Building CSS and JavaScript (optional)'
+        ],
+        'cache' => [
+            'name' => 'Optimizing Application',
+            'description' => 'Caching configuration and routes'
+        ],
+        'finalize' => [
+            'name' => 'Finalizing Installation',
+            'description' => 'Completing setup process'
+        ]
     ];
 }

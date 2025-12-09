@@ -21,7 +21,7 @@
             <h3 class="font-semibold text-gray-800 mb-2">Check Requirements</h3>
             <p class="text-sm text-gray-500">Verify your server meets all requirements</p>
         </div>
-        
+
         <div class="bg-gray-50 rounded-xl p-6 text-center">
             <div class="w-12 h-12 mx-auto bg-green-100 rounded-xl flex items-center justify-center mb-4">
                 <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,7 +31,7 @@
             <h3 class="font-semibold text-gray-800 mb-2">Setup Database</h3>
             <p class="text-sm text-gray-500">Configure your MySQL database</p>
         </div>
-        
+
         <div class="bg-gray-50 rounded-xl p-6 text-center">
             <div class="w-12 h-12 mx-auto bg-purple-100 rounded-xl flex items-center justify-center mb-4">
                 <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

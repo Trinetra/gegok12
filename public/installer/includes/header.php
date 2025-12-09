@@ -109,7 +109,7 @@
                     <?php echo htmlspecialchars($error); ?>
                 </div>
                 <?php endif; ?>
-                
+
                 <?php if ($success): ?>
                 <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

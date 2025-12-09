@@ -1,10 +1,10 @@
 <?php
 /**
  * Gego K12 - Visual Installation Wizard
- * 
+ *
  * A standalone PHP installer that works without Laravel
  * Handles: Requirements check, Database setup, Primary configuration
- * 
+ *
  * @version 1.1
  */
 
@@ -29,14 +29,14 @@ $success = '';
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once INSTALLER_PATH . '/includes/functions.php';
-    
+
     switch ($step) {
         case 2:
             // Requirements check - just proceed
             header('Location: ?step=3');
             exit;
             break;
-            
+
         case 3:
             // Database configuration
             $result = saveDatabaseConfig($_POST);
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = $result['message'];
             }
             break;
-            
+
         case 4:
             // Admin setup
             $result = saveAdminConfig($_POST);
@@ -60,17 +60,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = $result['message'];
             }
             break;
-            
+
         case 5:
-            // Final installation
-            $result = runInstallation();
-            if ($result['success']) {
-                $_SESSION['installation_complete'] = true;
-                header('Location: ?step=6');
-                exit;
-            } else {
+            // Create .env file before automated installation
+            $result = createEnvFile();
+            if (!$result['success']) {
                 $error = $result['message'];
             }
+            // Don't redirect - the page will handle automated installation via AJAX
             break;
     }
 }

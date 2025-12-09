@@ -17,7 +17,7 @@
                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                     placeholder="localhost or 127.0.0.1">
             </div>
-            
+
             <div>
                 <label for="db_port" class="block text-sm font-medium text-gray-700 mb-2">Database Port</label>
                 <input type="text" id="db_port" name="db_port" value="3306" required
@@ -41,7 +41,7 @@
                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                     placeholder="root">
             </div>
-            
+
             <div>
                 <label for="db_pass" class="block text-sm font-medium text-gray-700 mb-2">Database Password</label>
                 <input type="password" id="db_pass" name="db_pass"
@@ -75,7 +75,7 @@
                 </svg>
                 Back
             </a>
-            
+
             <div class="flex space-x-3">
                 <button type="button" onclick="testConnection()" class="inline-flex items-center px-6 py-3 border border-purple-300 text-purple-700 font-medium rounded-xl hover:bg-purple-50 transition-colors">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +83,7 @@
                     </svg>
                     Test Connection
                 </button>
-                
+
                 <button type="submit" class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all">
                     Continue
                     <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,11 +100,11 @@ function testConnection() {
     const form = document.getElementById('dbForm');
     const formData = new FormData(form);
     formData.append('test_connection', '1');
-    
+
     const resultDiv = document.getElementById('testResult');
     resultDiv.className = 'bg-gray-100 rounded-xl p-4 flex items-center';
     resultDiv.innerHTML = '<svg class="animate-spin w-5 h-5 mr-3 text-purple-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Testing connection...';
-    
+
     fetch('test-connection.php', {
         method: 'POST',
         body: formData

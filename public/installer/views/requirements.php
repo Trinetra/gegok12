@@ -140,7 +140,7 @@ $canProceed = $allRequirementsMet && $allPermissionsMet;
             </svg>
             Back
         </a>
-        
+
         <?php if ($canProceed): ?>
         <form method="POST" class="inline">
             <button type="submit" class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all">
