@@ -111,6 +111,10 @@ class User extends Authenticatable implements HasMedia
     const STOCK_KEEPER_USERGROUP_ID = 12;
     const NON_TEACHING_USERGROUP_ID = 13;
 
+    // ===== PAYROLL TYPE CONSTANTS =====
+    const PAYROLL_TYPE_SALARY_ADVANCE = 2;
+    const PAYROLL_TYPE_RETURN_ADVANCE = 3;
+
     protected $presenter = "App\Presenters\UserprofilePresenter";
 
     /**
@@ -750,7 +754,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function scopeByFirstNameParent($query , $firstname)
     {
-        $query->where('usergroup_id',6)->wherehas('parents', function ($query) use($firstname)
+        $query->where('usergroup_id',self::PARENT_USERGROUP_ID)->wherehas('parents', function ($query) use($firstname)
         {
             $query->whereHas('userParent', function ($q) use($firstname)
             {
@@ -787,7 +791,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function scopeByLastNameParent($query , $lastname)
     {
-        $query->where('usergroup_id',6)->wherehas('parents', function ($query) use($lastname)
+        $query->where('usergroup_id',self::PARENT_USERGROUP_ID)->wherehas('parents', function ($query) use($lastname)
         {
             $query->whereHas('userParent', function ($q) use($lastname)
             {
@@ -822,7 +826,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function scopeByEmailParent($query , $email)
     {
-        $query->where('usergroup_id',6)->wherehas('parents', function ($query) use($email)
+        $query->where('usergroup_id',self::PARENT_USERGROUP_ID)->wherehas('parents', function ($query) use($email)
         {
             $query->whereHas('userParent', function ($q) use($email)
             {
@@ -841,7 +845,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function scopeByQualificationParent($query , $qualification)
     {
-        $query->where('usergroup_id',6)->wherehas('parents', function ($query) use($qualification)
+        $query->where('usergroup_id',self::PARENT_USERGROUP_ID)->wherehas('parents', function ($query) use($qualification)
         {
             $query->whereHas('userParent', function ($q) use($qualification)
             {
@@ -863,7 +867,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function scopeByOccupationParent($query , $occupation)
     {
-        $query->where('usergroup_id',6)->wherehas('parents', function ($query) use($occupation)
+        $query->where('usergroup_id',self::PARENT_USERGROUP_ID)->wherehas('parents', function ($query) use($occupation)
         {
             $query->whereHas('userParent', function ($q) use($occupation)
             {
@@ -885,7 +889,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function scopeByStandardLinkParent($query , $standardlink_id)
     {
-        $query->where('usergroup_id',6)->wherehas('parents', function ($query) use($standardlink_id)
+        $query->where('usergroup_id',self::PARENT_USERGROUP_ID)->wherehas('parents', function ($query) use($standardlink_id)
         {
             $query->whereHas('userParent', function ($quer) use($standardlink_id)
             {
@@ -1552,8 +1556,8 @@ class User extends Authenticatable implements HasMedia
         if(count($this->payrolltransactions)!=0 )
         {
 
-          $array['salaryadvance']=$this->payrolltransactions()->where('paytype_id',2)->sum('amount');
-           $array['returnadvance']=$this->payrolltransactions()->where('paytype_id',3)->sum('amount');
+          $array['salaryadvance']=$this->payrolltransactions()->where('paytype_id', self::PAYROLL_TYPE_SALARY_ADVANCE)->sum('amount');
+           $array['returnadvance']=$this->payrolltransactions()->where('paytype_id', self::PAYROLL_TYPE_RETURN_ADVANCE)->sum('amount');
            $array['pending']=$array['salaryadvance']-$array['returnadvance'];
             return $array;
 
