@@ -122,7 +122,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapStockRoutes()
     {
         Route::prefix('stock')
-            ->middleware(['web','auth', 'stock'])
+            ->middleware(['web','auth', 'stockkeeper'])
             ->namespace($this->stockNamespace)
             ->group(base_path('routes/stock.php'));
     }
