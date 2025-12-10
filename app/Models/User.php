@@ -474,41 +474,6 @@ class User extends Authenticatable implements HasMedia
     }
 
     /**
-     * Scope to filter students by standard/grade.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int $standard
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByStandard($query , $standard)
-    {
-        $query->wherehas('studentAcademic',function ($query) use($standard)
-            {
-                $query->wherehas('standardLink',function ($query) use($standard)
-                {
-                    $query->where('id','=',$standard);
-                });
-            });
-        return $query;
-    }
-
-    /**
-     * Scope to filter students by mode of transport.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $transport
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByTransport($query , $transport)
-    {
-        $query->wherehas('studentAcademic',function ($query) use($transport)
-            {
-                $query->where('mode_of_transport','=',$transport);
-            });
-        return $query;
-    }
-
-    /**
      * Scope to filter users by caste.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
@@ -521,20 +486,6 @@ class User extends Authenticatable implements HasMedia
             {
                 $query->where('caste','=',$caste);
             });
-        return $query;
-    }
-
-    /**
-     * Scope to filter students by admission/registration number.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $admission_number
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByAdmissionNumber($query , $admission_number)
-    {
-        $query->where('registration_number','LIKE',$admission_number.'%');
-
         return $query;
     }
 
@@ -696,53 +647,7 @@ class User extends Authenticatable implements HasMedia
         return $query;
     }
 
-    /**
-     * Scope to filter teachers by qualification.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int $qualification
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByQualification($query , $qualification)
-    {
-        $query->wherehas('teacherprofile',function ($query) use($qualification)
-            {
-                $query->where('qualification_id','=',$qualification);
-            });
-        return $query;
-    }
 
-    /**
-     * Scope to filter teachers by designation.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $designation
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByDesignation($query , $designation)
-    {
-        $query->wherehas('teacherprofile',function ($query) use($designation)
-            {
-                $query->where('designation','LIKE',$designation);
-            });
-        return $query;
-    }
-
-    /**
-     * Scope to filter teachers by job type.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $job_type
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByJopType($query , $job_type)
-    {
-        $query->wherehas('teacherprofile',function ($query) use($job_type)
-            {
-                $query->where('job_type',$job_type);
-            });
-        return $query;
-    }
 
 
     /**
@@ -949,22 +854,7 @@ class User extends Authenticatable implements HasMedia
             });
     }
 
-    /**
-     * Scope to filter alumni by passing batch/year.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $passing_session
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByBatch($query,$passing_session)
-    {
-        $query->wherehas('alumniprofile', function($query) use($passing_session)
-        {
-            $query->where('passing_session',$passing_session);
-        });
 
-        return $query;
-    }
 
     /**
      * Get teacher details for this user.
