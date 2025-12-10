@@ -859,7 +859,7 @@ class User extends Authenticatable implements HasMedia
     /**
     /**
      * Get teacher details for this user.
-     * 
+     *
      * Backward compatibility method that delegates to TeacherUser.
      *
      * @return array
@@ -874,7 +874,7 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Get parent details for this user.
-     * 
+     *
      * Backward compatibility method that delegates to ParentUser.
      *
      * @return array
@@ -889,7 +889,7 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Get children names in formatted string.
-     * 
+     *
      * Backward compatibility method that delegates to StudentUser.
      *
      * @return string
@@ -904,7 +904,7 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Get alumni education details.
-     * 
+     *
      * Backward compatibility method that delegates to AlumniUser.
      *
      * @return array
@@ -919,7 +919,7 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Get alumni education details formatted.
-     * 
+     *
      * Backward compatibility method that delegates to AlumniUser.
      *
      * @return array
@@ -934,7 +934,7 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Get alumni work experience details.
-     * 
+     *
      * Backward compatibility method that delegates to AlumniUser.
      *
      * @return array
@@ -949,7 +949,7 @@ class User extends Authenticatable implements HasMedia
 
     /**
      * Get alumni work experience details formatted.
-     * 
+     *
      * Backward compatibility method that delegates to AlumniUser.
      *
      * @return array

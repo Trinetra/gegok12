@@ -5,6 +5,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Class Country
@@ -28,6 +29,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Country extends Model
 {
+	use HasFactory;
 	protected $table = 'countries';
 
     /**

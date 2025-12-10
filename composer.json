@@ -24,8 +24,6 @@
         "laravel/scout": "^10.20.0",
         "laravel/tinker": "^2.10.1",
         "laravel/ui": "^4.6",
-        "laravel/vapor-cli": "2.0.x-dev",
-        "laravel/vapor-core": "v2.41.0",
         "league/csv": "^9.11",
         "league/flysystem-aws-s3-v3": "^3.24.0",
         "livewire/livewire": "^3.4",

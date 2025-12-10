@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class MustBeAlumni
 {
@@ -13,33 +15,33 @@ class MustBeAlumni
      * @param  \Closure  $next
      * @return mixed
      */
-     public function handle($request, Closure $next)
+    public function handle($request, Closure $next)
     {
-        if(\Auth::user()->usergroup_id==9)
+        if (\Auth::user()->isAlumni())
         {
             return $next($request);
         }
-      
-        if(\Auth::user()->usergroup_id==1)
+
+        if (\Auth::user()->isSiteAdmin())
         {
             return redirect('/superadmin/dashboard');
         }
-          
-        if(\Auth::user()->usergroup_id==3)
+
+        if (\Auth::user()->isAdmin())
         {
             return redirect('/admin/dashboard');
         }
 
-        if(\Auth::user()->usergroup_id==5)
+        if (\Auth::user()->isTeacher())
         {
             return redirect('/teacher/dashboard');
         }
-        
-        if(\Auth::user()->usergroup_id==8)
+
+        if (\Auth::user()->isLibrarian())
         {
-            return redirect('/library/dashboard');          
+            return redirect('/library/dashboard');
         }
-        
+
         abort(404);
     }
 }

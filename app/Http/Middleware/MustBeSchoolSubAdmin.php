@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class MustBeSchoolSubAdmin
 {
@@ -19,12 +21,12 @@ class MustBeSchoolSubAdmin
         {
           return $next($request);
         }
-          
+
         if(\Auth::user()->usergroup_id==1)
         {//dd('schoolsubadmin');
             return redirect('/superadmin/dashboard');
         }
-          
+
         if(\Auth::user()->usergroup_id==3)
         {
             return redirect('/admin/dashboard');
@@ -39,12 +41,12 @@ class MustBeSchoolSubAdmin
         {
             return redirect('/student/dashboard');
         }
-        
+
         if(\Auth::user()->usergroup_id==8)
         {
-            return redirect('/library/dashboard');          
+            return redirect('/library/dashboard');
         }
-            
+
         abort(404);
     }
 }

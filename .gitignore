@@ -6,6 +6,7 @@
 /.idea
 /.vscode
 /.vagrant
+/_co-pilot_docs
 Homestead.json
 Homestead.yaml
 npm-debug.log
