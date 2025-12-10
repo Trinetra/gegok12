@@ -58,7 +58,7 @@ class Conversation extends Model
             ->withTimestamps()
         	->oldest();
 
-           
+
     }
 
     /**

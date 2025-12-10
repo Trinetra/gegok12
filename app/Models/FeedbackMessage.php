@@ -48,7 +48,7 @@ class FeedbackMessage extends Model
      * @var array
      */
     protected $fillable = [
-        'school_id' , 'user_id' , 'feedback_id' , 'message' , 'file' , 'category' , 'is_seen' , 'deleted_from_sender' , 'deleted_from_receiver'    
+        'school_id' , 'user_id' , 'feedback_id' , 'message' , 'file' , 'category' , 'is_seen' , 'deleted_from_sender' , 'deleted_from_receiver'
         ];
 
     /**

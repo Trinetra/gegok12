@@ -136,7 +136,7 @@ class Events extends Model
     {
         return $this->hasMany('App\Models\Notes','entity_id','id');
     }
-    
+
     /**
      * Scope to filter events by church.
      *
@@ -177,7 +177,7 @@ class Events extends Model
      */
     public function getImagePathAttribute()
     {
-        if($this->image==null) 
+        if($this->image==null)
         {
             return $this->eventImagePath($this->category,$this->image);
         }

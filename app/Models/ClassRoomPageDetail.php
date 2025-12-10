@@ -35,7 +35,7 @@ class ClassRoomPageDetail extends Model
 
     /**
      * The attributes that are mass assignable.
-     * 
+     *
      * @var array
      */
     protected $fillable = [
@@ -79,8 +79,8 @@ class ClassRoomPageDetail extends Model
     public function scopeByLike($query,$page_id)
     {
         //dd($page_id);
-        $count = $query->where('page_id',$page_id)->where('like',1)->get(); 
-        
+        $count = $query->where('page_id',$page_id)->where('like',1)->get();
+
         return $count;
     }
 
@@ -93,8 +93,8 @@ class ClassRoomPageDetail extends Model
      */
     public function scopeByUnlike($query,$page_id)
     {
-        $count = $query->where('page_id',$page_id)->where('dislike',1)->count();  
-        
+        $count = $query->where('page_id',$page_id)->where('dislike',1)->count();
+
         return $count;
     }
 }

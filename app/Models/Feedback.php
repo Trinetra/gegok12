@@ -40,7 +40,7 @@ class Feedback extends Model
      * @var array
      */
     protected $fillable = [
-        'school_id', 'parent_id' , 'student_id' , 'admin_id' , 'status'    
+        'school_id', 'parent_id' , 'student_id' , 'admin_id' , 'status'
     ];
 
     /**
@@ -75,7 +75,7 @@ class Feedback extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parent() 
+    public function parent()
     {
         return $this->belongsTo('App\Models\User', 'parent_id');
     }
@@ -85,7 +85,7 @@ class Feedback extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function student() 
+    public function student()
     {
         return $this->belongsTo('App\Models\User', 'student_id');
     }
@@ -95,7 +95,7 @@ class Feedback extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function admin() 
+    public function admin()
     {
         return $this->belongsTo('App\Models\User', 'admin_id');
     }

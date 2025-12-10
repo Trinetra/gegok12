@@ -38,7 +38,7 @@ class ClassRoomPageAttachment extends Model implements HasMedia
 
     /**
      * The attributes that are mass assignable.
-     * 
+     *
      * @var array
      */
     protected $fillable = [

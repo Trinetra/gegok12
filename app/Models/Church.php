@@ -119,7 +119,7 @@ class Church extends Model
     {
         $fulladdress =  $this->address
                         . "<br/>". $this->city
-                        . "<br />" .$this->pincode 
+                        . "<br />" .$this->pincode
                         . "<br /> ". $this->state
                         . "<br /> ". "India" ;
 
@@ -189,7 +189,7 @@ class Church extends Model
        $query->where(function ($query) use($church_id)
             {
                 $query  ->where('id',$church_id)
-                        ->where('status',1); 
+                        ->where('status',1);
             });
         return $query;
    }
@@ -204,7 +204,7 @@ class Church extends Model
         return $this->hasMany('App\Models\User','church_id','id')->with('user')->where('usergroup_id',5)->whereHas('userprofile', function ($query)
             {
                 $query->where('status','active');
-            })->count(); 
+            })->count();
    }
 
    /**
@@ -214,7 +214,7 @@ class Church extends Model
      */
    public function getPaidMembersAttribute()
    {
-        return $this->userprofile->where('membership_type','member')->count();  
+        return $this->userprofile->where('membership_type','member')->count();
    }
 
    /**

@@ -51,5 +51,5 @@ class EventGallery extends Model
         return $this->belongsTo('App\Models\Events','event_id');
     }
 
-    
+
 }

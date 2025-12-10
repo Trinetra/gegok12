@@ -31,7 +31,7 @@ class Chapter extends Model
      use SoftDeletes;
 
      protected $fillable = [
-	    'school_id' ,   'standard_id' ,  'subject_id' ,' name' 
+	    'school_id' ,   'standard_id' ,  'subject_id' ,' name'
 	];
 
     /**
