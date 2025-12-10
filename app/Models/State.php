@@ -63,7 +63,7 @@ class State extends Model
     {
         return $this->hasMany('App\Models\School','state_id','id');
     }
-    
+
     /**
      * Get user profiles from this state.
      *

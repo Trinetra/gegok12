@@ -24,6 +24,6 @@ class TransactionType extends Model
 {
     //
     use SoftDeletes;
-	
+
      protected $fillable=['name'];
 }

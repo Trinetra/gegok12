@@ -56,7 +56,7 @@ class LessonPlan extends Model
      * @var array
      */
     protected $fillable = [
-        'teacher_link_id' , 'unit_no' , 'unit_name' , 'description' , 'title' , 'duration' , 'objective' , 'materials_required' , 'introduction' , 'procedure' , 'conclusion' , 'notes' , 'assessment' , 'modification' , 'status'    
+        'teacher_link_id' , 'unit_no' , 'unit_name' , 'description' , 'title' , 'duration' , 'objective' , 'materials_required' , 'introduction' , 'procedure' , 'conclusion' , 'notes' , 'assessment' , 'modification' , 'status'
     ];
 
     /**
@@ -65,7 +65,7 @@ class LessonPlan extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
-    
+
     /**
      * Get the index name for the model.
      *

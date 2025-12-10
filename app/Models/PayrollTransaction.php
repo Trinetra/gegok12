@@ -40,13 +40,13 @@ class PayrollTransaction extends Model
 {
     //
   use SoftDeletes;
-  
+
     protected $casts=['transaction_detail'=>'array'];
 
     protected $fillable = [
         'school_id' , 'transaction_no','paytype_id','account_id','staff_id','payroll_id','transaction_date','amount','payment_method','transaction_detail','reference_number','attachment','remarks'
     ];
-    
+
     /**
      * Get the staff member for this transaction.
      *

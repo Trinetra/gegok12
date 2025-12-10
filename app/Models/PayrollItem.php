@@ -24,8 +24,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class PayrollItem extends Model
 {
-    
+
     use SoftDeletes;
-	
+
      protected $fillable=['name','key','type'];
 }

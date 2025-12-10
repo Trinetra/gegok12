@@ -35,9 +35,9 @@ class Setting extends Model
 
 	/**
 	 * The attributes that are mass assignable.
-	 * 
+	 *
 	 * @var array
-	 */ 
+	 */
     protected $fillable = [
         'key','name','description','value', 'field','active',
     ];

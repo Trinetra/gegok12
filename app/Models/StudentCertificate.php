@@ -32,7 +32,7 @@ class StudentCertificate extends Model
     protected $table = 'student_certificate';
 
      protected $fillable = [
-        
-         'school_id' , 'student_id' , 'program_name' , 'event_name' ,'certificate_for' 
+
+         'school_id' , 'student_id' , 'program_name' , 'event_name' ,'certificate_for'
     ];
 }

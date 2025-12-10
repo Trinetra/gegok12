@@ -24,6 +24,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TransactionAccount extends Model
 {
     use SoftDeletes;
-	
+
      protected $fillable=['name','key'];
 }

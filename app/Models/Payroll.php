@@ -82,7 +82,7 @@ class Payroll extends Model
    {
      if(count($this->payslipitems)!=0 )
         {
-          
+
          $earning=$this->payslipitems()->whereHas('salaryitem', function($query) {
             $query->whereHas('templateitem',function($query){
               $query->whereHas('payrollitem',function($query){
@@ -101,7 +101,7 @@ class Payroll extends Model
 
     if(count($this->payslipitems)!=0 )
         {
-          
+
           $deduction=$this->payslipitems()->whereHas('salaryitem', function($query) {
             $query->whereHas('templateitem',function($query){
               $query->whereHas('payrollitem',function($query){
@@ -113,7 +113,7 @@ class Payroll extends Model
            return round($deduction);
         }
         return 0;
-    
+
    }
 
    public function salarypercentage()
@@ -145,7 +145,7 @@ class Payroll extends Model
            return round($total);
         }
         return 0;
-    
+
    }
 
     public function scopeByDate($query,$start_date,$end_date)
@@ -173,7 +173,7 @@ class Payroll extends Model
 
     public function getLeaveDays($id,$start_date,$end_date)
     {
-     
+
     /*  $leave=TeacherLeaveApplication::where('user_id',$id)->where('from_date','>=',$start_date)->where('to_date','<=',$end_date)->first();*/
      $days=0;
      $leave=TeacherLeaveApplication::where('user_id',$id)->where([['from_date','>=',$start_date],['status','approved']])->first();
@@ -196,7 +196,7 @@ class Payroll extends Model
 
      public function getTotalDays()
     {
-     
+
       $from_date=date('Y-m-d H:i:s',strtotime($this->start_date));
       $to_date=date('Y-m-d H:i:s',strtotime($this->end_date));
 
@@ -208,7 +208,7 @@ class Payroll extends Model
 
      public function getDaySalary()
     {
-     
+
       return round($this->salary->gross_salary/$this->getTotalDays());
 
     }

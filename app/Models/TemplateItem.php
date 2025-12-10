@@ -33,7 +33,7 @@ class TemplateItem extends Model
     protected $with=['payrollitem','paycategory'];
 
     protected $fillable = ['template_id' , 'item_id','paycategory_id','category_value'];
-    
+
     /**
      * Get the payroll template for this item.
      *

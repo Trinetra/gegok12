@@ -51,7 +51,7 @@ class TelephoneDirectory extends Model
      * @var array
      */
     protected $dates = ['deleted_at'];
-    
+
     /**
      * Get the school for this telephone directory entry.
      *

@@ -48,11 +48,11 @@ class StudentHomework extends Model
 
     /**
      * The attributes that are mass assignable.
-     * 
+     *
      * @var array
      */
     protected $fillable = [
-        'homework_id' , 'user_id' , 'attachment' , 'submitted_on' , 'checked_by' , 'checked_on' , 'status' , 'comments' 
+        'homework_id' , 'user_id' , 'attachment' , 'submitted_on' , 'checked_by' , 'checked_on' , 'status' , 'comments'
     ];
 
     /**

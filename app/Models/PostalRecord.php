@@ -34,7 +34,7 @@ use App\Traits\Common;
 class PostalRecord extends Model
 {
 	use Common;
-	
+
     protected $table = 'postal_record';
 
     protected $fillable = [
@@ -51,6 +51,6 @@ class PostalRecord extends Model
         return $this->getFilePath($this->attachment);
     }
 
-   
-  
+
+
 }

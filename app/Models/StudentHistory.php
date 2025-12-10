@@ -64,5 +64,5 @@ class StudentHistory extends Model
     {
         return $this->belongsTo('\App\Models\User','student_id');
     }
-    
+
 }

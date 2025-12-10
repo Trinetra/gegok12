@@ -92,7 +92,7 @@ class Standard extends Model
     {
         return $this->hasMany('\App\Models\Subject','school_id','id');
     }
-    
+
     /**
      * Get standard links (class-section combinations) for this standard.
      *

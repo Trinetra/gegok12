@@ -43,7 +43,7 @@ class LessonPlanApproval extends Model
      * @var array
      */
     protected $fillable = [
-        'lesson_plan_id' , 'comments' , 'approved_by' , 'approved_at'  
+        'lesson_plan_id' , 'comments' , 'approved_by' , 'approved_at'
     ];
 
     /**
