@@ -857,191 +857,109 @@ class User extends Authenticatable implements HasMedia
 
 
     /**
+    /**
      * Get teacher details for this user.
+     * 
+     * Backward compatibility method that delegates to TeacherUser.
      *
      * @return array
      */
     public function getTeacherDetails()
     {
-        $i = 0;
-        $array = [];
-        foreach ($this->teacherprofile as $teacher)
-        {
-            $array['designation']                               = $teacher->designation;
-            $array['designation_name']                          = str_replace('_',' ', ucwords($teacher->designation));
-            $array['reporting_to']                              = $teacher->reporting_to;
-            $array['sub_designation']                           = $teacher->sub_designation;
-            $array['employee_id']                               = $teacher->employee_id;
-            $array['ug_degree']                                 = $teacher->ug_degree;
-            $array['pg_degree']                                 = $teacher->pg_degree;
-            $array['specialization']                            = $teacher->specialization;
-            $array['job_type']                                  = $teacher->job_type;
-            $array['interested_in']                             = $teacher->interested_in;
-            $array['sub_qualification']                         = $teacher->sub_qualification;
-            $array['status']                                    = $teacher->status;
-            $array['qualification_id'][$i]['qualification_id']  = $teacher->qualification_id;
-            $array['qualification_name'][$i]                    = $teacher->qualification->display_name;
-            $i++;
+        if ($this->isTeacher() && method_exists($this, 'getTeacherDetails')) {
+            return parent::getTeacherDetails();
         }
-
-        return $array;
+        return [];
     }
 
     /**
      * Get parent details for this user.
+     * 
+     * Backward compatibility method that delegates to ParentUser.
      *
      * @return array
      */
     public function getParentDetails()
     {
-        $i = 0;
-        $array = [];
-        foreach ($this->parentprofile as $parent)
-        {
-            $array['profession']                                = $parent->profession;
-            $array['sub_occupation']                            = $parent->sub_occupation;
-            $array['designation']                               = $parent->designation;
-            $array['organization_name']                         = $parent->organization_name;
-            $array['official_address']                          = $parent->official_address;
-            $array['relation']                                  = $parent->relation;
-            $array['annual_income']                             = $parent->annual_income;
-            $array['qualification_id'][$i]['qualification_id']  = $parent->qualification_id;
-            $array['qualification_name'][$i]                    = $parent->qualification->display_name;
-            $i++;
+        if ($this->isParent() && method_exists($this, 'getParentDetails')) {
+            return parent::getParentDetails();
         }
-
-        return $array;
+        return [];
     }
 
     /**
      * Get children names in formatted string.
+     * 
+     * Backward compatibility method that delegates to StudentUser.
      *
      * @return string
      */
     public function getChildren()
     {
-        $i = 0;
-        $array = [];
-        foreach ($this->children as $children)
-        {
-            $data[] = $children->userStudent->FullName.' ('.$children->userStudent->studentAcademicLatest->standardLink->StandardSection.')';
-            $i++;
+        if (method_exists($this, 'getChildren')) {
+            return parent::getChildren();
         }
-        $child  = implode(', ',$data);
-
-        return $child;
+        return '';
     }
 
     /**
      * Get alumni education details.
+     * 
+     * Backward compatibility method that delegates to AlumniUser.
      *
      * @return array
      */
     public function getAlumniEducationDetails()
     {
-        $array = [];
-        if (is_array($this->alumniprofile['institution_name'])) //new condition
-        {
-            for($i = 0 ; $i < count($this->alumniprofile['institution_name']) ; $i++)
-            {
-                $array[$i][]    = $this->alumniprofile['institution_name'][$i];
-                $array[$i][]    = $this->alumniprofile['degree'][$i];
-                $array[$i][]    = $this->alumniprofile['specialization'][$i];
-                $array[$i][]    = $this->alumniprofile['college_start_year'][$i] == null ? null:$this->alumniprofile['college_start_year'][$i];
-                $array[$i][]    = $this->alumniprofile['college_end_year'][$i] == null ? null:$this->alumniprofile['college_end_year'][$i];
-                $array[$i][]    = $this->alumniprofile['grade'][$i];
-            }
+        if ($this->isAlumni() && method_exists($this, 'getAlumniEducationDetails')) {
+            return parent::getAlumniEducationDetails();
         }
-        return $array;
+        return [];
     }
 
     /**
      * Get alumni education details formatted.
+     * 
+     * Backward compatibility method that delegates to AlumniUser.
      *
      * @return array
      */
     public function getAlumniEducation()
     {
-        $array = [];
-        if (is_array($this->alumniprofile['institution_name'])) //new condition
-        {
-            for($i = 0 ; $i < count($this->alumniprofile['institution_name']) ; $i++)
-            {
-                $array['inputs'][$i]['institution_name']    = $this->alumniprofile['institution_name'][$i];
-                $array['inputs'][$i]['degree']              = $this->alumniprofile['degree'][$i];
-                $array['inputs'][$i]['specialization']      = $this->alumniprofile['specialization'][$i];
-                $array['inputs'][$i]['college_start_year']  = $this->alumniprofile['college_start_year'][$i] == null ? null:$this->alumniprofile['college_start_year'][$i];
-
-                if( ( $this->alumniprofile['college_end_year'][$i] == null ) && ( $this->alumniprofile['grade'][$i] == null ) )
-                {
-                    $array['inputs'][$i]['current_studying'] = 1;
-                }
-                else
-                {
-                    $array['inputs'][$i]['college_end_year']    = $this->alumniprofile['college_end_year'][$i] == null ? null:$this->alumniprofile['college_end_year'][$i];
-                    $array['inputs'][$i]['grade']               = $this->alumniprofile['grade'][$i];
-                }
-            }
+        if ($this->isAlumni() && method_exists($this, 'getAlumniEducation')) {
+            return parent::getAlumniEducation();
         }
-        return $array;
+        return [];
     }
 
     /**
      * Get alumni work experience details.
+     * 
+     * Backward compatibility method that delegates to AlumniUser.
      *
      * @return array
      */
     public function getAlumniWorkDetails()
     {
-        $array = [];
-        if (is_array($this->alumniprofile['company_name'])) //new condition
-        {
-
-            for($i=0;$i<count($this->alumniprofile['company_name']);$i++)
-            {
-                $array[$i][]   = $this->alumniprofile['company_name'][$i] == null ? null:$this->alumniprofile['company_name'][$i];
-                $array[$i][]   = $this->alumniprofile['designation'][$i] == null ? null:$this->alumniprofile['designation'][$i];
-                $array[$i][]   = $this->alumniprofile['location'][$i] == null ? null:$this->alumniprofile['location'][$i];
-                $array[$i][]   = $this->alumniprofile['job_start_year'][$i] == null ? null:$this->alumniprofile['job_start_year'][$i];
-                $array[$i][]   = $this->alumniprofile['job_start_month'][$i] == null ? null:$this->alumniprofile['job_start_month'][$i];
-                $array[$i][]   = $this->alumniprofile['job_end_year'][$i] == null ? null:$this->alumniprofile['job_end_year'][$i];
-                $array[$i][]   = $this->alumniprofile['job_end_month'][$i] == null ? null:$this->alumniprofile['job_end_month'][$i];
-            }
+        if ($this->isAlumni() && method_exists($this, 'getAlumniWorkDetails')) {
+            return parent::getAlumniWorkDetails();
         }
-        return $array;
+        return [];
     }
 
     /**
      * Get alumni work experience details formatted.
+     * 
+     * Backward compatibility method that delegates to AlumniUser.
      *
      * @return array
      */
     public function getAlumniWork()
     {
-        $array = [];
-        if (is_array($this->alumniprofile['company_name'])) //new condition
-        {
-
-            for($i=0;$i<count($this->alumniprofile['company_name']);$i++)
-            {
-                $array['inputs'][$i]['company_name']    = $this->alumniprofile['company_name'][$i] == null ? null:$this->alumniprofile['company_name'][$i];
-                $array['inputs'][$i]['designation']     = $this->alumniprofile['designation'][$i] == null ? null:$this->alumniprofile['designation'][$i];
-                $array['inputs'][$i]['location']        = $this->alumniprofile['location'][$i] == null ? null:$this->alumniprofile['location'][$i];
-                $array['inputs'][$i]['job_start_year']  = $this->alumniprofile['job_start_year'][$i] == null ? null:$this->alumniprofile['job_start_year'][$i];
-                $array['inputs'][$i]['job_start_month'] = $this->alumniprofile['job_start_month'][$i] == null ? null:$this->alumniprofile['job_start_month'][$i];
-
-                if( ($this->alumniprofile['job_end_year'][$i] == null) && ($this->alumniprofile['job_end_month'][$i] == null) )
-                {
-                    $array['inputs'][$i]['present'] = 1;
-                }
-                else
-                {
-                    $array['inputs'][$i]['job_end_year']    = $this->alumniprofile['job_end_year'][$i] == null ? null:$this->alumniprofile['job_end_year'][$i];
-                    $array['inputs'][$i]['job_end_month']   = $this->alumniprofile['job_end_month'][$i] == null ? null:$this->alumniprofile['job_end_month'][$i];
-                }
-            }
+        if ($this->isAlumni() && method_exists($this, 'getAlumniWork')) {
+            return parent::getAlumniWork();
         }
-        return $array;
+        return [];
     }
 
     /**

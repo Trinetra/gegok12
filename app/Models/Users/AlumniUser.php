@@ -133,4 +133,44 @@ class AlumniUser extends User
         }
         return $array;
     }
+
+    /**
+     * Backward compatibility alias for getEducationDetails().
+     *
+     * @return array
+     */
+    public function getAlumniEducationDetails()
+    {
+        return $this->getEducationDetails();
+    }
+
+    /**
+     * Backward compatibility alias for getEducationFormatted().
+     *
+     * @return array
+     */
+    public function getAlumniEducation()
+    {
+        return $this->getEducationFormatted();
+    }
+
+    /**
+     * Backward compatibility alias for getWorkDetails().
+     *
+     * @return array
+     */
+    public function getAlumniWorkDetails()
+    {
+        return $this->getWorkDetails();
+    }
+
+    /**
+     * Backward compatibility alias for getWorkFormatted().
+     *
+     * @return array
+     */
+    public function getAlumniWork()
+    {
+        return $this->getWorkFormatted();
+    }
 }
