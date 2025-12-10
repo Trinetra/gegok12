@@ -1,7 +1,25 @@
 <?php
+// SPDX-License-Identifier: MIT
+// (c) 2025 GegoSoft Technologies and GegoK12 Contributors
+
 /**
- * SPDX-License-Identifier: MIT
- * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
+ * Class AbsentReason
+ *
+ * Model for absence reasons.
+ *
+ * @property int $id
+ * @property string $title
+ * @property int $status
+ * @property \Carbon\Carbon|null $deleted_at
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|AbsentReason newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AbsentReason newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|AbsentReason query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AbsentReason whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AbsentReason whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AbsentReason whereDeletedAt($value)
+ *
+ * @mixin \Eloquent
  */
 namespace App\Models;
 
@@ -36,11 +54,21 @@ class AbsentReason extends Model
      */
     protected $dates = ['deleted_at'];
 
+    /**
+     * Get the attendance records for this reason.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function attendance()
     {
         return $this->belongsTo('App\Models\Attendance','reason_id','id');
     }
 
+    /**
+     * Get the teacher leave applications for this reason.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function teacherLeaveApplication()
     {
         return $this->hasMany('\App\Models\TeacherLeaveApplication','reason_id','id');

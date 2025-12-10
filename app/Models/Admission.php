@@ -1,7 +1,20 @@
 <?php
+// SPDX-License-Identifier: MIT
+// (c) 2025 GegoSoft Technologies and GegoK12 Contributors
 /**
- * SPDX-License-Identifier: MIT
- * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
+ * Class Admission
+ *
+ * Model for student admissions.
+ *
+ * @property int $id
+ * @property int $school_id
+ * @property int $academic_year_id
+ * @property int $standard_id
+ * @property string $name
+ * ... (other fillable fields)
+ * @property \Carbon\Carbon|null $deleted_at
+ *
+ * @mixin \Eloquent
  */
 namespace App\Models;
 
@@ -36,16 +49,31 @@ class Admission extends Model
      */
     protected $dates = ['deleted_at'];
 
+    /**
+     * Get the school that owns the admission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function school()
     {
         return $this->belongsTo('App\Models\School','school_id');
     }
 
+    /**
+     * Get the academic year for the admission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function academicYear()
     {
         return $this->belongsTo('App\Models\AcademicYear','academic_year_id');
     }
 
+    /**
+     * Get the standard for the admission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function standard()
     {
         return $this->belongsTo('App\Models\Standard','standard_id');
