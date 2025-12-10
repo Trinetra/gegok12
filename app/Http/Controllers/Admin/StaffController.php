@@ -35,16 +35,30 @@ class StaffController extends Controller
      */
     public function find(Request $request)
     {
-        //
+        $groups = [8, 10, 11, 13];
+
+        if (config('ginventory.enabled', false)) {
+            $groups[] = 12; 
+        }
         //return $this->TeacherFilter($request,Auth::user()->school_id,5);
-        return $this->StaffFilter($request,Auth::user()->school_id,[8,10,11,12,13]);
+        return $this->StaffFilter($request,Auth::user()->school_id,$groups);
     }
 
     public function index()
     {
         //
        
-         $count    =  User::where('school_id',Auth::user()->school_id)->whereIn('usergroup_id',[8,10,11,12,13])->count();
+         // $count    =  User::where('school_id',Auth::user()->school_id)->whereIn('usergroup_id',[8,10,11,12,13])->count();
+        $query = User::where('school_id', Auth::user()->school_id);
+
+        $groups = [8, 10, 11, 13];
+
+        if (config('ginventory.enabled', false)) {
+            $groups[] = 12; 
+        }
+
+        $count = $query->whereIn('usergroup_id', $groups)->count();
+        
         $alphabet = request('alphabet')?request('alphabet'):'A';
         $query    = \Request::getQueryString();
         if(request('date_of_birth') != null)

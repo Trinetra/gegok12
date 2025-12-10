@@ -30,7 +30,17 @@ class LoginController extends Controller implements ShouldQueue
      *
      * @var string
      */
-    protected $redirectTo = '/admin/dashboard';
+    // protected $redirectTo = '/admin/dashboard';
+    protected function redirectTo()
+    {
+        $user = auth()->user();
+
+        if ($user && $user->usergroup_id == 12) {
+            return '/stock/dashboard';
+        }
+
+        return '/admin/dashboard';
+    }
 
     /**
      * Create a new controller instance.
