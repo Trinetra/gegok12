@@ -1,7 +1,24 @@
 <?php
+// SPDX-License-Identifier: MIT
+// (c) 2025 GegoSoft Technologies and GegoK12 Contributors
+
 /**
- * SPDX-License-Identifier: MIT
- * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
+ * Class AssignmentApproval
+ *
+ * Model for assignment approvals.
+ *
+ * @property int $id
+ * @property int $assignment_id
+ * @property string $comments
+ * @property int $status
+ * @property int $approved_by
+ * @property \Carbon\Carbon $approved_at
+ * @property \Carbon\Carbon|null $deleted_at
+ *
+ * @property-read \App\Models\User $approvedBy
+ * @property-read \App\Models\Assignment $assignment
+ *
+ * @mixin \Eloquent
  */
 namespace App\Models;
 
@@ -25,7 +42,7 @@ class AssignmentApproval extends Model
 
     /**
      * The attributes that are mass assignable.
-     * 
+     *
      * @var array
      */
     protected $fillable = [
@@ -39,11 +56,21 @@ class AssignmentApproval extends Model
      */
     protected $dates = ['approved_at' , 'deleted_at'];
 
+    /**
+     * Get the user who approved this assignment.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function approvedBy()
     {
     	return $this->belongsTo('\App\Models\User','approved_by');
     }
 
+    /**
+     * Get the assignment for this approval.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function assignment()
     {
     	return $this->belongsTo('\App\Models\Assignment','assignment_id');
