@@ -7,6 +7,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Smstemplate
+ *
+ * Model for managing SMS message templates.
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $content
+ * @property int $status
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @mixin \Eloquent
+ */
 class Smstemplate extends Model
 {
     //

@@ -22,6 +22,6 @@ class Keyword extends Model
     protected $table = 'keywords';
 
     protected $fillable = [
-        'name' 
+        'name'
     ];
 }

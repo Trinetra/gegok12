@@ -1,8 +1,7 @@
 <?php
-/**
- * SPDX-License-Identifier: MIT
- * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
- */
+// SPDX-License-Identifier: MIT
+// (c) 2025 GegoSoft Technologies and GegoK12 Contributors
+
 namespace App\Models;
 
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
@@ -12,7 +11,22 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\Models\Media;
 use App\Traits\Common;
 use App\Models\PostTag;
-class Tag extends Model 
+
+/**
+ * Class Tag
+ *
+ * Model for managing post tags.
+ *
+ * @property int $id
+ * @property string $tag_name
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @property int $tagCount
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Post[] $posts
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PostTag[] $posttag
+ * @mixin \Eloquent
+ */
+class Tag extends Model
 {
     //
 
@@ -28,7 +42,7 @@ class Tag extends Model
 
     /**
      * The attributes that are mass assignable.
-     * 
+     *
      * @var array
      */
     protected $fillable = [
@@ -40,7 +54,7 @@ class Tag extends Model
      *
      * @var array
      */
-    
+
 
     /**
      * The attributes that should be mutated to dates.
@@ -48,17 +62,32 @@ class Tag extends Model
      * @var array
      */
 
+    /**
+     * Get posts with this tag.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function posts()
     {
         return $this->belongsToMany(Post::class);
     }
 
+    /**
+     * Get post tags for this tag.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function posttag()
     {
         return $this->belongsToMany(PostTag::class);
     }
 
-
+    /**
+     * Get count of posts with this tag.
+     *
+     * @param string $tag_name
+     * @return int
+     */
     public function getTag($tag_name)
     {//dump($tag_name);
 
@@ -67,7 +96,7 @@ class Tag extends Model
         $count=PostTag::where('tag_id',$tag->id)->count();
 
         return $count;
-   
+
     }
-  
+
 }

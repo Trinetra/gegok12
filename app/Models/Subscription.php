@@ -1,13 +1,34 @@
 <?php
-/**
- * SPDX-License-Identifier: MIT
- * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
- */
+// SPDX-License-Identifier: MIT
+// (c) 2025 GegoSoft Technologies and GegoK12 Contributors
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class Subscription
+ *
+ * Model for managing school subscriptions to plans.
+ *
+ * @property int $id
+ * @property int $school_id
+ * @property int $user_id
+ * @property int $plan_id
+ * @property \DateTime $end_date
+ * @property int $status
+ * @property array $payment_details
+ * @property array $plan_details
+ * @property array $card_details
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @property \DateTime $deleted_at
+ * @property-read \App\Models\School $school
+ * @property-read \App\Models\User $user
+ * @property-read \App\Models\Plan $plan
+ * @mixin \Eloquent
+ */
 class Subscription extends Model
 {
     //
@@ -38,21 +59,44 @@ class Subscription extends Model
 
     protected $casts=['payment_details'=>'array' , 'card_details'=>'array' , 'plan_details'=>'array'];
 
+    /**
+     * Get the school for this subscription.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function school()
     {
         return $this->belongsTo('App\Models\School','school_id');
     }
 
+    /**
+     * Get the user who owns this subscription.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
     	return $this->belongsTo('App\Models\User','user_id','id');
     }
 
+    /**
+     * Get the plan for this subscription.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function plan()
     {
     	return $this->belongsTo('App\Models\Plan','plan_id');
     }
 
+    /**
+     * Scope to filter subscriptions by date range.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \DateTime $start
+     * @param \DateTime $end
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeDate($query,$start,$end)
     {
 

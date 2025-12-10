@@ -1,13 +1,30 @@
 <?php
-/**
- * SPDX-License-Identifier: MIT
- * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
- */
+// SPDX-License-Identifier: MIT
+// (c) 2025 GegoSoft Technologies and GegoK12 Contributors
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Query
+ *
+ * Model for managing user queries and support requests.
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string $phone
+ * @property string $school_name
+ * @property string $designation
+ * @property string $channel
+ * @property string $message
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @property \DateTime $deleted_at
+ * @mixin \Eloquent
+ */
 class Query extends Model
 {
     use SoftDeletes;

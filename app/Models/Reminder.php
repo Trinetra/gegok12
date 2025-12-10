@@ -1,13 +1,40 @@
 <?php
-/**
- * SPDX-License-Identifier: MIT
- * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
- */
+// SPDX-License-Identifier: MIT
+// (c) 2025 GegoSoft Technologies and GegoK12 Contributors
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Reminder
+ *
+ * Model for managing reminders sent to users via email or SMS.
+ *
+ * @property int $id
+ * @property int $school_id
+ * @property string $from
+ * @property string $to
+ * @property string $subject
+ * @property string $message
+ * @property int $entity_id
+ * @property string $entity_name
+ * @property string $via
+ * @property int $queue_status
+ * @property array $sms_response
+ * @property \DateTime $executed_at
+ * @property int $template_id
+ * @property array $data
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @property \DateTime $deleted_at
+ * @property-read \App\Models\Events $events
+ * @property-read \App\Models\School $school
+ * @property-read \App\Models\User $user
+ * @property-read \App\Models\User $userSms
+ * @mixin \Eloquent
+ */
 class Reminder extends Model
 {
     //
@@ -30,22 +57,42 @@ class Reminder extends Model
 	];
 
 	protected $casts = ['data'=>'array' , 'sms_response'=>'array'];
-    
+
+	/**
+	 * Get the event for this reminder.
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
 	public function events()
    	{
    		return $this->belongsTo('App\Models\Events','entity_id');
    	}
 
+    /**
+     * Get the school for this reminder.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function school()
     {
         return $this->belongsTo('App\Models\School','school_id');
     }
 
+    /**
+     * Get the user for email delivery.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
    	{
    		return $this->belongsTo('App\Models\User','to','email');
    	}
 
+   	/**
+   	 * Get the user for SMS delivery.
+   	 *
+   	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+   	 */
    	public function userSms()
    	{
    		return $this->belongsTo('App\Models\User','to','mobile_no');

@@ -8,27 +8,71 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+
+/**
+ * Class Payroll
+ *
+ * Model for managing staff payroll records.
+ *
+ * @property int $id
+ * @property int $school_id
+ * @property string $payrollno
+ * @property int $staff_id
+ * @property int $salary_id
+ * @property \DateTime $start_date
+ * @property \DateTime $end_date
+ * @property int $status
+ * @property string $comments
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @property \DateTime $deleted_at
+ * @property-read \App\Models\User $user
+ * @property-read \App\Models\Salary $salary
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PayslipItem[] $payslipitems
+ * @property-read \App\Models\PayrollTransaction $transaction
+ * @mixin \Eloquent
+ */
 class Payroll extends Model
 {
   use SoftDeletes;
 
     protected $fillable = ['school_id' , 'payrollno','staff_id','salary_id','start_date','end_date','status','comments'];
 
+  /**
+   * Get the staff user associated with this payroll.
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+   */
   public function user()
     {
          return $this->belongsTo(User::class,'staff_id');
     }
 
+    /**
+     * Get the salary associated with this payroll.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function salary()
     {
          return $this->belongsTo(Salary::class,'salary_id');
     }
 
+  /**
+   * Get the payslip items for this payroll.
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\HasMany
+   */
   public function payslipitems()
     {
         return $this->hasMany(PayslipItem::class, 'payroll_id', 'id');
     }
 
+  /**
+   * Get the transaction record for this payroll.
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\HasOne
+   */
   public function transaction()
     {
         return $this->hasOne(PayrollTransaction::class,'payroll_id');
