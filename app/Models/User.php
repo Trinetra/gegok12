@@ -96,6 +96,21 @@ class User extends Authenticatable implements HasMedia
     use Notifiable;
     use HasFactory;
 
+    // ===== USERGROUP CONSTANTS =====
+    const SITEADMIN_USERGROUP_ID = 1;
+    const SITESUBADMIN_USERGROUP_ID = 2;
+    const SCHOOLADMIN_USERGROUP_ID = 3;
+    const SCHOOLSUBADMIN_USERGROUP_ID = 4;
+    const TEACHER_USERGROUP_ID = 5;
+    const STUDENT_USERGROUP_ID = 6;
+    const PARENT_USERGROUP_ID = 7;
+    const LIBRARIAN_USERGROUP_ID = 8;
+    const ALUMNI_USERGROUP_ID = 9;
+    const RECEPTIONIST_USERGROUP_ID = 10;
+    const ACCOUNTANT_USERGROUP_ID = 11;
+    const STOCK_KEEPER_USERGROUP_ID = 12;
+    const NON_TEACHING_USERGROUP_ID = 13;
+
     protected $presenter = "App\Presenters\UserprofilePresenter";
 
     /**
@@ -757,17 +772,10 @@ class User extends Authenticatable implements HasMedia
      */
     public function scopeByFullNameParent($query , $fullname)
     {
-        /*$query->where('usergroup_id',6)->wherehas('parents', function ($query) use($fullname)
-        {
-            $query->whereHas('userParent', function ($q) use($fullname)
-            {*/
-                $query->whereHas('userprofile', function ($qu) use($fullname)
-                {
-                    $qu->where('firstname','LIKE',$fullname.'%');
-                });
-            /*});
-        });*/
-        return $q;
+        return $query->where('usergroup_id', self::PARENT_USERGROUP_ID)
+            ->whereHas('userprofile', function ($qu) use($fullname) {
+                $qu->where('firstname', 'LIKE', $fullname . '%');
+            });
     }
 
     /**
@@ -801,15 +809,8 @@ class User extends Authenticatable implements HasMedia
      */
     public function scopeByMobileNoParent($query , $mobile_no)
     {
-        /*$query->where('usergroup_id',6)->wherehas('parents', function ($query) use($mobile_no)
-        {
-            $query->whereHas('userParent', function ($q) use($mobile_no)
-            {
-                $q->where('mobile_no',$mobile_no);
-            });
-        });*/
-        $query->where('mobile_no','LIKE',$mobile_no.'%');
-        return $query;
+        return $query->where('usergroup_id', self::PARENT_USERGROUP_ID)
+            ->where('mobile_no', 'LIKE', $mobile_no . '%');
     }
 
     /**
@@ -934,23 +935,14 @@ class User extends Authenticatable implements HasMedia
      */
     public function scopeByStudentNameParent($query , $student_name)
     {
-        /*$query->where('usergroup_id',6)->wherehas('parents', function ($query) use($student_name)
-        {
-            $query->whereHas('userParent', function ($quer) use($student_name)
-            {*/
-                $query->whereHas('children', function ($que) use($student_name)
-                {
-                    $que->whereHas('userStudent', function ($qu) use($student_name)
-                    {
-                        $qu->whereHas('userprofile', function ($q) use($student_name)
-                        {
-                            $q->where('firstname','LIKE',$student_name.'%');
-                        });
+        return $query->where('usergroup_id', self::PARENT_USERGROUP_ID)
+            ->whereHas('children', function ($que) use($student_name) {
+                $que->whereHas('userStudent', function ($qu) use($student_name) {
+                    $qu->whereHas('userprofile', function ($q) use($student_name) {
+                        $q->where('firstname', 'LIKE', $student_name . '%');
                     });
                 });
-           /* });
-        });*/
-        return $query;
+            });
     }
 
     /**
@@ -1644,6 +1636,148 @@ class User extends Authenticatable implements HasMedia
          return $query->whereHas('latestTeacherProfile', function ($q) use ($employeeId) {
             $q->where('employee_id', $employeeId);
         });
+    }
+
+    // ===== FACTORY METHODS FOR SPECIALIZED USER CLASSES =====
+    /**
+     * Get the appropriate specialized user instance based on usergroup_id.
+     * Returns specialized class (TeacherUser, StudentUser, etc.) or self.
+     *
+     * @return \App\Models\User|\App\Models\Users\TeacherUser|\App\Models\Users\StudentUser|\App\Models\Users\ParentUser|\App\Models\Users\AlumniUser|\App\Models\Users\AdminUser|\App\Models\Users\LibrarianUser|\App\Models\Users\AccountantUser
+     */
+    public function getSpecializedInstance()
+    {
+        return match($this->usergroup_id) {
+            self::TEACHER_USERGROUP_ID => new \App\Models\Users\TeacherUser($this->getAttributes()),
+            self::STUDENT_USERGROUP_ID => new \App\Models\Users\StudentUser($this->getAttributes()),
+            self::PARENT_USERGROUP_ID => new \App\Models\Users\ParentUser($this->getAttributes()),
+            self::ALUMNI_USERGROUP_ID => new \App\Models\Users\AlumniUser($this->getAttributes()),
+            self::SCHOOLADMIN_USERGROUP_ID, self::SCHOOLSUBADMIN_USERGROUP_ID => new \App\Models\Users\AdminUser($this->getAttributes()),
+            self::LIBRARIAN_USERGROUP_ID => new \App\Models\Users\LibrarianUser($this->getAttributes()),
+            self::ACCOUNTANT_USERGROUP_ID => new \App\Models\Users\AccountantUser($this->getAttributes()),
+            default => $this,
+        };
+    }
+
+    // ===== TYPE CHECKING METHODS =====
+    /**
+     * Check if this user is a teacher.
+     *
+     * @return bool
+     */
+    public function isTeacher(): bool
+    {
+        return $this->usergroup_id === self::TEACHER_USERGROUP_ID;
+    }
+
+    /**
+     * Check if this user is a student.
+     *
+     * @return bool
+     */
+    public function isStudent(): bool
+    {
+        return $this->usergroup_id === self::STUDENT_USERGROUP_ID;
+    }
+
+    /**
+     * Check if this user is a parent.
+     *
+     * @return bool
+     */
+    public function isParent(): bool
+    {
+        return $this->usergroup_id === self::PARENT_USERGROUP_ID;
+    }
+
+    /**
+     * Check if this user is alumni/old student.
+     *
+     * @return bool
+     */
+    public function isAlumni(): bool
+    {
+        return $this->usergroup_id === self::ALUMNI_USERGROUP_ID;
+    }
+
+    /**
+     * Check if this user is a school admin.
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return in_array($this->usergroup_id, [
+            self::SCHOOLADMIN_USERGROUP_ID,
+            self::SCHOOLSUBADMIN_USERGROUP_ID
+        ]);
+    }
+
+    /**
+     * Check if this user is a librarian.
+     *
+     * @return bool
+     */
+    public function isLibrarian(): bool
+    {
+        return $this->usergroup_id === self::LIBRARIAN_USERGROUP_ID;
+    }
+
+    /**
+     * Check if this user is an accountant.
+     *
+     * @return bool
+     */
+    public function isAccountant(): bool
+    {
+        return $this->usergroup_id === self::ACCOUNTANT_USERGROUP_ID;
+    }
+
+    /**
+     * Check if this user is a receptionist.
+     *
+     * @return bool
+     */
+    public function isReceptionist(): bool
+    {
+        return $this->usergroup_id === self::RECEPTIONIST_USERGROUP_ID;
+    }
+
+    /**
+     * Check if this user is a stock keeper.
+     *
+     * @return bool
+     */
+    public function isStockKeeper(): bool
+    {
+        return $this->usergroup_id === self::STOCK_KEEPER_USERGROUP_ID;
+    }
+
+    /**
+     * Check if this user is non-teaching staff.
+     *
+     * @return bool
+     */
+    public function isNonTeachingStaff(): bool
+    {
+        return $this->usergroup_id === self::NON_TEACHING_USERGROUP_ID;
+    }
+
+    /**
+     * Check if this user is staff (any staff member except student/parent/admin).
+     *
+     * @return bool
+     */
+    public function isStaff(): bool
+    {
+        return in_array($this->usergroup_id, [
+            self::TEACHER_USERGROUP_ID,
+            self::LIBRARIAN_USERGROUP_ID,
+            self::RECEPTIONIST_USERGROUP_ID,
+            self::ACCOUNTANT_USERGROUP_ID,
+            self::STOCK_KEEPER_USERGROUP_ID,
+            self::NON_TEACHING_USERGROUP_ID
+        ]);
     }
 
 }
