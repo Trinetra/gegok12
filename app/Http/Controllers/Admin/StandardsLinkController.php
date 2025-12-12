@@ -338,10 +338,16 @@ class StandardsLinkController extends Controller
         {
             $standard = StandardLink::where('id',$id)->first();
             $teacherlinks = Teacherlink::where('standardLink_id',$id);
-            $temptimetable = TempTimetable::where('standardLink_id',$id);
+            if(class_exists('Gegok12\Timetable\Models\TempTimetable'))//new
+                {
+            $temptimetable = Gegok12\Timetable\Models\TempTimetable::where('standardLink_id',$id);
+        }
             if(Gate::allows('standardlink',$standard))
             {
+                if(class_exists('Gegok12\Timetable\Models\TempTimetable'))
+                {
                 $temptimetable->delete();
+                }
                 $teacherlinks->delete();
                  $standard->delete();
 

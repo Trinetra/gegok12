@@ -47,22 +47,26 @@ class PromotionController extends Controller
         $curr_academic_year = SiteHelper::getAcademicYear(Auth::user()->school_id);
 
         $standards = Standard::where('school_id',Auth::user()->school_id)->orderBy('order')->pluck('id')->toArray();
+        $next_academic_year = AcademicYear::where([['school_id',Auth::user()->school_id],['status',2]])->first();
+
         if(count($standards) > 0)
         {
             $standard = implode(' ,',$standards);
-            $standardLinks = StandardLink::where([['school_id',Auth::user()->school_id],['academic_year_id',$curr_academic_year->id]])->orderByRaw('FIELD(standard_id,'.$standard.')')->orderBy('section_id')->groupBy(['standard_id','section_id'])->get();
+            $standardLinks = StandardLink::where([['school_id',Auth::user()->school_id],['academic_year_id',$next_academic_year->id]])->orderByRaw('FIELD(standard_id,'.$standard.')')->orderBy('section_id')->groupBy(['standard_id','section_id'])->get();
             foreach ($standardLinks as $key => $standard) 
             {
                 $next_standardLink[$key]['id'] = $standard->id;
                 $next_standardLink[$key]['standard_section'] = $standard->StandardSection;
             }
             $count = count($standardLinks);
-
-            $next_standardLink[$count+1]['id'] = 'alumni';
-            $next_standardLink[$count+1]['standard_section'] = 'Alumni';
+            
+            if(class_exists('Gegok12\Alumni\Models\Alumniprofile')) {
+                $next_standardLink[$count+1]['id'] = 'alumni';
+                $next_standardLink[$count+1]['standard_section'] = 'Alumni';
+            }
         }
         
-        $next_academic_year = AcademicYear::where([['school_id',Auth::user()->school_id],['status',2]])->first();
+        // $next_academic_year = AcademicYear::where([['school_id',Auth::user()->school_id],['status',2]])->first();
 
         if(class_exists('Gegok12\Exam\Models\Exam'))
         {

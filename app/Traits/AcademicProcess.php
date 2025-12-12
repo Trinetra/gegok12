@@ -257,7 +257,7 @@ trait AcademicProcess
             {
                 if(class_exists('Gegok12\Timetable\Models\TempTimetable'))//new
                 {
-                    $temptimetable = TempTimetable::where([['standardLink_id',$standardLink_id],['subject_id',$teacher->subject_id],['teacher_id',$teacher->teacher_id]])->delete();
+                    $temptimetable = \Gegok12\Timetable\Models\TempTimetable::where([['standardLink_id',$standardLink_id],['subject_id',$teacher->subject_id],['teacher_id',$teacher->teacher_id]])->delete();
                 }
 
                 $teacher->delete();

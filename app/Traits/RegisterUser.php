@@ -756,43 +756,56 @@ trait RegisterUser
     { 
         \DB::beginTransaction();
         try
-        {            
-            $user = new User;
-
-            $user->school_id                = $school_id;
-            $user->usergroup_id             = $usergroup_id;
-            $user->name                     = $data->name;
-            $user->password                 = bcrypt('password'); //demo 
-            $user->email                    = $data->email;
-            $user->mobile_no                = $data->mobile_no;
-            if($data->email_verification_code != null)
-            {
-                $user->email_verification_code  = $data->email_verification_code;
-            }
-            else
-            {
-                $user->email_verification_code  = Str::random(40);
-            }
-
-            if($data->email_verification_code != null)
-            {
-                $user->registration_number      = $data->registration_number;
-            }
-
-            $user->save();
-
-            $data->passing_session = $passing_session;
+        {   $user = User::where('email', $data->email)
+                ->orWhere('mobile_no', $data->mobile_no)
+                ->orWhere('name', $data->name)
+                ->orWhere('registration_number', $data->registration_number)
+                ->first(); 
 
             $path = '';
+                
+            if(!$user) 
+            {
+                $user = new User;
 
-            $userprofile = new Userprofile;
+                $user->school_id                = $school_id;
+                $user->usergroup_id             = $usergroup_id;
+                $user->name                     = $data->name;
+                $user->password                 = bcrypt('password'); //demo 
+                $user->email                    = $data->email;
+                $user->mobile_no                = $data->mobile_no;
+                if($data->email_verification_code != null)
+                {
+                    $user->email_verification_code  = $data->email_verification_code;
+                }
+                else
+                {
+                    $user->email_verification_code  = Str::random(40);
+                }
 
-            $userprofile->school_id     = $school_id;
-            $userprofile->user_id       = $user->id;
-            $userprofile->usergroup_id  = $usergroup_id;
-            $userprofile->firstname     = $data->name;
-            $userprofile->avatar        = "uploads/male.png";
-            $userprofile->save();
+                if($data->email_verification_code != null)
+                {
+                    $user->registration_number      = $data->registration_number;
+                }
+
+                $user->save();
+
+                // $data->passing_session = $passing_session;
+
+                
+
+                $userprofile = new Userprofile;
+
+                $userprofile->school_id     = $school_id;
+                $userprofile->user_id       = $user->id;
+                $userprofile->usergroup_id  = $usergroup_id;
+                $userprofile->firstname     = $data->name;
+                $userprofile->avatar        = "uploads/male.png";
+                $userprofile->save();
+            }
+            else{
+                $data->passing_session = $passing_session;
+            }
 
             $alumniprofile = $this->CreateAlumni($data, $path, $usergroup_id, $school_id, $user);
 
@@ -815,57 +828,54 @@ trait RegisterUser
             if(class_exists('Gegok12\Alumni\Models\Alumniprofile'))
             {  
                 $alumni = new \Gegok12\Alumni\Models\Alumniprofile;
-            }
-            else{
-                $alumni = new Alumniprofile;
-            }
 
-            $alumni->school_id          = $school_id;
-            $alumni->user_id            = $user->id;
-            $alumni->name               = $user->name;
-            $alumni->email              = $user->email;
-            $alumni->mobile_no          = $user->mobile_no;          
-            $alumni->passing_session    = $data->passing_session;
-            $alumni->photo              = $path;   
-     
-            $alumni->institution_name   = $data->institution_name;
-            $alumni->degree             = $data->degree;
-            $alumni->specialization     = $data->specialization;
-            $alumni->college_start_year = $data->college_start_year;
-            if($data->current_studying != 1)
-            {
-                $alumni->college_end_year  = $data->college_end_year;
-                $alumni->grade             = $data->grade;
-            }
-            else
-            {
-                $alumni->college_end_year  = null;
-                $alumni->grade             = null;
-            }
+                $alumni->school_id          = $school_id;
+                $alumni->user_id            = $user->id;
+                $alumni->name               = $user->name;
+                $alumni->email              = $user->email;
+                $alumni->mobile_no          = $user->mobile_no;          
+                $alumni->passing_session    = $data->passing_session;
+                $alumni->photo              = $path;   
+         
+                $alumni->institution_name   = $data->institution_name;
+                $alumni->degree             = $data->degree;
+                $alumni->specialization     = $data->specialization;
+                $alumni->college_start_year = $data->college_start_year;
+                if($data->current_studying != 1)
+                {
+                    $alumni->college_end_year  = $data->college_end_year;
+                    $alumni->grade             = $data->grade;
+                }
+                else
+                {
+                    $alumni->college_end_year  = null;
+                    $alumni->grade             = null;
+                }
 
-            $alumni->company_name      = $data->company_name;
-            $alumni->designation       = $data->designation;
-            $alumni->location          = $data->location;
-            $alumni->job_start_year    = $data->job_start_year;
-            $alumni->job_start_month   = $data->job_start_month;
-            if($data->present != 1)
-            {
-                $alumni->job_end_year      = $data->job_end_year;
-                $alumni->job_end_month     = $data->job_end_month;
-            }
-            else
-            {
-                $alumni->job_end_year      = null;
-                $alumni->job_end_month     = null;
-            }
+                $alumni->company_name      = $data->company_name;
+                $alumni->designation       = $data->designation;
+                $alumni->location          = $data->location;
+                $alumni->job_start_year    = $data->job_start_year;
+                $alumni->job_start_month   = $data->job_start_month;
+                if($data->present != 1)
+                {
+                    $alumni->job_end_year      = $data->job_end_year;
+                    $alumni->job_end_month     = $data->job_end_month;
+                }
+                else
+                {
+                    $alumni->job_end_year      = null;
+                    $alumni->job_end_month     = null;
+                }
 
-            $alumni->twitter           = $data->twitter;
-            $alumni->linkedin          = $data->linkedin;
-            $alumni->telegram          = $data->telegram;
-            $alumni->facebook          = $data->facebook;
-            $alumni->about_me          = $data->about_me;
+                $alumni->twitter           = $data->twitter;
+                $alumni->linkedin          = $data->linkedin;
+                $alumni->telegram          = $data->telegram;
+                $alumni->facebook          = $data->facebook;
+                $alumni->about_me          = $data->about_me;
 
-            $alumni->save();
+                $alumni->save();
+            }
          
             \DB::commit();
             return $alumni;

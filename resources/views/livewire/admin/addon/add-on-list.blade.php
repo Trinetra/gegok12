@@ -14,7 +14,7 @@
             <!-- Features Grid -->
             <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 <!-- Feature 1 -->
-                @if(count($addonsList)>0)
+                @if(!empty($addonsList))
                 @foreach($addonsList as $addon)
                 <div class="{{ $addon['purchase_status'] ? 'bg-white shadow border' : 'bg-white' }} p-8 rounded-xl relative shadow-md hover:shadow-lg transition-shadow duration-300">
                     @if($addon['purchase_status'])

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
@@ -21,6 +22,7 @@ use App\Models\Usergroup;
 | model instances for testing / seeding your application's database.
 |
 */
+
 class UserFactory extends Factory
 {
     protected $model = User::class;
@@ -38,6 +40,7 @@ class UserFactory extends Factory
         $first = $this->faker->firstName;
         $last  = $this->faker->lastName;
         $uniqueId = $this->faker->unique()->numberBetween(1000, 9999);
+
 
         // Ensure a default usergroup exists
         $defaultUsergroup = Usergroup::firstOrCreate(

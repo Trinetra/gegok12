@@ -173,7 +173,7 @@ class VideosController extends Controller
                      
                         $video->save(); 
 
-                        $media=$video->addMedia($file)->toMediaCollection('images', env('FILESYSTEM_DRIVER'));
+                        $media=$video->addMedia($file)->toMediaCollection('images', env('FILESYSTEM_DISK'));
                        
                         $thumb=$media->getPath('thumb');
                         $path = $this->uploadFile($thumb,$file);
@@ -323,7 +323,7 @@ class VideosController extends Controller
                             $video->url             = $pathToImage;
                          
                             $video->save(); 
-                            $media=$video->addMedia($file)->toMediaCollection('images', env('FILESYSTEM_DRIVER'));
+                            $media=$video->addMedia($file)->toMediaCollection('images', env('FILESYSTEM_DISK'));
                            
                             $thumb=$media->getPath('thumb');
                             $video->thumb_file=$thumb;
@@ -471,7 +471,7 @@ class VideosController extends Controller
     {
         $video = Video::where('id', $id)->where('school_id',Auth::user()->school_id)->first();
         $file=$video->url;
-        $path=$this->getFilePathforDownload(env('FILESYSTEM_DRIVER'),$file);
+        $path=$this->getFilePathforDownload(env('FILESYSTEM_DISK'),$file);
         $name='Media'.'_'.$video->name.'.jpg';
         $headers = [
             'Content-Disposition' => 'attachment; filename="'. $name.'"',

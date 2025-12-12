@@ -52,7 +52,7 @@ class PageAttachmentsController extends Controller
 
                 $page_attachment->save();
 
-                $page->addMedia($file)->toMediaCollection('page_attachments', env('FILESYSTEM_DRIVER'));
+                $page->addMedia($file)->toMediaCollection('page_attachments', env('FILESYSTEM_DISK'));
             }
 
             $message = trans('messages.add_success_msg',[':module' => 'Page Attachment']);

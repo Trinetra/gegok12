@@ -56,6 +56,10 @@ class MustBeSchoolAdmin
         {
             return redirect('/accountant/dashboard');          
         }
+        if(\Auth::user()->usergroup_id==12)
+        {
+            return redirect('/accountant/dashboard');          
+        }
             
         abort(404);
     }

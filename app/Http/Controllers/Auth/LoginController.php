@@ -1,8 +1,10 @@
 <?php
+
 /**
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -34,17 +36,9 @@ class LoginController extends Controller implements ShouldQueue
      *
      * @return string The redirect path
      */
-    protected function redirectTo()
-    {
-        /** @var \App\Models\User|null $user */
-        $user = Auth::user();
 
-        if ($user && $user->usergroup_id == 12) {
-            return '/stock/dashboard';
-        }
+    protected $redirectTo = '/admin/dashboard';
 
-        return '/admin/dashboard';
-    }
 
     /**
      * Create a new controller instance.
@@ -66,4 +60,3 @@ class LoginController extends Controller implements ShouldQueue
         return view('auth.login');
     }
 }
-

@@ -67,7 +67,7 @@ class DocumentsController extends Controller
 
             $document->save();
 
-            $user->addMedia($file)->toMediaCollection('documents', env('FILESYSTEM_DRIVER'));
+            $user->addMedia($file)->toMediaCollection('documents', env('FILESYSTEM_DISK'));
 
             $message=trans('messages.add_success_msg',['module' => 'Document']);
 
@@ -143,7 +143,7 @@ class DocumentsController extends Controller
 
             $document->save();
 
-            $user->addMedia($file)->toMediaCollection('documents', env('FILESYSTEM_DRIVER'));
+            $user->addMedia($file)->toMediaCollection('documents', env('FILESYSTEM_DISK'));
 
             $message=trans('messages.update_success_msg',['module' => 'Document']);
 

@@ -61,7 +61,7 @@ class UserprofileFactory extends Factory
         'native_place'          =>  $city,
         'mother_tongue'         =>  $mother_tongue,
         'caste'                 =>  $caste,
-        'address'               =>  $city,
+        'address'               =>  $this->faker->address,
         'city_id'               =>  $city_id,
         'state_id'              =>  $state_id,
         'country_id'            =>  7,

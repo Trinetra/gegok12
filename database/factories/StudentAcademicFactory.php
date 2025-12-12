@@ -67,7 +67,7 @@ class StudentAcademicFactory extends Factory
         }
 
         return [
-            'roll_number' => $roll_number,
+            // 'roll_number' => $roll_number,
             'id_card_number' => $id_card_number,
             'board_registration_number' => $board_registration_number,
             'mode_of_transport' => $mode_of_transport,
