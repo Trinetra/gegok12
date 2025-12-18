@@ -30,7 +30,7 @@ trait AcademicProcess
     public function addStandard($school_id , $data)
     {
         try
-        {  
+        {
             $nursery            = ['prekg','lkg','ukg'];
             $primary            = ['1','2','3','4','5'];
             $secondary          = ['6','7','8','9','10'];
@@ -53,7 +53,7 @@ trait AcademicProcess
                 $list = array_merge($nursery,$primary,$secondary,$higher_secondary);
             }
 
-            for($i = 0 ; $i < count($list) ; $i++) 
+            for($i = 0 ; $i < count($list) ; $i++)
             {
                 $standard = new Standard;
 
@@ -61,7 +61,7 @@ trait AcademicProcess
                 $standard->name         =   strtolower($list[$i]);
                 $standard->order        =   $i;
                 $standard->status       =   1;
-                
+
                 $standard->save();
             }
 
@@ -70,13 +70,13 @@ trait AcademicProcess
         catch(Exception $e)
         {
             dd($e->getMessage());
-        } 
+        }
     }
 
     public function createStandard($school_id , $data)
     {
         try
-        {  
+        {
             $standard = new Standard;
 
             $standard->school_id    =   $school_id;
@@ -92,7 +92,7 @@ trait AcademicProcess
             }
             $standard->order        =   $value;
             $standard->status       =   1;
-            
+
             $standard->save();
 
             return $standard;
@@ -100,13 +100,13 @@ trait AcademicProcess
         catch(Exception $e)
         {
             //dd($e->getMessage());
-        } 
+        }
     }
 
     public function createSection($school_id , $data)
     {
         try
-        { 
+        {
             $section = new Section;
 
             $section->school_id    =   $school_id;
@@ -120,13 +120,13 @@ trait AcademicProcess
         catch(Exception $e)
         {
             //dd($e->getMessage());
-        } 
+        }
     }
 
     public function createSubject($school_id , $academic_year_id , $data)
     {
         try
-        {            
+        {
             $subject = new Subject;
 
             $subject->school_id         =   $school_id;
@@ -145,14 +145,14 @@ trait AcademicProcess
         catch(Exception $e)
         {
             //dd($e->getMessage());
-        } 
+        }
     }
 
     public function createStandardLink($school_id , $academic_year_id , $data)
     {
-        \DB::beginTransaction();
+        DB::beginTransaction();
         try
-        {            
+        {
             $standardLink = new StandardLink;
 
             $standardLink->school_id        = $school_id;
@@ -185,7 +185,7 @@ trait AcademicProcess
                 $sub        = 'subject_id'.$i;
                 $teacher    = 'teacher_id'.$i;
                 $subject_type = 'subject_type'.$i;
-              
+
                 $subject = Subject::where('id',$data->$sub)->first();
                 $teacherlink = new Teacherlink;
                 $teacherlink->school_id         = $school_id;
@@ -194,24 +194,24 @@ trait AcademicProcess
                 $teacherlink->subject_id        = $subject->id;
                 $teacherlink->teacher_id        = $data->$teacher;
                 $teacherlink->subject_type      = $data->$subject_type;
-              
+
                 $teacherlink->save();
             }
-            \DB::commit();
+            DB::commit();
             return $standardLink;
         }
         catch(Exception $e)
         {
-            \DB::rollBack();
+            DB::rollBack();
             dd($e->getMessage());
-        } 
+        }
     }
 
     public function editStandardLink($school_id , $academic_year_id , $standardLink_id , $data)
     {
-        \DB::beginTransaction();
+        DB::beginTransaction();
         try
-        {            
+        {
             $standardLink = StandardLink::where('id',$standardLink_id)->first();
 
             if($standardLink->class_teacher_id != $data->class_teacher_id)
@@ -250,16 +250,16 @@ trait AcademicProcess
             $standardLink->save();
 
             $teacherlinks = Teacherlink::where('standardLink_id',$standardLink_id)->get();
-           
+
             //dd($temptimetable);
-           
+
             foreach($teacherlinks as $teacher)
             {
                 if(class_exists('Gegok12\Timetable\Models\TempTimetable'))//new
                 {
                     $temptimetable = TempTimetable::where([['standardLink_id',$standardLink_id],['subject_id',$teacher->subject_id],['teacher_id',$teacher->teacher_id]])->delete();
                 }
-                
+
                 $teacher->delete();
 
             }
@@ -270,7 +270,7 @@ trait AcademicProcess
                 $teacher    = 'teacher_id'.$i;
                 $subject_type = 'subject_type'.$i;
                 $no_of_periods = 'no_of_periods'.$i;
-                
+
 
                 $subject = Subject::where('id',$data->$sub)->first();
 
@@ -283,7 +283,7 @@ trait AcademicProcess
                 $teacherlink->teacher_id        = $data->$teacher;
                 $teacherlink->subject_type      = $data->$subject_type;
                 $teacherlink->no_of_periods     = $data->$no_of_periods;
-               
+
 
                 $teacherlink->save();
 
@@ -291,21 +291,21 @@ trait AcademicProcess
 
 
             }
-            \DB::commit();
+            DB::commit();
             return $standardLink;
         }
         catch(Exception $e)
         {
-            \DB::rollBack();
+            DB::rollBack();
             //dd($e->getMessage());
-        } 
+        }
     }
 
     public function createAttendance($school_id , $academic_year_id , $admin , $data)
-    { 
-        \DB::beginTransaction();
+    {
+        DB::beginTransaction();
         try
-        {            
+        {
             for($i=0 ; $i < $data->absentCount ; $i++)
             {
                 $student    = 'user_id'.$i;
@@ -327,7 +327,7 @@ trait AcademicProcess
 
                 $attendance->save();
                 $student = User::where('id',$data->$student)->first();
-                foreach ($student->parents as $parent) 
+                foreach ($student->parents as $parent)
                 {
                     $array=[];
 
@@ -335,12 +335,12 @@ trait AcademicProcess
                     $array['user_id']    = $parent->userParent->id;
                     $array['message']    = 'Dear Parent, Kindly make a note that your child '.$student->FullName.' is absent for school today('.ucfirst($data->session).').';
                     $array['type']       = 'private message';
-                            
+
                     event(new SinglePushEvent($array));
 
 
                     $this->sendToAttendanceReminder($school_id,$attendance->date,$parent->userParent->id,$parent->userParent->mobile_no,$parent->userParent->email,$student->FullName);
-                } 
+                }
 
                     $datas = [];
                     //$child = User::where('id',$student->id)->first();
@@ -348,7 +348,7 @@ trait AcademicProcess
                     $datas['type']       =   'attendance';
                     $datas['details']    =   'Dear Parent, Kindly make a note that your child '.$student->FullName.' is absent for school today('.ucfirst($data->session).').';
                     event(new SingleNotificationEvent($datas));
- 
+
             }
 
             for($i=0 ; $i < $data->presentCount ; $i++)
@@ -370,21 +370,21 @@ trait AcademicProcess
                     $attendance->save();
                 }
             }
-            \DB::commit();
+            DB::commit();
             return $attendance;
         }
         catch(Exception $e)
         {
-            \DB::rollBack();
+            DB::rollBack();
             //dd($e->getMessage());
-        } 
+        }
     }
 
     public function createStaffAttendance($school_id , $academic_year_id , $admin , $data)
-    { 
-        \DB::beginTransaction();
+    {
+        DB::beginTransaction();
         try
-        {            
+        {
             for($i=0 ; $i < $data->absentCount ; $i++)
             {
                 $staff    = 'user_id'.$i;
@@ -406,14 +406,14 @@ trait AcademicProcess
                 $attendance->save();
 
                 $staff = User::where('id',$data->$staff)->first();
-                
+
                     $array=[];
 
                     $array['school_id']  = $school_id;
                     $array['user_id']    = $staff->id;
                     $array['message']    = 'Dear staff,'.$staff->FullName.' absent today.';
                     $array['type']       = 'private message';
-                            
+
                     event(new SinglePushEvent($array));
 
                     $this->sendToAttendanceReminder($school_id,$attendance->date,$staff->id,$staff->mobile_no,$staff->email,$staff->FullName);
@@ -437,13 +437,13 @@ trait AcademicProcess
                     $attendance->save();
                 }
             }
-            \DB::commit();
+            DB::commit();
             return $attendance;
         }
         catch(Exception $e)
         {
-            \DB::rollBack();
+            DB::rollBack();
             //dd($e->getMessage());
-        } 
+        }
     }
 }
