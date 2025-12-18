@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Class Salary
@@ -35,8 +36,9 @@ class Salary extends Model
 {
     //
   use SoftDeletes;
+  use HasFactory;
 
-  protected $fillable = ['school_id' , 'staff_id','template_id','effective_date','comments'];
+  protected $fillable = ['school_id' , 'staff_id','','effective_date','comments'];
 
   /**
    * Get the payroll template for this salary.

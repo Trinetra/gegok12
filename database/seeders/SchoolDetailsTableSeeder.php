@@ -20,7 +20,7 @@ class SchoolDetailsTableSeeder extends Seeder
 
         foreach ($schools as $school) 
         {
-            $keys = ['about_us' , 'admission_open' , 'admission_close_message' , 'admission_close_on' , 'affiliation_no' , 'affiliated_by' , 'board' , 'date_of_establishment' , 'landline_no' , 'moto' , 'school_logo' , 'website'];
+            $keys = ['about_us' , 'admission_open' , 'admission_close_message' , 'admission_close_on' , 'affiliation_no' , 'affiliated_by' , 'board' , 'date_of_establishment' , 'landline_no' , 'moto'  , 'website']; //'school_logo'
 
             foreach ($keys as $key)
             {
@@ -45,6 +45,13 @@ class SchoolDetailsTableSeeder extends Seeder
             'school_id'     =>  '1',
             'meta_key'      =>  'board',
             'meta_value'    =>  'Matriculation',
+            'created_at'    =>  date("Y-m-d H:i:s"),
+            'updated_at'    =>  date("Y-m-d H:i:s"),
+        ]);
+        DB::table('school_details')->Insert([
+            'school_id'     =>  '1',
+            'meta_key'      =>  'school_logo',
+            'meta_value'    =>  '/uploads/demologo.png',
             'created_at'    =>  date("Y-m-d H:i:s"),
             'updated_at'    =>  date("Y-m-d H:i:s"),
         ]);

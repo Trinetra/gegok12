@@ -7,6 +7,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
 
 /**
@@ -35,6 +36,7 @@ use Carbon\Carbon;
 class Payroll extends Model
 {
   use SoftDeletes;
+  use HasFactory;
 
     protected $fillable = ['school_id' , 'payrollno','staff_id','salary_id','start_date','end_date','status','comments'];
 

@@ -19,9 +19,10 @@ class TelephoneDirectory extends JsonResource
       [
         'id'          => $this->id,
         'school_id'   => $this->school_id,
-        'name'        => $this->name,
-        'designation' => $this->designation,
+        'name'        => ucfirst($this->name),
+        'designation' => ucfirst($this->designation),
         'phone_number'=> $this->phone_number,
+        'type'   => 'telephone_directory',
        
        ];
    }

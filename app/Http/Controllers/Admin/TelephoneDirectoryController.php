@@ -6,6 +6,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Resources\TelephoneDirectory as TelephoneDirectoryResource;
+use App\Http\Resources\UserPhoneResource;
 use App\Http\Requests\TelephoneDirectoryRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -13,6 +14,7 @@ use App\Models\TelephoneDirectory;
 use Illuminate\Http\Request;
 use App\Traits\LogActivity;
 use App\Traits\Common;
+use App\Models\User;
 use Exception;
 use Log;
 
@@ -39,10 +41,21 @@ class TelephoneDirectoryController extends Controller
     public function list()
     {
         //
-        $numberlist = TelephoneDirectory::where('school_id',Auth::user()->school_id)->get();
-        $numberlist = TelephoneDirectoryResource::collection($numberlist);
+        $numberlist = TelephoneDirectory::where('school_id',Auth::user()->school_id)->orderby('id','desc')->get();
 
-        return $numberlist;
+        $users = User::where('school_id', Auth::user()->school_id)
+        ->whereNotIn('usergroup_id', [1, 2, 3, 4])
+        ->get();
+
+    // $merged = $numberlist->merge($users);
+    // dd($merged);
+        $numberlist = TelephoneDirectoryResource::collection($numberlist);
+        $userData = UserPhoneResource::collection($users);
+        $merged = collect($numberlist)->merge($userData);
+
+        return response()->json([
+            'data' => $merged
+        ]);
     }
 
     /**

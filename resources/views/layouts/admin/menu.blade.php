@@ -619,8 +619,8 @@
 <!-- payroll start -->
     @php
       $class='';
-      $array=array('template','templates','payslip','payslips');
-      if(in_array(\Request()->segment('4'),$array))
+      $array=array('template','templates','payslip','payslips','salary','transaction');
+      if(in_array(\Request()->segment('3'),$array))
       {
         $class='active';
       }
