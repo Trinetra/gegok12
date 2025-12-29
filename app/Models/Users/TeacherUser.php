@@ -1,8 +1,10 @@
 <?php
+
 /**
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Models\Users;
 
 use App\Models\User;
@@ -80,19 +82,6 @@ class TeacherUser extends User
     {
         return $query->whereHas('latestTeacherProfile', function ($q) use ($employeeId) {
             $q->where('employee_id', $employeeId);
-        });
-    }
-
-    /**
-     * Scope to filter users with transport driver role.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeByDriver($query)
-    {
-        return $query->whereHas('roles', function ($q) {
-            $q->where('name', 'transport_driver');
         });
     }
 

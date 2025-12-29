@@ -605,10 +605,6 @@ class User extends Authenticatable implements HasMedia
         {
             return $this->hasOne('\Gegok12\Alumni\Models\Alumniprofile','user_id','id');
         }
-        else
-        {
-            return $this->hasOne('App\Models\Alumniprofile','user_id','id');
-        }
     }
 
     /**

@@ -51,7 +51,7 @@ class UserFactory extends Factory
         return [
             'name' => $first . ' ' . $last . $uniqueId,
             'email' => strtolower($first . $last . $uniqueId) . '@mailinator.com',
-            'mobile_no' => $this->faker->unique()->randomNumber($nbDigits = 9, $strict = false),
+            'mobile_no' => $this->faker->unique()->randomNumber($nbDigits = 10, $strict = false),
             'password' => bcrypt('password'),
             'email_verification_code' => str_random(40),
             'registration_number' => $this->faker->unique()->randomNumber($nbDigits = 6, $strict = false),

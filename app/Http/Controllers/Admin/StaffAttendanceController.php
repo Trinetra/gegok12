@@ -11,6 +11,7 @@ use App\Http\Resources\StaffAttendanceResource;
 use App\Http\Requests\StaffAttendanceRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\Users\TeacherUser;
 use App\Traits\AcademicProcess;
 use App\Models\StudentAcademic;
 use Illuminate\Http\Request;
@@ -49,7 +50,7 @@ class StaffAttendanceController extends Controller
 
 
 
-        $staff    = User::ByRole(5)->where([['school_id',Auth::user()->school_id],['status','active']])->get()->sortBy('userprofile.firstname');
+        $staff    = User::whereIn('usergroup_id', [5, 8, 10, 11, 12, 13])->where([['school_id',Auth::user()->school_id],['status','active']])->get()->sortBy('userprofile.firstname');  //ByRole(8)
         $stafflist = TeacherlistResource::collection($staff);
 
         $absentReasonlist   = AbsentReason::where('status',1)->get();
@@ -190,7 +191,7 @@ class StaffAttendanceController extends Controller
     public function showAttendance($name)
     {
         //
-        $staff = User::where('name', $name)->first();
+        $staff = TeacherUser::where('name', $name)->first();
       
         $attendances = AttendanceUserResource::collection($staff->AttendanceUserAbsent);
          

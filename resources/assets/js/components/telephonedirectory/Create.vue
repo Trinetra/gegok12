@@ -67,7 +67,7 @@
 
 <script>
 	export default {
-    props:[],
+    props:['mode'],
     data(){
       return{
         telephonedirectory:[],
@@ -102,7 +102,7 @@
         formData.append('phone_number',this.phone_number);          
              
               
-        axios.post('/admin/phonenumber/add',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {     
+        axios.post('/'+this.mode+'/phonenumber/add',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {     
           this.success = response.data.success;
           this.reset();
         }).catch(error => {

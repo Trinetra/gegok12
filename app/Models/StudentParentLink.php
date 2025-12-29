@@ -62,7 +62,7 @@ class StudentParentLink extends Model
      */
     public function userParent()
     {
-    	return $this->belongsTo('App\Models\User','parent_id')->where('usergroup_id',7);
+    	return $this->belongsTo('App\Models\Users\ParentUser','parent_id')->where('usergroup_id',7);
     }
 
     /**

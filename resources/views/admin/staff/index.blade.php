@@ -23,6 +23,8 @@
          s17.067-7.641,17.067-17.067V221.867h170.667c9.426,0,17.067-7.641,17.067-17.067S401.959,187.733,392.533,187.733z"></path></g></g></svg>
    </a> 
    </div>
+   
+   <staff-export url="{{ url('/') }}" searchquery="{{ $query }}"></staff-export>
 
    <div class="w-1/3 lg:w-1/4 md:w-1/3 text-center py-4">
         <a href="{{ url('/admin/staffs/id-card/') }}" class="text-xs">
@@ -39,7 +41,7 @@
    <span class="mx-1 text-sm font-semibold">Export</span>
    </a> 
    </div> -->
-   <staff-export url="{{ url('/') }}" searchquery="{{ $query }}"></staff-export>
+   
    <!-- <div class="">
    <a href="{{ url('/admin/import/teacher') }}" id="import-button" class="no-underline text-white  px-4 my-3 mx-1 flex items-center custom-green py-1">
    <span class="mx-1 text-sm font-semibold">Import</span>

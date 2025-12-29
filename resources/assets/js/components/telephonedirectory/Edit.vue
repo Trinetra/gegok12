@@ -70,7 +70,7 @@
 
   export default {
 
-    props:['id','url'],
+    props:['id','url','mode'],
 
 
       data(){
@@ -92,7 +92,7 @@
       {
          //alert('kjhkjh');
 
-            axios.get('/admin/phonenumber/editlist/'+this.id).then(response => {
+            axios.get('/'+this.mode+'/phonenumber/editlist/'+this.id).then(response => {
         
 
             this.directory= response.data.data[0]; 
@@ -120,7 +120,7 @@
         formData.append('designation',this.designation);      
         formData.append('phone_number',this.phone_number);      
               
-       axios.post('/admin/phonenumber/edit/'+this.id,formData).then(response => {   
+       axios.post('/'+this.mode+'/phonenumber/edit/'+this.id,formData).then(response => {   
         this.directory = response.data;
         this.success = response.data.success;
       

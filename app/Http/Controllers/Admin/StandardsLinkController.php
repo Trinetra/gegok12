@@ -1,8 +1,10 @@
 <?php
+
 /**
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Resources\StandardLink as StandardLinkResource;
@@ -12,6 +14,7 @@ use App\Http\Requests\StandardDetailRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\Users\TeacherUser;
 use App\Traits\AcademicProcess;
 use Illuminate\Http\Request;
 use App\Models\ExamSchedule;
@@ -50,20 +53,19 @@ class StandardsLinkController extends Controller
      */
     public function index()
     {
-        
+
         //$standardLinks = StandardLink::with('teacher','teacherlink','standard','section')->where('school_id',Auth::user()->school_id)->get()->sortBy('standard.order');
-        $school_id=Auth::user()->school_id;
+        $school_id = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
-        $standards = Standard::where('school_id',$school_id)->orderBy('order')->pluck('id')->toArray();
-        if(count($standards) > 0)
-            {
-                $standard = implode(' ,',$standards);
-                $standardLinks = StandardLink::where([['school_id',$school_id],['academic_year_id',$academic_year->id]])->orderByRaw('FIELD(standard_id,'.$standard.')')->orderBy('section_id')->get();
-            }
+        $standards = Standard::where('school_id', $school_id)->orderBy('order')->pluck('id')->toArray();
+        if (count($standards) > 0) {
+            $standard = implode(' ,', $standards);
+            $standardLinks = StandardLink::where([['school_id', $school_id], ['academic_year_id', $academic_year->id]])->orderByRaw('FIELD(standard_id,' . $standard . ')')->orderBy('section_id')->get();
+        }
 
-        $teacher_count = User::where('school_id',Auth::user()->school_id)->where('usergroup_id',5)->count();
+        $teacher_count = User::where('school_id', Auth::user()->school_id)->where('usergroup_id', 5)->count();
 
-        return view('/admin/school/standardlinks/index', [ 'standardLinks' => $standardLinks , 'teacher_count' => $teacher_count ]);
+        return view('/admin/school/standardlinks/index', ['standardLinks' => $standardLinks, 'teacher_count' => $teacher_count]);
     }
 
     /**
@@ -78,14 +80,14 @@ class StandardsLinkController extends Controller
 
         $academic_year = SiteHelper::getAcademicYear(Auth::user()->school_id);
 
-        $subjectlist = Subject::where([['school_id',Auth::user()->school_id],['academic_year_id',$academic_year->id],['type','!=','exam']])->get()->groupBy(['standard_id','section_id']);
-       // $standardlist = Standard::where('school_id',Auth::user()->school_id)->orderBy('name','ASC')->get();
-        $standardlist = DB::table('standards')->where('school_id',Auth::user()->school_id)->orderByRaw('FIELD(name,"prekg","lkg","ukg","1","2","3","4","5","6","7","8","9","10","11","12")')->get();
-        $sectionlist = Section::where('school_id',Auth::user()->school_id)->orderBy('name', 'ASC')->get();
+        $subjectlist = Subject::where([['school_id', Auth::user()->school_id], ['academic_year_id', $academic_year->id], ['type', '!=', 'exam']])->get()->groupBy(['standard_id', 'section_id']);
+        // $standardlist = Standard::where('school_id',Auth::user()->school_id)->orderBy('name','ASC')->get();
+        $standardlist = DB::table('standards')->where('school_id', Auth::user()->school_id)->orderByRaw('FIELD(name,"prekg","lkg","ukg","1","2","3","4","5","6","7","8","9","10","11","12")')->get();
+        $sectionlist = Section::where('school_id', Auth::user()->school_id)->orderBy('name', 'ASC')->get();
 
         $standardLinks = SiteHelper::getStandardLinkList(Auth::user()->school_id);
 
-        $teacher = User::with('userprofile')->where([['school_id',Auth::user()->school_id],['usergroup_id',5],['status','active']])->get()->sortBy('userprofile.firstname');
+        $teacher = TeacherUser::with('userprofile')->where([['school_id', Auth::user()->school_id], ['usergroup_id', 5], ['status', 'active']])->get()->sortBy('userprofile.firstname');
         $teacherlist = TeacherResource::collection($teacher);
 
         $array['academic_year_id'] = $academic_year->id;
@@ -106,7 +108,7 @@ class StandardsLinkController extends Controller
     public function getStandard(Request $request)
     {
         //
-        $standard = Standard::where('id',request('standard_id'))->first();
+        $standard = Standard::where('id', request('standard_id'))->first();
 
         return response()->json($standard);
     }
@@ -131,20 +133,19 @@ class StandardsLinkController extends Controller
     public function store(StandardDetailRequest $request)
     {
         //
-        try
-        {
+        try {
             $school_id = Auth::user()->school_id;
             $academic_year = SiteHelper::getAcademicYear($school_id);
-           
-            $standard = $this->createStandardLink($school_id , $academic_year->id , $request);
 
-            $message = trans('messages.add_success_msg',['module' => 'Standard Details']);
+            $standard = $this->createStandardLink($school_id, $academic_year->id, $request);
 
-            $ip= $this->getRequestIP();
+            $message = trans('messages.add_success_msg', ['module' => 'Standard Details']);
+
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $standard,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_ADD_STANDARD_DETAIL,
                 $message
             );
@@ -152,9 +153,7 @@ class StandardsLinkController extends Controller
             $res['success'] = $message;
 
             return $res;
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             Log::info($e->getMessage());
             dd($e->getMessage());
         }
@@ -172,17 +171,17 @@ class StandardsLinkController extends Controller
         $array = [];
 
         $academic_year = SiteHelper::getAcademicYear(Auth::user()->school_id);
-        $standardLink = StandardLink::with('teacherlink')->where('id',$id)->first();
+        $standardLink = StandardLink::with('teacherlink')->where('id', $id)->first();
 
         $subjectlist = Subject::where([
-            ['school_id',Auth::user()->school_id],
-            ['academic_year_id',$academic_year->id],
-            ['standard_id',$standardLink->standard_id],
-            ['section_id',$standardLink->section_id],
-            ['type','!=','exam']
+            ['school_id', Auth::user()->school_id],
+            ['academic_year_id', $academic_year->id],
+            ['standard_id', $standardLink->standard_id],
+            ['section_id', $standardLink->section_id],
+            ['type', '!=', 'exam']
         ])->get();
 
-        $teacher = User::with('userprofile')->where([['school_id',Auth::user()->school_id],['usergroup_id',5],['status','active']])->get()->sortBy('userprofile.firstname');
+        $teacher = TeacherUser::with('userprofile')->where([['school_id', Auth::user()->school_id], ['usergroup_id', 5], ['status', 'active']])->get()->sortBy('userprofile.firstname');
         $teacherlist = TeacherResource::collection($teacher);
 
         $teacherLink = $standardLink->getTeacherLinkDetails();
@@ -211,9 +210,9 @@ class StandardsLinkController extends Controller
     public function edit($id)
     {
         //
-        $standardLink = StandardLink::where('id',$id)->first();
+        $standardLink = StandardLink::where('id', $id)->first();
 
-        return view('/admin/school/standardlinks/edit' , [ 'standardLink' => $standardLink ]);
+        return view('/admin/school/standardlinks/edit', ['standardLink' => $standardLink]);
     }
 
     /**
@@ -226,23 +225,22 @@ class StandardsLinkController extends Controller
     public function update(StandardDetailUpdateRequest $request, $id)
     {
         //
-        try
-        {
+        try {
 
             $academic_year = SiteHelper::getAcademicYear(Auth::user()->school_id);
             $school_id = Auth::user()->school_id;
 
-            $standardLink = StandardLink::where('id',$id)->first();
+            $standardLink = StandardLink::where('id', $id)->first();
 
-            $standard = $this->editStandardLink($school_id , $academic_year->id , $id , $request);
+            $standard = $this->editStandardLink($school_id, $academic_year->id, $id, $request);
 
-            $message = trans('messages.update_success_msg',['module' => 'Standard Details']);
+            $message = trans('messages.update_success_msg', ['module' => 'Standard Details']);
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $standardLink,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_EDIT_STANDARD_DETAIL,
                 $message
             );
@@ -250,9 +248,7 @@ class StandardsLinkController extends Controller
             $res['success'] = $message;
 
             return $res;
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             Log::info($e->getMessage());
             //dd($e->getMessage());
         }
@@ -268,29 +264,26 @@ class StandardsLinkController extends Controller
     public function updateStatus(Request $request, $id)
     {
         //
-        try
-        {
-            $standard = StandardLink::where('id',$id)->first();
+        try {
+            $standard = StandardLink::where('id', $id)->first();
 
             $standard->status   = $request->status;
 
             $standard->save();
 
-            $message= trans('messages.update_status_success_msg',['module' => 'Standard Details']);
+            $message = trans('messages.update_status_success_msg', ['module' => 'Standard Details']);
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $standard,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_UPDATE_STATUS_STANDARD_DETAIL,
                 $message
             );
 
-            return redirect('/admin/standardlinks')->with('successmessage',$message);
-        }
-        catch(Exception $e)
-        {
+            return redirect('/admin/standardlinks')->with('successmessage', $message);
+        } catch (Exception $e) {
             Log::info($e->getMessage());
             //dd($e->getMessage());
         }
@@ -298,15 +291,15 @@ class StandardsLinkController extends Controller
 
     public function idcard($id)
     {
-       
-         $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
-         $standardLink = StandardLink::where('id',$id)->first();
-         $students=SiteHelper::getClassStudents(Auth::user()->school_id,$academic->id,$standardLink->id);
-         //$pdf = PDF::loadView('admin/exam/hallticket', compact('exam','students'));
+
+        $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+        $standardLink = StandardLink::where('id', $id)->first();
+        $students = SiteHelper::getClassStudents(Auth::user()->school_id, $academic->id, $standardLink->id);
+        //$pdf = PDF::loadView('admin/exam/hallticket', compact('exam','students'));
         // return $pdf->stream('result.pdf', array('Attachment'=>0)); 
         // return view('admin.id-card.id-card1',compact('standardLink','students'));
         // dd($students);
-          return view('admin.id-card.id-card-new',compact('standardLink','students','academic'));
+        return view('admin.id-card.id-card-new', compact('standardLink', 'students', 'academic'));
         // return $pdf;
 
     }
@@ -314,13 +307,13 @@ class StandardsLinkController extends Controller
     public function printidcard($id)
     {
 
-         $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
-         $standardLink = StandardLink::where('id',$id)->first();   
-         $students=SiteHelper::getClassStudents(Auth::user()->school_id,$academic_year->id,$standardLink->id);
-         $pdf = PDF::loadView('admin/id-card/idcard-print', compact('exam','students','academic'));
-         return $pdf->stream('result.pdf', array('Attachment'=>0)); 
-         //return view('admin.id-card.idcard-print',compact('standardLink','students'));
-         //return view('admin.id-card.id-card1',compact('standardLink','students'));
+        $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+        $standardLink = StandardLink::where('id', $id)->first();
+        $students = SiteHelper::getClassStudents(Auth::user()->school_id, $academic_year->id, $standardLink->id);
+        $pdf = PDF::loadView('admin/id-card/idcard-print', compact('exam', 'students', 'academic'));
+        return $pdf->stream('result.pdf', array('Attachment' => 0));
+        //return view('admin.id-card.idcard-print',compact('standardLink','students'));
+        //return view('admin.id-card.id-card1',compact('standardLink','students'));
         // return $pdf;
 
     }
@@ -334,30 +327,27 @@ class StandardsLinkController extends Controller
     public function destroy($id)
     {
         //
-        try
-        {
-            $standard = StandardLink::where('id',$id)->first();
-            $teacherlinks = Teacherlink::where('standardLink_id',$id);
-            if(class_exists('Gegok12\Timetable\Models\TempTimetable'))//new
-                {
-            $temptimetable = Gegok12\Timetable\Models\TempTimetable::where('standardLink_id',$id);
-        }
-            if(Gate::allows('standardlink',$standard))
+        try {
+            $standard = StandardLink::where('id', $id)->first();
+            $teacherlinks = Teacherlink::where('standardLink_id', $id);
+            if (class_exists('Gegok12\Timetable\Models\TempTimetable')) //new
             {
-                if(class_exists('Gegok12\Timetable\Models\TempTimetable'))
-                {
-                $temptimetable->delete();
+                $temptimetable = Gegok12\Timetable\Models\TempTimetable::where('standardLink_id', $id);
+            }
+            if (Gate::allows('standardlink', $standard)) {
+                if (class_exists('Gegok12\Timetable\Models\TempTimetable')) {
+                    $temptimetable->delete();
                 }
                 $teacherlinks->delete();
-                 $standard->delete();
+                $standard->delete();
 
-                $message= trans('messages.delete_success_msg',['module' => 'Standard Details']);
+                $message = trans('messages.delete_success_msg', ['module' => 'Standard Details']);
 
-                $ip= $this->getRequestIP();
+                $ip = $this->getRequestIP();
                 $this->doActivityLog(
                     $standard,
                     Auth::user(),
-                    ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                    ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                     LOGNAME_DELETE_STANDARD_DETAIL,
                     $message
                 );
@@ -365,14 +355,10 @@ class StandardsLinkController extends Controller
                 return $message;
 
                 //return redirect()->back()->with('successmessage',$message);
-            }
-            else
-            {
+            } else {
                 abort(403);
             }
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             Log::info($e->getMessage());
             //dd($e->getMessage());
         }
