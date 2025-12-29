@@ -188,6 +188,10 @@ Vue.component('student-leave-tab', require('./components/leave/student/listTab.v
 Vue.component('student-leave-list', require('./components/leave/student/List.vue').default);
 Vue.component('approve-student-leave', require('./components/leave/student/Approve.vue').default);
 
+//reception leave application
+Vue.component('reception-leave-list', require('./components/leave/reception/List.vue').default);
+Vue.component('reception-create-leave', require('./components/leave/reception/Create.vue').default);
+
 //absentees
 Vue.component('absentees-student', require('./components/dashboard/StudentAttendance.vue').default);
 Vue.component('absentees-staff', require('./components/dashboard/StaffAttendance.vue').default);

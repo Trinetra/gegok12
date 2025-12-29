@@ -2,86 +2,103 @@
   <div>
     <div v-if="this.success!=null" class="alert alert-success" id="success-alert">{{this.success}}</div>
     <label class="font-semibold text-lg text-gray-800 capitalize">Notes</label>
-      <div class="flex flex-col lg:flex-row md:flex-row py-4">
-        <div class="w-full lg:w-1/2 md:w-1/2">
-          <div class="notes-content">
-            <ul> 
-              <li v-for="(task, index) in tasks" class="task_item px-4 py-2 mb-2 bg-gray-200 border-b-1 flex" :key="task.id">
-                <div class="flex w-full" v-if="task.notes!=null">
-                  <div class="flex-1 flex flex-col">
-                    <div class="task_item_title"@click="getnotesDetails(task.id)">{{task.notes}}</div>
-                    <div>
-                      <p class="date text-xs text-gray-500"@click="getnotesDetails(task.id)">{{task.created_at}}</p>
-                    </div>
+    <div class="flex flex-col lg:flex-row md:flex-row py-4">
+      <div class="w-full lg:w-1/2 md:w-1/2">
+        <div class="notes-content">
+          <ul>
+            <li v-for="(task, index) in tasks" class="task_item px-4 py-2 mb-2 bg-gray-200 border-b-1 flex" :key="task.id">
+              <div class="flex w-full" v-if="task.notes!=null">
+                <div class="flex-1 flex flex-col">
+                  <div class="task_item_title" @click="getnotesDetails(task.id)">{{task.notes}}</div>
+                  <div>
+                    <p class="date text-xs text-gray-500" @click="getnotesDetails(task.id)">{{ formatDate(task.created_at) }}</p>
                   </div>
-                  <div class="delete" style="cursor: pointer;" @click=" removeTask(task.id)">&times;</div>
                 </div>
-              </li>
-              <li class="emptyList text-sm text-gray-700" v-show="tasks.length == 0">No notes added</li>
-            </ul>
-          </div>
+                <div class="delete" style="cursor: pointer;" @click=" removeTask(task.id)">&times;</div>
+              </div>
+            </li>
+            <li class="emptyList text-sm text-gray-700" v-show="tasks.length == 0">No notes added</li>
+          </ul>
         </div>
-        <div class="w-full lg:w-1/2 md:w-1/2 lg:mx-4 md:mx-4 my-3 lg:my-0 md:my-0">
-          <div class="form-group">
-            <textarea rows = "5" cols = "50" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-model="notes" placeholder="Add a note">Enter your name</textarea>
-            <span v-if="errors.notes"><p class="text-danger text-xs my-1">{{errors.notes[0]}}</p></span>
-            <input c type="textarea">
-          </div>
+      </div>
+      <div class="w-full lg:w-1/2 md:w-1/2 lg:mx-4 md:mx-4 my-3 lg:my-0 md:my-0">
+        <div class="form-group">
+          <textarea rows="5" cols="50" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-model="notes" placeholder="Add a note">Enter your name</textarea>
+          <span v-if="errors.notes">
+            <p class="text-danger text-xs my-1">{{errors.notes[0]}}</p>
+          </span>
+          <input c type="textarea">
+        </div>
+        <div class="my-6">
           <div class="my-6">
-            <div class="my-6">
-              <a href="#" class="btn btn-primary submit-btn" @click="checkForm()">Submit</a>
-            </div>
+            <a href="#" class="btn btn-primary submit-btn" @click="checkForm()">Submit</a>
           </div>
         </div>
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
-  import { bus } from "../app";
+  import {
+    bus
+  } from "../app";
   export default {
-    props:['url','entity_id','entity_name','school_id'],
-    data () {
+    props: ['url', 'entity_id', 'entity_name', 'school_id'],
+    data() {
       return {
-        profile_tab:'',
-        notes:'',
+        profile_tab: '',
+        notes: '',
         newTask: "",
         tasks: [],
-        createdby:'',
-        updatedby:'',
-        errors:[],
-        success:null,
-        id:'',
-        entity:{
-          'user':'App\\Models\\User',
-          'event':'App\\Models\\Events',
-          'class':'App\\Models\\StandardLink',
-        }            
+        createdby: '',
+        updatedby: '',
+        errors: [],
+        success: null,
+        id: '',
+        entity: {
+          'user': 'App\\Models\\User',
+          'event': 'App\\Models\\Events',
+          'class': 'App\\Models\\StandardLink',
+        }
       }
     },
-      
-    methods: 
-    {
-      resetForm()
-      {
-        this.notes='';
-        this.id='';        
-      }, 
 
-      checkForm()
-      {
-        this.errors=[];
-        this.success=null;    
-        let formData=new FormData();
-                   
-        formData.append('notes',this.notes);          
-        formData.append('entity_name',this.entity[this.entity_name]);          
-        formData.append('entity_id',this.entity_id);          
-        formData.append('school_id',this.school_id);          
-        formData.append('id',this.id);          
-            
-        axios.post('/admin/notes',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {     
+    methods: {
+      formatDate(datetime) {
+        if (!datetime) return '';
+        const d = new Date(datetime);
+        // e.g. "19 Dec 2025, 14:35"
+        return d.toLocaleString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      },
+      resetForm() {
+        this.notes = '';
+        this.id = '';
+      },
+
+      checkForm() {
+        this.errors = [];
+        this.success = null;
+        let formData = new FormData();
+
+        formData.append('notes', this.notes);
+        formData.append('entity_name', this.entity[this.entity_name]);
+        formData.append('entity_id', this.entity_id);
+        formData.append('school_id', this.school_id);
+        formData.append('id', this.id);
+
+        axios.post('/admin/notes', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then(response => {
           this.success = response.data.message;
           this.resetForm();
           this.getallnotes();
@@ -90,8 +107,7 @@
         });
       },
 
-      removeTask(id) 
-      {
+      removeTask(id) {
         //this.tasks.splice(index, 1);
         var thisswal = this;
         swal({
@@ -104,60 +120,52 @@
           ],
           dangerMode: true,
         }).then(function(isConfirm) {
-          if (isConfirm) 
-          {
-            axios.get(thisswal.url+ '/admin/notes/delete/'+ id).then(response => {
+          if (isConfirm) {
+            axios.get(thisswal.url + '/admin/notes/delete/' + id).then(response => {
               thisswal.success = response.data.message;
               thisswal.getallnotes();
-            });     
-          }
-          else 
-          {
+            });
+          } else {
             swal("Cancelled");
           }
         });
       },
 
-      getnotesDetails(id) 
-      {
+      getnotesDetails(id) {
         //this.tasks.splice(index, 1);
-        axios.get(this.url+ '/admin/notes/edit/'+ id).then(response => {
+        axios.get(this.url + '/admin/notes/edit/' + id).then(response => {
           this.notes = response.data;
           this.id = id;
-        });    
+        });
       },
 
-      getallnotes()
-      {
-        let formData=new FormData();
-                   
-        formData.append('entity_name',this.entity[this.entity_name]);          
-        formData.append('entity_id',this.entity_id);   
+      getallnotes() {
+        let formData = new FormData();
 
-        axios.post(this.url+'/admin/getnotes',formData).then(response => { 
+        formData.append('entity_name', this.entity[this.entity_name]);
+        formData.append('entity_id', this.entity_id);
+
+        axios.post(this.url + '/admin/getnotes', formData).then(response => {
           this.tasks = response.data;
           // console.log(this.tasks);
-        });      
-      },  
+        });
+      },
     },
-       
-    created()
-    {
+
+    created() {
       //alert(this.entity_name);
       this.getallnotes();
-    
+
       bus.$on("dataProfileTab", data => {
-        if(data!='')
-        {
-          this.profile_tab=data;                   
+        if (data != '') {
+          this.profile_tab = data;
         }
       });
     }
   }
 </script>
 <style>
-  .text-danger
-  {
-    color:red;
+  .text-danger {
+    color: red;
   }
 </style>

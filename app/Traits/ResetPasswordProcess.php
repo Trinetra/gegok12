@@ -3,74 +3,95 @@
 namespace App\Traits;
 
 use Illuminate\Support\Facades\Mail;
-use App\Mail\SendPassword;
-use App\Mail\ResetPassword;
-use App\Traits\SmsProcess;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Exception;
-use Hash;
-use Log;
-use DB;
+use App\Mail\ResetPassword;
+use App\Traits\SmsProcess;
 
 trait ResetPasswordProcess
 {
     use SmsProcess;
 
-    public function resetPasswordToUser($model)
+    public function resetPasswordToUser($user)
     {
-        $token = str_random(10);
-        $password = \DB::table(config('auth.passwords.users.table'))->insert([
-            'email' => $model->email,
-            'token' => Hash::make($token),
-            'created_at' => Carbon::now()
-        ]);
+        try {
+            if (empty($user->email)) {
+                \Session::put('failmessage', 'User email not found');
+                return false;
+            }
 
-        if($password)
-        {
-            if(env('SMS_STATUS') == 'on')
-            {
-                $url = url('/password/reset/'.$token);
-                $this->sendUserResetPassword($model->mobile_no,$url);
-            }
-            if( (env('MAIL_STATUS') == 'on') && ($model->email != '') )
-            {
-                $message = (new ResetPassword($model,$token))->onQueue('email');
-                Mail::to($model->email)->queue($message);
+            $token = Str::random(64);
 
-                \Session::put('successmessage','Check your email to reset the password');
+            DB::beginTransaction();
+
+            $inserted = DB::table(config('auth.passwords.users.table'))->insert([
+                'email'      => $user->email,
+                'token'      => Hash::make($token),
+                'created_at' => Carbon::now(),
+            ]);
+
+            if (!$inserted) {
+                DB::rollBack();
+                \Session::put('failmessage', 'Password reset failed');
+                return false;
             }
-            else
-            {
-                \Session::put('failmessage','You cannot send message'); 
+
+            if (env('SMS_STATUS') === 'on' && !empty($user->mobile_no)) {
+                $url = url('/password/reset/' . $token);
+                $this->sendUserResetPassword($user->mobile_no, $url);
             }
-        } 
-        else 
-        {
-            \Session::put('successmessage','Password Reset failed for this User'); 
-        }        
+
+            if (env('MAIL_STATUS') === 'on') {
+                Mail::to($user->email)
+                    ->queue(
+                        (new ResetPassword($user, $token))->onQueue('emails')
+                    );
+
+                \Session::put('successmessage', 'Check your email to reset the password');
+            }
+
+            DB::commit();
+            return true;
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Reset Password Error: ' . $e->getMessage());
+            \Session::put('failmessage', 'Something went wrong');
+            return false;
+        }
     }
 
     public function resetPasswordSms($user)
     {
-        try
-        {
-            $token = str_random(10);
-            $password = \DB::table(config('auth.passwords.users.table'))->insert([
-                'email' => $user->email,
-                'token' => Hash::make($token),
-                'created_at' => Carbon::now()
+        try {
+            if (empty($user->email) || empty($user->mobile_no)) {
+                return false;
+            }
+
+            if (env('SMS_STATUS') !== 'on') {
+                return false;
+            }
+
+            $token = Str::random(64);
+
+            DB::table(config('auth.passwords.users.table'))->insert([
+                'email'      => $user->email,
+                'token'      => Hash::make($token),
+                'created_at' => Carbon::now(),
             ]);
 
-            if( ($password) && (env('SMS_STATUS') == 'on') )
-            {
-                $url = url('/password/reset/'.$token);
-                $this->sendUserResetPassword($user->mobile_no,$url);
-            } 
+            $url = url('/password/reset/' . $token);
+            $this->sendUserResetPassword($user->mobile_no, $url);
+
+            return true;
+
+        } catch (Exception $e) {
+            Log::error('Reset Password SMS Error: ' . $e->getMessage());
+            return false;
         }
-        catch(Exception $e)
-        {
-            Log::info($e->getMessage());
-            //dd($e->getMessage());
-        }   
     }
 }

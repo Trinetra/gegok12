@@ -1,11 +1,11 @@
 <template>
   <div>
     <ul class="list-reset flex text-xs profile-tab flex-wrap">
-      <li class="px-2 mx-3 py-2" v-bind:class="[{'active' : profile_tab === '1'}]" >
+      <li class="px-2 mx-3 py-2" v-bind:class="[{'active' : profile_tab === '1'}]">
         <a href="#" class="text-gray-700 font-medium" @click="setProfileTab('1')">Profile</a>
       </li>
 
-      <li class="px-2 mx-3 py-2" v-bind:class="[{'active' : profile_tab === '2'}]" >
+      <li class="px-2 mx-3 py-2" v-bind:class="[{'active' : profile_tab === '2'}]">
         <a href="#" class="text-gray-700 font-medium" @click="setProfileTab('2')">Timeline</a>
       </li>
 
@@ -18,13 +18,13 @@
       </li>
 
       <li class="px-2 mx-3 py-2" v-bind:class="[{'active' : profile_tab === '5'}]">
-        <a href="#" class="text-gray-700 font-medium"  @click="setProfileTab('5')">Notes</a>
+        <a href="#" class="text-gray-700 font-medium" @click="setProfileTab('5')">Notes</a>
       </li>
 
       <li class="px-2 mx-3 py-2" v-bind:class="[{'active' : profile_tab === '6'}]">
         <a href="#" class="text-gray-700 font-medium" @click="setProfileTab('6')">Documents</a>
       </li>
-       <li class="px-2 mx-3 py-2" v-bind:class="[{'active' : profile_tab === '7'}]">
+      <li class="px-2 mx-3 py-2" v-bind:class="[{'active' : profile_tab === '7'}]">
         <a href="#" class="text-gray-700 font-medium" @click="setProfileTab('7')">Bank Details</a>
       </li>
       <li class="px-2 mx-3 py-2" v-bind:class="[{'active' : profile_tab === '8'}]">
@@ -54,7 +54,9 @@
 
 <script>
   import PortalVue from "portal-vue";
-  import { bus } from "../../../app";
+  import {
+    bus
+  } from "../../../app";
   import notes from '../../notes';
   import myprofile from './myprofile';
   import timeline from './timeline';
@@ -66,10 +68,10 @@
   import libraryactivity from './libraryactivity';
 
   export default {
-    props:['url','name','entity_id','school_id','mode'],
-    data () {
+    props: ['url', 'name', 'entity_id', 'school_id', 'mode'],
+    data() {
       return {
-        profile_tab:'1',     
+        profile_tab: '1',
       }
     },
     components: {
@@ -84,25 +86,21 @@
       libraryactivity
     },
 
-    methods:
-    {
-      setProfileTab(val)
-      {
-        this.profile_tab=val;
+    methods: {
+      setProfileTab(val) {
+        this.profile_tab = val;
         bus.$emit("dataProfileTab", this.profile_tab);
       }
     },
 
-    created()
-    {
+    created() {
       bus.$emit("dataProfileTab", this.profile_tab);
-       
+
       bus.$on("dataProfileTab", data => {
-        if(data!='')
-        {
-          this.profile_tab=data;                   
+        if (data != '') {
+          this.profile_tab = data;
         }
-      });   
+      });
     }
   }
 </script>

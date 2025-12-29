@@ -16,6 +16,7 @@ use App\Http\Requests\TeacherUpdateRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\TeacherProfile;
+use App\Models\Users\TeacherUser;
 use App\Traits\RegisterUser;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
@@ -43,7 +44,7 @@ class TeacherEditController extends Controller
     public function editTeacher($name)
     {
       //
-      $user           = User::where('name',$name)->first();
+      $user           = TeacherUser::where('name',$name)->first();  //User
       $userprofile    = Userprofile::where('user_id',$user->id)->first();
       $teacherprofile = $user->getTeacherDetails();
         
