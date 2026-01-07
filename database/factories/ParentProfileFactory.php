@@ -43,7 +43,7 @@ class ParentProfileFactory extends Factory
             $official_address  = $this->faker->randomElement([
                 'Bangalore', 'Chennai', 'Hyderabad', 'Mumbai', 'Thiruvananthapuram'
             ]);
-            $annual_income     = $this->faker->randomNumber(7, false);
+            $annual_income     = $this->faker->numerify('#######');
         }
 
         $relation = $this->faker->randomElement(['father', 'mother', 'guardian']);

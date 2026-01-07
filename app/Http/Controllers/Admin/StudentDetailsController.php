@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\StudentParentLink;
 use App\Models\StudentAcademic;
 use Illuminate\Http\Request;
-use App\Schoolplus\Student;
+use App\Schoolplus\StudentFacade as Student;
 use App\Helpers\SiteHelper;
 use App\Traits\LogActivity;
 use App\Models\ActivityLog;
