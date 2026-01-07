@@ -24,6 +24,17 @@ use Log;
  */
 trait AdmissionUser
 {
+    /**
+     * Create a new student with profile, academics, and optional fee payment.
+     *
+     * @param object $data Request payload containing student details
+     * @param int $usergroup_id User group ID for the student
+     * @param int $standardLink_id Standard link to associate
+     * @param string $path Avatar path if provided
+     * @param mixed $fee Fee model or data required for payment
+     * @param \App\Models\User $admin Admin performing the operation
+     * @return \App\Models\User Newly created student user
+     */
     public function CreateStudent($data, $usergroup_id,$standardLink_id,$path,$fee,$admin)
     {
         \DB::beginTransaction();
@@ -203,6 +214,14 @@ trait AdmissionUser
     }
 
 
+    /**
+     * Create or link a father profile to a student.
+     *
+     * @param int|null $student_id Student identifier to link (optional)
+     * @param object $data Request payload containing father details
+     * @param int $usergroup_id User group ID for parent role
+     * @return \App\Models\User Newly created father user
+     */
     public function CreateStudentFather($student_id,$data , $usergroup_id)
     {
         \DB::beginTransaction();
@@ -280,6 +299,14 @@ trait AdmissionUser
         } 
     }
 
+    /**
+     * Create or link a mother profile to a student.
+     *
+     * @param int|null $student_id Student identifier to link (optional)
+     * @param object $data Request payload containing mother details
+     * @param int $usergroup_id User group ID for parent role
+     * @return \App\Models\User Newly created mother user
+     */
     public function CreateStudentMother($student_id,$data , $usergroup_id)
     {
         \DB::beginTransaction();

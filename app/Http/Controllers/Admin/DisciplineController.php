@@ -26,6 +26,14 @@ use App\Models\User;
 use Exception;
 use Log;
 
+/**
+ * Class DisciplineController
+ *
+ * Controller for managing discipline records: listing, creating,
+ * updating, notifying parents and deleting discipline entries.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class DisciplineController extends Controller
 {
     use LogActivity;

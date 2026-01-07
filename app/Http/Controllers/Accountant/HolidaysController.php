@@ -17,6 +17,18 @@ use App\Models\Events;
 use App\Traits\Common;
 use Exception;
 
+/**
+ * Class HolidaysController
+ *
+ * Handles holiday-related operations for the accountant panel.
+ *
+ * Responsibilities:
+ * - Fetch and list holidays for the current school and academic year
+ * - Provide holiday data as API resources
+ * - Render holiday listing views
+ *
+ * @package App\Http\Controllers\Accountant
+ */
 class HolidaysController extends Controller
 {
     use LogActivity;

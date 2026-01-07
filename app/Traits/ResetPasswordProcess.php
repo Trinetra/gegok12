@@ -1,4 +1,7 @@
 <?php
+/**
+ * Handles password reset token creation and dispatch via SMS and email.
+ */
 
 namespace App\Traits;
 
@@ -16,6 +19,12 @@ trait ResetPasswordProcess
 {
     use SmsProcess;
 
+    /**
+     * Create password reset token and dispatch reset instructions via SMS and email.
+     *
+     * @param \App\Models\User $user User requesting reset
+     * @return bool True when reset workflow started successfully
+     */
     public function resetPasswordToUser($user)
     {
         try {
@@ -65,6 +74,12 @@ trait ResetPasswordProcess
         }
     }
 
+    /**
+     * Send password reset link via SMS only.
+     *
+     * @param \App\Models\User $user User requesting reset
+     * @return bool True on successful SMS dispatch, false otherwise
+     */
     public function resetPasswordSms($user)
     {
         try {

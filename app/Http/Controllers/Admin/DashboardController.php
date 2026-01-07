@@ -30,6 +30,14 @@ use App\Models\Fee;
 use Exception;
 use Log;
 
+/**
+ * Class DashboardController
+ *
+ * Controller for admin dashboard operations: viewing summaries,
+ * fetching tasks, events and unpaid fees related endpoints.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class DashboardController extends Controller 
 {
     use LogActivity;
@@ -60,6 +68,13 @@ class DashboardController extends Controller
         return view( '/admin/dashboard/dashboard', ['dashboard' => $dashboard , 'standardLink' => $standardLink , 'selected_teacher' => $selected_teacher ] );
     }
 
+    /**
+     * Return task list for the authenticated user filtered by flag.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string|int $task_flag
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function list(Request $request,$task_flag)
     {
         //
@@ -76,6 +91,11 @@ class DashboardController extends Controller
         return $tasks;    
     }
 
+    /**
+     * Return counts of tasks grouped by flag for the authenticated user.
+     *
+     * @return array
+     */
     public function listCount()
     {
         //
@@ -89,6 +109,11 @@ class DashboardController extends Controller
         return $tasks;    
     }
 
+    /**
+     * Return upcoming events for the school.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function event()
     {
         $now = date( 'Y-m-d H:i:s' );
@@ -208,12 +233,23 @@ class DashboardController extends Controller
         return $fees;
     }
 
+    /**
+     * Show the unpaid fees view for the provided fee id.
+     *
+     * @param int $fee_id
+     * @return \Illuminate\Http\Response
+     */
     public function show($fee_id)
     {
-        //
         return view('/admin/dashboard/unpaidfees', ['fee_id' => $fee_id]);
     }
 
+    /**
+     * Return unpaid fees list and count for a specific fee.
+     *
+     * @param int $fee_id
+     * @return array
+     */
     public function feeslist($fee_id)
     {
         $fees = Fee::where('id',$fee_id)->first();

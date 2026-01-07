@@ -23,6 +23,15 @@ use Log;
  */
 trait MemberProcess
 {
+    /**
+     * Filter members (students) by role, status, and optional profile criteria.
+     *
+     * @param \Illuminate\Http\Request $request Incoming request with filter params
+     * @param int $school_id School identifier
+     * @param int $usergroup_id User group to filter by
+     * @param string $status Default status filter
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function MemberFilter($request, $school_id, $usergroup_id, $status)
     {
         try {
@@ -117,6 +126,14 @@ trait MemberProcess
         }
     }
 
+    /**
+     * Filter teacher users by role and profile attributes.
+     *
+     * @param \Illuminate\Http\Request $request Incoming request with filter params
+     * @param int $school_id School identifier
+     * @param int $usergroup_id Teacher role id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function TeacherFilter($request, $school_id, $usergroup_id)
     {
         try {
@@ -195,6 +212,14 @@ trait MemberProcess
         }
     }
 
+    /**
+     * Filter non-teaching staff users by group and optional attributes.
+     *
+     * @param \Illuminate\Http\Request $request Incoming request with filter params
+     * @param int $school_id School identifier
+     * @param array $usergroup_id One or more staff role ids
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function StaffFilter($request, $school_id, $usergroup_id)
     {
         try {
@@ -273,6 +298,14 @@ trait MemberProcess
         }
     }
 
+    /**
+     * Filter parents with active children and optional profile attributes.
+     *
+     * @param \Illuminate\Http\Request $request Incoming request with filter params
+     * @param int $school_id School identifier
+     * @param int $usergroup_id Parent role id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function ParentFilter($request, $school_id, $usergroup_id)
     {
         try {
@@ -340,6 +373,14 @@ trait MemberProcess
         }
     }
 
+    /**
+     * Filter alumni users by name alphabet and batch.
+     *
+     * @param \Illuminate\Http\Request $request Incoming request with filter params
+     * @param int $school_id School identifier
+     * @param int $usergroup_id Alumni role id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function AlumniFilter($request, $school_id, $usergroup_id)
     {
         try {
@@ -371,6 +412,15 @@ trait MemberProcess
         }
     }
 
+    /**
+     * Filter alumni profiles excluding the current user.
+     *
+     * @param \Illuminate\Http\Request $request Incoming request with filter params
+     * @param int $school_id School identifier
+     * @param int $usergroup_id Alumni role id
+     * @param int $user_id Current user id to exclude
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function AlumniProfileFilter($request, $school_id, $usergroup_id, $user_id)
     {
         try {
@@ -402,6 +452,15 @@ trait MemberProcess
         }
     }
     //new
+    /**
+     * Filter library member records (students) using profile and library data.
+     *
+     * @param \Illuminate\Http\Request $request Incoming request with filter params
+     * @param int $school_id School identifier
+     * @param int $usergroup_id User group to filter by
+     * @param string $status Default status filter
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function LibraryMemberFilter($request, $school_id, $usergroup_id, $status)
     {
 
@@ -486,6 +545,14 @@ trait MemberProcess
         }
     }
 
+    /**
+     * Filter library teachers by profile and library card/lending data.
+     *
+     * @param \Illuminate\Http\Request $request Incoming request with filter params
+     * @param int $school_id School identifier
+     * @param int $usergroup_id Teacher role id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function LibraryTeacherFilter($request, $school_id, $usergroup_id)
     {
 
@@ -552,6 +619,14 @@ trait MemberProcess
         }
     }
 
+    /**
+     * Filter library staff by profile and library card/lending data.
+     *
+     * @param \Illuminate\Http\Request $request Incoming request with filter params
+     * @param int $school_id School identifier
+     * @param array $usergroup_id Staff role ids
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function LibraryStaffFilter($request, $school_id, $usergroup_id)
     {
         try {

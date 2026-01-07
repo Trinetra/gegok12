@@ -24,7 +24,14 @@ use App\Traits\Common;
 use App\Models\Fee;
 use Exception;
 use Log;
-
+/**
+ * Class AdmissionController
+ *
+ * Controller for managing student admissions: listing, viewing,
+ * approving, updating and deleting admission records.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class AdmissionController extends Controller
 {  
     use AdmissionUser;

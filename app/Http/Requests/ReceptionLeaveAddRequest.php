@@ -9,14 +9,12 @@ use Illuminate\Support\Facades\Auth;
 use App\Helpers\SiteHelper;
 use Carbon\Carbon;
 
-class LeaveEditRequest extends FormRequest
+class ReceptionLeaveAddRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -24,9 +22,9 @@ class LeaveEditRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules()
+    public function rules(): array
     {
         Validator::extend('check_remarks',function($attribute,$value,$parameters,$validator)
         {
@@ -39,20 +37,16 @@ class LeaveEditRequest extends FormRequest
             $academic_year = SiteHelper::getAcademicYear($school_id);
 
             $from_date = date('Y-m-d',strtotime(request('from_date')));
-            
             $application = TeacherLeaveApplication::where([
-                ['id', '!=', request('id')],
-                ['user_id', Auth::id()],
-                ['school_id', $school_id],
-                ['academic_year_id', $academic_year->id],
-                ['status', 'pending'],
-            ])
-            ->where(function ($query) use ($from_date) {
-                $query->whereDate('from_date', $from_date)
-                      ->orWhereDate('to_date', $from_date);
-            })
-            ->latest()
-            ->first();
+                    ['user_id', request('staff_id')],
+                    ['school_id', $school_id],
+                    ['academic_year_id', $academic_year->id],
+                    ['status', '!=', 'cancelled'],
+                ])
+                ->whereDate('from_date', '<=', $from_date)
+                ->whereDate('to_date', '>=', $from_date)
+                ->latest()
+                ->first();
 
             if( $application == null)
             {
@@ -63,6 +57,7 @@ class LeaveEditRequest extends FormRequest
 
         Validator::extend('check_from_date',function($attribute,$value,$parameters,$validator)
         {
+            $school_id = Auth::user()->school_id;
             $academic_year = SiteHelper::getAcademicYear($school_id);
             $start_date = date('Y-m-d H:i:s',strtotime($academic_year->start_date));
             $end_date   = date('Y-m-d H:i:s',strtotime($academic_year->end_date));
@@ -77,6 +72,7 @@ class LeaveEditRequest extends FormRequest
 
         Validator::extend('check_to_date',function($attribute,$value,$parameters,$validator)
         {
+            $school_id = Auth::user()->school_id;
             $academic_year = SiteHelper::getAcademicYear($school_id);
             $start_date = date('Y-m-d H:i:s',strtotime($academic_year->start_date));
             $end_date   = date('Y-m-d H:i:s',strtotime($academic_year->end_date));
@@ -96,9 +92,9 @@ class LeaveEditRequest extends FormRequest
             'reason_id'     =>  'required',
             'remarks'       =>  'nullable|check_remarks',
             'leave_type_id' =>  'required',
+            'session'       =>  'required',
         ];
     }
-
     public function messages()
     {
         return [
@@ -119,7 +115,9 @@ class LeaveEditRequest extends FormRequest
 
             'remarks.check_remarks'             =>  'Enter Valid Remarks',
 
-            'leave_type_id.required'            =>  'Leave Type is required'
+            'leave_type_id.required'            =>  'Leave Type is required',
+
+            'session.required'                  =>  'Please Select Session'
         ];
     }
 }

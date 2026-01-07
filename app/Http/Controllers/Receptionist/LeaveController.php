@@ -9,8 +9,8 @@ use App\Http\Resources\Teacher\Leave as LeaveResource;
 use App\Events\Notification\SingleNotificationEvent;
 use App\Http\Requests\LeaveApproveRequest;
 use App\Models\TeacherLeaveApplication;
-use App\Http\Requests\LeaveEditRequest;
-use App\Http\Requests\LeaveAddRequest;
+use App\Http\Requests\ReceptionLeaveEditRequest;
+use App\Http\Requests\ReceptionLeaveAddRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Events\SinglePushEvent;
@@ -37,55 +37,14 @@ class LeaveController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function list(Request $request)
-    {
-       
+    { 
         $school_id = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
-
-        if(Auth::user()->hasRole('leave_applier'))
-        {
-            $application = TeacherLeaveApplication::where([
-                            // ['user_id',Auth::id()],
-                            ['school_id',$school_id],
-                            ['academic_year_id',$academic_year->id]
-                        ])->orderBy('id','DESC')->paginate(10);
-        }
-        elseif(Auth::user()->hasRole('leave_checker'))
-        {
-            $teacherprofiles = TeacherProfile::where([
-                    ['school_id',$school_id],
-                    ['academic_year_id',$academic_year->id],
-                    ['reporting_to',Auth::id()]
-                ])->pluck('user_id')->toArray();
-
-            $application = TeacherLeaveApplication::where([
+        $application = TeacherLeaveApplication::where([
+                        // ['user_id',Auth::id()],
                         ['school_id',$school_id],
-                        ['academic_year_id',$academic_year->id],
-                        ['status','pending']
-                    ])->whereIn('user_id',$teacherprofiles);
-            if(\Request::getQueryString() != null)
-            {
-                if($request->showOther == 'true')
-                { 
-                   $application = TeacherLeaveApplication::where([
-                        ['school_id',$school_id],
-                        ['academic_year_id',$academic_year->id],
-                        ['status','!=','pending']
-                    ])->whereIn('user_id',$teacherprofiles);
-
-                   /* $application = $application->orWhere([
-                        ['school_id',$school_id],
-                        ['academic_year_id',$academic_year->id],
-                        ['status','approved']
-                    ])->whereIn('user_id',$teacherprofiles)->orWhere([
-                        ['school_id',$school_id],
-                        ['academic_year_id',$academic_year->id],
-                        ['status','cancelled']
-                    ])->whereIn('user_id',$teacherprofiles);*/
-                }
-            }
-            $application = $application->orderBy('id','DESC')->paginate(10);
-        }
+                        ['academic_year_id',$academic_year->id]
+                    ])->orderBy('id','DESC')->paginate(10);
 
         $application = LeaveResource::collection($application);
 
@@ -194,7 +153,7 @@ class LeaveController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(LeaveAddRequest $request)
+    public function store(ReceptionLeaveAddRequest $request)
     {
         //
         try
@@ -274,6 +233,8 @@ class LeaveController extends Controller
         $array['session']       =   $leave->session;
         $array['leavelist']     =   LeaveType::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['status',1]])->get();
         $array['reasonlist']    =   AbsentReason::where('status',1)->get();
+        $array['user_id'] =   $leave->user_id;
+        $array['stafflist']  = User::whereIn('usergroup_id', [5, 8, 10, 11, 12, 13])->where([['school_id',Auth::user()->school_id],['status','active']])->get()->sortBy('userprofile.firstname');
 
         return $array;
     }
@@ -289,7 +250,7 @@ class LeaveController extends Controller
         //
         $leave = TeacherLeaveApplication::where('id',$id)->first();
 
-        return view('/teacher/leave/show', ['leave' => $leave]);
+        return view('/reception/leave/show', ['leave' => $leave]);
     }
 
     /**
@@ -303,7 +264,7 @@ class LeaveController extends Controller
         //
         $leave = TeacherLeaveApplication::where('id',$id)->first();
  
-        return view('/teacher/leave/edit', ['leave' => $leave]);
+        return view('/reception/leave/edit', ['leave' => $leave]);
     }
 
     /**
@@ -313,7 +274,7 @@ class LeaveController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(LeaveEditRequest $request, $id)
+    public function update(ReceptionLeaveEditRequest $request, $id)
     {
         //
         try

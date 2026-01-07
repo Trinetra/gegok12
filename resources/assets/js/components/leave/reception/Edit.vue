@@ -1,11 +1,8 @@
 <template>
     <div class="bg-white shadow px-4 py-3">
         <div>
-            <flash-message :position="'right bottom'" :timeout="3000" class="myCustomClass"></flash-message>
-        
-	       <!--  <div v-if="this.success!=null" class="alert alert-success" id="success-alert">{{this.success}}</div> -->
-
-           <div class="flex flex-col lg:flex-row md:flex-row">
+            <div v-if="this.success!=null" class="alert alert-success" id="success-alert">{{this.success}}</div>
+            <div class="flex flex-col lg:flex-row md:flex-row">
                 <div class="tw-form-group w-full lg:w-1/2 md:w-1/2">
                     <div class="lg:mr-8 md:mr-8">
                         <div class="mb-2">
@@ -40,7 +37,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col lg:flex-row md:flex-row">
+            <div class="flex flex-col lg:flex-row md:flex-col">
                 <div class="tw-form-group w-full lg:w-1/2 md:w-1/2">
                     <div class="lg:mr-8 md:mr-8">
                         <div class="mb-2">
@@ -53,7 +50,7 @@
                             </div>
                         </div>
                         <span v-if="errors.from_date" class="text-red-500 text-xs font-semibold">{{errors.from_date[0]}}</span>
-                    </div>
+                    </div> 
                 </div>
 
                 <div class="tw-form-group w-full lg:w-1/2 md:w-1/2">
@@ -67,8 +64,8 @@
                                 <svg id="Capa_1" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current text-gray-500 mx-2"><g><path d="m144 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m467 65h-36v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-36c-24.813 0-45 20.187-45 45v332c0 24.813 20.187 45 45 45h422c24.813 0 45-20.187 45-45 0-9.682 0-323.575 0-332 0-24.813-20.187-45-45-45zm-437 45c0-8.271 6.729-15 15-15h36v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h36c8.271 0 15 6.729 15 15v59h-452zm437 347h-422c-8.271 0-15-6.729-15-15v-243h452v243c0 8.271-6.729 15-15 15z"></path></g></svg>
                             </div>
                         </div>
+                        <span v-if="errors.to_date" class="text-red-500 text-xs font-semibold">{{errors.to_date[0]}}</span>
                     </div>
-                    <span v-if="errors.to_date" class="text-red-500 text-xs font-semibold">{{errors.to_date[0]}}</span>
                 </div>
             </div>
 
@@ -134,34 +131,28 @@
                 </div>
             </div>
 
-            
-
-            
-    	
+           
+        
             <div class="my-6">
                 <a href="#" id="submit-btn" class="btn btn-submit blue-bg text-white rounded px-3 py-1 mr-3 text-sm font-medium" @click="submitForm()">Submit</a>
-    		    <a href="#" class="btn btn-reset bg-gray-100 text-gray-700 border rounded px-3 py-1 mr-3 text-sm font-medium" @click="resetForm()">Reset</a>	
+                <a href="#" class="btn btn-reset bg-gray-100 text-gray-700 border rounded px-3 py-1 mr-3 text-sm font-medium" @click="reset()">Reset</a>    
             </div>
-	   </div>
+        </div>
     </div>
 </template>
 
 <script>
     import datetime from 'vuejs-datetimepicker';
-    import Vue from 'vue'
-    import 'vue-flash-message/dist/vue-flash-message.min.css';
-    import VueFlashMessage from 'vue-flash-message';
-    Vue.use(VueFlashMessage);
-
-
     export default {
         components: {
             datetime,
         },
-        props:['url'],
+        props : ['url','id'],
         data(){
             return{
+                leaves:[],
                 reasonlist:[],
+                leavelist:[],
                 stafflist:[],
                 staff_id:'',
                 sessionlist:[
@@ -169,13 +160,12 @@
                 { id : 'forenoon' , name : 'Forenoon'},
                 { id : 'afternoon' , name : 'Afternoon'}
                 ],
-                leavelist:[],
+                session:'',
                 from_date:'',
                 to_date:'',
                 reason_id:'',
                 remarks:'',
                 leave_type_id:'',
-                session:'',
                 errors:[],
                 success:null,
             }
@@ -185,29 +175,32 @@
         {
             getList()
             {
-                axios.get('/receptionist/leave/add/list').then(response => {
-                    this.reasonlist = response.data.reasonlist;
-                    this.leavelist = response.data.leavelist;
-                    this.stafflist = response.data.stafflist; 
-                    this.from_date = response.data.from_date;
-                    this.to_date = response.data.to_date;
-                    //console.log(this.standardLinklist)
+                axios.get('/receptionist/leave/edit/list/'+this.id).then(response => {
+                    this.leaves = response.data;
+                    this.setList();
+                    //console.log(this.leaves)
                 });
             },
 
-            resetForm()
+            setList()
             {
-                this.from_date='';
-                this.to_date='';
-                this.reason_id='';
-                this.remarks='';  
-                this.leave_type_id='';  
-                this.session='';
-                this.staff_id='';   
-            }, 
+                if(Object.keys(this.leaves).length > 0)
+                {
+                    this.from_date      = this.leaves.from_date;
+                    this.to_date        = this.leaves.to_date;
+                    this.reason_id      = this.leaves.reason_id;
+                    this.remarks        = this.leaves.remarks;  
+                    this.session        = this.leaves.session;  
+                    this.leave_type_id  = this.leaves.leave_type_id;
+                    this.reasonlist     = this.leaves.reasonlist;
+                    this.leavelist      = this.leaves.leavelist;
+                    this.stafflist      = this.leaves.stafflist;
+                    this.staff_id       = this.leaves.user_id;
+                }
+            },
 
             submitForm()
-            {       
+            {
                 this.errors=[];
                 this.success=null; 
 
@@ -221,14 +214,10 @@
                 formData.append('leave_type_id',this.leave_type_id);
                 formData.append('staff_id', this.staff_id);          
                      
-                axios.post('/receptionist/leave/add',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {     
+                axios.post('/receptionist/leave/edit/'+this.id,formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {     
                     this.success = response.data.success;
-                    this.resetForm();
-                    this.flash(this.success,'success',{timeout: 3000});
-                    window.location.href = "/receptionist/staff/leaves";
                 }).catch(error => {
                     this.errors = error.response.data.errors;
-                    this.flash('Please fill all fields ☹','error',{timeout: 3000});
                 });
             },
         },
@@ -239,13 +228,3 @@
         }
     }
 </script>
-</script>
-<style scoped>
-  .myCustomClass {
-     margin-top:10px;
-     bottom:0px;
-     right:0px;
-     position: fixed;
-     z-index: 40;
-}
-</style>

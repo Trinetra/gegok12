@@ -250,7 +250,7 @@ class SiteHelper
         $academic_year = SiteHelper::getAcademicYear($school_id);
         $key = "hod_list_" . $school_id . '_' . $academic_year->id;
         return Cache::remember($key, env('CACHE_TIME'), function () use ($school_id, $academic_year) {
-            $users = User::ByRole(5)->where('status', 'active')->whereHas('teacherprofile', function ($query) use ($school_id, $academic_year) {
+            $users = TeacherUser::ByRole(5)->where('status', 'active')->whereHas('teacherprofile', function ($query) use ($school_id, $academic_year) {
                 $query->where([
                     ['school_id', $school_id],
                     ['academic_year_id', $academic_year->id],
@@ -267,7 +267,7 @@ class SiteHelper
         $academic_year = SiteHelper::getAcademicYear($school_id);
         $key = "principal_list_" . $school_id . '_' . $academic_year->id;
         return Cache::remember($key, env('CACHE_TIME'), function () use ($school_id, $academic_year) {
-            $users = User::ByRole(5)->where('status', 'active')->whereHas('teacherprofile', function ($query) use ($school_id, $academic_year) {
+            $users = TeacherUser::ByRole(5)->where('status', 'active')->whereHas('teacherprofile', function ($query) use ($school_id, $academic_year) {
                 $query->where([
                     ['school_id', $school_id],
                     ['academic_year_id', $academic_year->id],

@@ -9,14 +9,12 @@ use Illuminate\Support\Facades\Auth;
 use App\Helpers\SiteHelper;
 use Carbon\Carbon;
 
-class LeaveEditRequest extends FormRequest
+class ReceptionLeaveEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -24,9 +22,9 @@ class LeaveEditRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules()
+    public function rules(): array
     {
         Validator::extend('check_remarks',function($attribute,$value,$parameters,$validator)
         {
@@ -41,8 +39,8 @@ class LeaveEditRequest extends FormRequest
             $from_date = date('Y-m-d',strtotime(request('from_date')));
             
             $application = TeacherLeaveApplication::where([
-                ['id', '!=', request('id')],
-                ['user_id', Auth::id()],
+                // ['id', '!=', request('id')],
+                ['user_id', request('staff_id')],
                 ['school_id', $school_id],
                 ['academic_year_id', $academic_year->id],
                 ['status', 'pending'],
@@ -98,7 +96,6 @@ class LeaveEditRequest extends FormRequest
             'leave_type_id' =>  'required',
         ];
     }
-
     public function messages()
     {
         return [

@@ -1,4 +1,4 @@
-@extends('layouts.teacher.layout')
+@extends('layouts.reception.layout')
 
 @section('content')
     <div class="relative">
@@ -13,6 +13,6 @@
             </div>
         </div>
         @include('partials.message')
-        <edit-leave url="{{ url('/') }}" id="{{ $leave->id }}"></edit-leave>
+        <reception-edit-leave url="{{ url('/') }}" id="{{ $leave->id }}"></edit-leave>
     </div>
 @endsection

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Classwall\PostRequest;
@@ -17,6 +18,15 @@ use App\Models\Post;
 use App\Models\Tag;
 use Exception;
 
+/**
+ * Class PostAddController
+ *
+ * Handles creation of classwall posts including
+ * post metadata, scheduling, tagging, attachments,
+ * and activity logging.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class PostAddController extends Controller
 {
     //
@@ -24,9 +34,9 @@ class PostAddController extends Controller
     use Common;
 
     /**
-     * Show the form for creating a new resource.
+     * Get standard link list for post creation.
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
     public function createList()
     {
@@ -37,38 +47,48 @@ class PostAddController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the post creation form.
      *
-     * @return \Illuminate\Http\Response
+     * Determines the entity context (user or custom entity)
+     * based on query parameters.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
      */
     public function create(Request $request)
     {
         //
-        if(count((array)\Request::getQueryString())>0)
+        if (count((array)\Request::getQueryString()) > 0)
         {
-            if($request->entity_id != '')
-            { 
+            if ($request->entity_id != '')
+            {
                 $entity_id = $request->entity_id;
             }
-            if($request->entity_name != '')
-            { 
+            if ($request->entity_name != '')
+            {
                 $entity_name = $request->entity_name;
             }
         }
         else
         {
-            $entity_id      = Auth::id();
-            $entity_name    = 'App\Models\User';
+            $entity_id   = Auth::id();
+            $entity_name = 'App\Models\User';
         }
 
-        return view('/admin/classwall/post/create' , [ 'entity_id' => $entity_id , 'entity_name' => $entity_name ]);
+        return view('/admin/classwall/post/create', [
+            'entity_id'   => $entity_id,
+            'entity_name' => $entity_name
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created post.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Handles post creation, visibility rules,
+     * scheduling, tagging, and activity logging.
+     *
+     * @param \App\Http\Requests\Classwall\PostRequest $request
+     * @return array|null
      */
     public function store(PostRequest $request)
     {
@@ -86,83 +106,98 @@ class PostAddController extends Controller
             $post->entity_name      = $request->entity_name;
             $post->description      = $request->description;
             $post->visibility       = $request->visibility;
-            if($request->visibility == 'select_class')
+
+            if ($request->visibility == 'select_class')
             {
-                $post->visible_for      = $request->visible_for;
+                $post->visible_for = $request->visible_for;
             }
-            if($request->post_later == 'true')
+
+            if ($request->post_later == 'true')
             {
-                $post->post_created_at = date('Y-m-d H:i:s',strtotime($request->posted_at));
-                $post->is_posted = 0;
-                $post->status  = 'pending';
+                $post->post_created_at = date('Y-m-d H:i:s', strtotime($request->posted_at));
+                $post->is_posted       = 0;
+                $post->status          = 'pending';
             }
             else
             {
                 $post->post_created_at = date('Y-m-d H:i:s');
-                $post->posted_at = date('Y-m-d H:i:s');
-                $post->is_posted = 1;
-                $post->status  = 'posted';
+                $post->posted_at       = date('Y-m-d H:i:s');
+                $post->is_posted       = 1;
+                $post->status          = 'posted';
             }
 
             $post->created_by = Auth::id();
             $post->save();
 
-            if($request->tag!=''){
-            $tag=Tag::firstOrCreate(['tag_name' => $request->tag]);
-            $posttag=PostTag::create(['post_id'=>$post->id,'tag_id'=>$tag->id]);
+            if ($request->tag != '')
+            {
+                $tag = Tag::firstOrCreate(['tag_name' => $request->tag]);
+                PostTag::create([
+                    'post_id' => $post->id,
+                    'tag_id'  => $tag->id
+                ]);
             }
 
-            $message = trans('messages.add_success_msg',['module' => 'Post']);
+            $message = trans('messages.add_success_msg', ['module' => 'Post']);
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $post,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_ADD_POST,
                 $message
-            ); 
+            );
 
-            $res['id'] = $post->id;
+            $res['id']      = $post->id;
             $res['success'] = $message;
+
             return $res;
         }
-        catch(Exception $e)
+        catch (Exception $e)
         {
             //dd($e->getMessage());
         }
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Upload and attach files to a post.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Handles multiple file uploads and updates
+     * the post attachment paths.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return void
      */
     public function attachment(Request $request)
     {
         //
         try
         {
-            $post = Post::where('id',$request->post_id)->first();
-            $i =0;
+            $post = Post::where('id', $request->post_id)->first();
+            $i = 0;
             $files = $request->file;
-            
-            if(count($files) > 0) 
+
+            if (count($files) > 0)
             {
                 $post->attachment_file = null;
                 $post->save();
+
                 $path = [];
-                foreach($files as $file) 
+                foreach ($files as $file)
                 {
-                    $path[$i] = $this->uploadFile(Auth::user()->school->slug.'/posts/'.$request->post_id,$file); 
-                    $i++;     
+                    $path[$i] = $this->uploadFile(
+                        Auth::user()->school->slug . '/posts/' . $request->post_id,
+                        $file
+                    );
+                    $i++;
                 }
-                $post->attachment_file = $path; 
+
+                $post->attachment_file = $path;
                 $post->save();
             }
         }
-        catch(Exception $e)
+        catch (Exception $e)
         {
             //dd($e->getMessage());
         }

@@ -102,7 +102,7 @@ class TeacherEditController extends Controller
     public function edit($name)
     {
       //
-      $user = User::where('name',$name)->first();
+      $user = TeacherUser::where('name',$name)->first();
       $userprofile = Userprofile::where('user_id',$user->id)->first();
        
       return view('/admin/teacher/edit',['user' => $user , 'userprofile' => $userprofile ]);

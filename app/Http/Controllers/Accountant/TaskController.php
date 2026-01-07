@@ -25,6 +25,21 @@ use App\Models\User;
 use Exception;
 use Log;
 
+/**
+ * Class TaskController
+ *
+ * Handles task (to-do list) management for the accountant dashboard.
+ *
+ * Responsibilities:
+ * - List tasks by type and status
+ * - Create and assign tasks
+ * - Update and snooze tasks
+ * - Mark tasks as completed
+ * - Delete tasks
+ * - Log all task-related activities
+ *
+ * @package App\Http\Controllers\Accountant
+ */
 class TaskController extends Controller
 {
     use TodolistProcess;
@@ -32,9 +47,12 @@ class TaskController extends Controller
     use Common;
 
     /**
-     * Display a listing of the resource.
+     * Retrieve tasks filtered by type and status.
      *
-     * @return \Illuminate\Http\Response
+     * Tasks are grouped by task flag.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Support\Collection
      */
     public function showlist(Request $request)
     {
@@ -44,7 +62,9 @@ class TaskController extends Controller
         $tasks = Task::where([
             ['school_id', $school_id],
             ['academic_year_id', $academic_year->id]
-        ])->ByType($request->type, Auth::id())->ByStatus($request->status)->get();
+        ])->ByType($request->type, Auth::id())
+          ->ByStatus($request->status)
+          ->get();
 
         $tasks = TaskResource::collection($tasks)->groupby('task_flag');
 
@@ -52,22 +72,23 @@ class TaskController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Return an empty task list response.
      *
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function list(Request $request)
     {
-        // $array = [];
-
-        // $array['task_date'] = date('Y-m-d');
-
-        // return $array;
         $tasks = [];
-
         return response()->json($tasks);
     }
 
+    /**
+     * Mark selected tasks as completed.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array<string, string>|null
+     */
     public function changestatus(Request $request)
     {
         try {
@@ -76,7 +97,6 @@ class TaskController extends Controller
                     $task = Task::where('id', $task_id)->first();
 
                     $task->task_status = 1;
-
                     $task->save();
 
                     $message = trans('messages.task_check_success_msg');
@@ -100,18 +120,34 @@ class TaskController extends Controller
         }
     }
 
+    /**
+     * Display the task listing page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $query = \Request::getQueryString();
         return view('/accountant/todolist/index', ['query' => $query]);
     }
 
+    /**
+     * Display the task creation page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $query = \Request::getQueryString();
         return view('/accountant/todolist/create', ['query' => $query]);
     }
 
+    /**
+     * Store a newly created task and assign users.
+     *
+     * @param  \App\Http\Requests\TaskRequest  $request
+     * @return array<string, string>|null
+     */
     public function store(TaskRequest $request)
     {
         try {
@@ -141,14 +177,13 @@ class TaskController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Retrieve task details for viewing.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array<string, mixed>
      */
     public function show($id)
     {
-        //
         $task = Task::where('id', $id)->first();
         $task_assignees = TaskAssignee::where('task_id', $id)->get();
 
@@ -163,83 +198,83 @@ class TaskController extends Controller
                 $class = $task_assignee->standardLink->StandardSection;
             }
         }
+
         $array = [];
 
         if ($task->type == 'student') {
             $selected_students = User::whereIn('id', $selectedUsers)->get();
             $selected_students = UserResource::collection($selected_students);
         }
+
         if ($task->type == 'teacher') {
-            $selected_teachers  = TeacherUser::whereIn('id', $selected_teachers)->get();
-            $selected_teachers  = TeacherResource::collection($selected_teachers);
+            $selected_teachers = TeacherUser::whereIn('id', $selected_teachers)->get();
+            $selected_teachers = TeacherResource::collection($selected_teachers);
         }
-        $array['task_id']           =  $task->id;
-        $array['task_assignee_id']  =  $task_assignee->id;
-        $array['title']             =  $task->title;
-        $array['to_do_list']        =  $task->to_do_list;
-        $array['task_date']         =  date('d-m-Y H:i:s', strtotime($task->task_date));
-        $array['assignee_display']  =  ucwords($task->type);
-        $array['assignee']          =  $task->type;
-        $array['reminder_date']     =  date('d-m-Y H:i:s', strtotime($task->ReminderValue));
-        $array['selectedUsers']     =  $selected_students;
-        $array['standardLink_id']   =  $standardLink_id;
-        $array['class']             =  $class;
-        $array['teachers']          =  $selected_teachers;
+
+        $array['task_id']           = $task->id;
+        $array['task_assignee_id']  = $task_assignee->id;
+        $array['title']             = $task->title;
+        $array['to_do_list']        = $task->to_do_list;
+        $array['task_date']         = date('d-m-Y H:i:s', strtotime($task->task_date));
+        $array['assignee_display']  = ucwords($task->type);
+        $array['assignee']          = $task->type;
+        $array['reminder_date']     = date('d-m-Y H:i:s', strtotime($task->ReminderValue));
+        $array['selectedUsers']     = $selected_students;
+        $array['standardLink_id']   = $standardLink_id;
+        $array['class']             = $class;
+        $array['teachers']          = $selected_teachers;
 
         return $array;
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Retrieve task data for editing.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array<string, mixed>
      */
     public function editList(Request $request, $id)
     {
-        //
         $task = Task::where('id', $id)->first();
         $task_assignees = TaskAssignee::where('task_id', $id)->get();
 
         $array = [];
 
-        $array['task_date']         =  date('Y-m-d');
-        $array['task_id']           =  $task->id;
-        $array['task_assignee_id']  =  $task_assignee->id;
-        $array['title']             =  $task->title;
-        $array['to_do_list']        =  $task->to_do_list;
-        $array['task_date']         =  date('d-m-Y H:i:s', strtotime($task->task_date));
-        $array['assignee']          =  $task->type;
-        $array['reminder']          =  $task->reminder;
+        $array['task_date']         = date('Y-m-d');
+        $array['task_id']           = $task->id;
+        $array['task_assignee_id']  = $task_assignee->id;
+        $array['title']             = $task->title;
+        $array['to_do_list']        = $task->to_do_list;
+        $array['task_date']         = date('d-m-Y H:i:s', strtotime($task->task_date));
+        $array['assignee']          = $task->type;
+        $array['reminder']          = $task->reminder;
 
         return $array;
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the task edit page.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
-        //
         $task = Task::where('id', $id)->first();
         return view('/accountant/todolist/edit', ['task' => $task]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified task.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\TaskRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array<string, string>|null
      */
     public function update(TaskRequest $request, $id)
     {
         try {
-            $school_id = Auth::user()->school_id;
-            $academic_year = SiteHelper::getAcademicYear($school_id);
             $auth_id = Auth::id();
 
             $task = $this->editTaskAssignee($request, $auth_id, $id);
@@ -264,19 +299,18 @@ class TaskController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Snooze the specified task.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array<string, string>|null
      */
     public function snooze(Request $request, $id)
     {
         try {
-            $school_id = Auth::user()->school_id;
-            $academic_year = SiteHelper::getAcademicYear($school_id);
             $auth_id = Auth::id();
             $task = Task::where('id', $id)->first();
+
             if ($task->snooze == 0) {
                 $task = $this->snoozeTask($request, $auth_id, $id);
 
@@ -304,16 +338,15 @@ class TaskController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete the specified task.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array<string, string>|null
      */
     public function destroy($id)
     {
         try {
             $task = Task::where('id', $id)->first();
-
             $task->delete();
 
             $message = trans('messages.delete_success_msg', ['module' => 'Task']);
