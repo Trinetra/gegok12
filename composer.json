@@ -10,7 +10,6 @@
         "algolia/algoliasearch-client-php": "*",
         "aws/aws-sdk-php-laravel": "dev-master",
         "barryvdh/laravel-dompdf": "v3.1.1",
-        "caneara/axiom": "^3.2",
         "filament/tables": "^3.2",
         "guzzlehttp/guzzle": "^7.8",
         "jantinnerezo/livewire-alert": "^3.0",

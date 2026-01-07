@@ -9,14 +9,29 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\Subscription;
 use App\Models\MailTemplate;
 
+/**
+ * AfterSubscriptionExpiredMail
+ *
+ * Mailable class for sending notifications after a school subscription has expired.
+ * Contains subscription details including school name, user name, and expiration date.
+ *
+ * @package App\Mail
+ */
 class AfterSubscriptionExpiredMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+    /**
+     * The subscription instance
+     *
+     * @var Subscription
+     */
     public $subscription;
+    
     /**
      * Create a new message instance.
      *
+     * @param Subscription $subscription The expired subscription
      * @return void
      */
     public function __construct(Subscription $subscription)
@@ -27,6 +42,9 @@ class AfterSubscriptionExpiredMail extends Mailable implements ShouldQueue
 
     /**
      * Build the message.
+     *
+     * Retrieves the subscription expiration template and replaces
+     * placeholders with school name, user name, and expiration date.
      *
      * @return $this
      */

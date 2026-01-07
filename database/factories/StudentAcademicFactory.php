@@ -36,7 +36,7 @@ class StudentAcademicFactory extends Factory
         $id_card_number = $this->faker->numberBetween(1, 25);
 
         if (in_array($selected_standard->standard->name, ['10','12'])) {
-            $board_registration_number = $this->faker->randomNumber(8);
+            $board_registration_number = $this->faker->numerify('########');
         }
 
         $mode_of_transport = $this->faker->randomElement([
@@ -46,7 +46,7 @@ class StudentAcademicFactory extends Factory
         if (in_array($mode_of_transport, ['auto','rickshaw','taxi'])) {
             $transport_details = [
                 'driver_name' => $this->faker->name,
-                'driver_contact_number' => $this->faker->randomNumber(9),
+                'driver_contact_number' => $this->faker->numerify('#########'),
             ];
         }
 
