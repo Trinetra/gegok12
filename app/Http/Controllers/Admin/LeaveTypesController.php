@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\LeaveTypeUpdateRequest;
@@ -18,29 +19,52 @@ use App\Traits\Common;
 use Carbon\Carbon;
 use Exception;
 
+/**
+ * Class LeaveTypesController
+ *
+ * Manages leave type configuration for the admin panel.
+ *
+ * Responsibilities:
+ * - List active leave types
+ * - Create new leave types
+ * - Edit existing leave types
+ * - Update leave type limits
+ * - Delete leave types
+ * - Log all leave-type related activities
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class LeaveTypesController extends Controller
 {
     use LogActivity;
     use Common;
 
     /**
-     * Display a listing of the resource.
+     * Display a list of active leave types for the current academic year.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
         //
         $school_id = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
-        $leavetypes = LeaveType::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['status',1]])->get();
-        return view('admin/leavetypes/index' , ['leavetypes' => $leavetypes]);
+
+        $leavetypes = LeaveType::where([
+            ['school_id', $school_id],
+            ['academic_year_id', $academic_year->id],
+            ['status', 1]
+        ])->get();
+
+        return view('admin/leavetypes/index', [
+            'leavetypes' => $leavetypes
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new leave type.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -49,10 +73,10 @@ class LeaveTypesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created leave type.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  \App\Http\Requests\LeaveTypeAddRequest  $request
+     * @return \Illuminate\Http\RedirectResponse|null
      */
     public function store(LeaveTypeAddRequest $request)
     {
@@ -62,117 +86,117 @@ class LeaveTypesController extends Controller
             $school_id = Auth::user()->school_id;
             $academic_year = SiteHelper::getAcademicYear($school_id);
 
-            $leavetype                      = new LeaveType;
+            $leavetype = new LeaveType;
 
-            $leavetype->school_id           = $school_id;
-            $leavetype->academic_year_id    = $academic_year->id;
-            $leavetype->name                = $request->name;
-            $leavetype->max_no_of_days      = $request->max_no_of_days;
-            $leavetype->status              = 1;
+            $leavetype->school_id        = $school_id;
+            $leavetype->academic_year_id = $academic_year->id;
+            $leavetype->name             = $request->name;
+            $leavetype->max_no_of_days   = $request->max_no_of_days;
+            $leavetype->status           = 1;
 
             $leavetype->save();
 
-            $message=trans('messages.add_success_msg',['module' => 'LeaveType']);
+            $message = trans('messages.add_success_msg', ['module' => 'LeaveType']);
 
-
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $leavetype,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_ADD_LEAVETYPE,
                 $message
             );
 
-            return redirect('/admin/leavetypes')->with('successmessage',$message);
+            return redirect('/admin/leavetypes')->with('successmessage', $message);
         }
-        catch(Exception $e)
+        catch (Exception $e)
         {
             //dd($e->getMessage());
         }
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified leave type.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
         //
-        $leavetype = LeaveType::where('id',$id)->first();
-        return view('admin/leavetypes/edit',['leavetype' => $leavetype]);
+        $leavetype = LeaveType::where('id', $id)->first();
+
+        return view('admin/leavetypes/edit', [
+            'leavetype' => $leavetype
+        ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified leave type.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\LeaveTypeUpdateRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse|null
      */
     public function update(LeaveTypeUpdateRequest $request, $id)
     {
         //
         try
         {
-            $leavetype                      = LeaveType::where('id',$id)->first();
+            $leavetype = LeaveType::where('id', $id)->first();
 
-            $leavetype->name                = $request->name;
-            $leavetype->max_no_of_days      = $request->max_no_of_days;
+            $leavetype->name           = $request->name;
+            $leavetype->max_no_of_days = $request->max_no_of_days;
 
             $leavetype->save();
 
-            $message=trans('messages.update_success_msg',['module' => 'LeaveType']);
+            $message = trans('messages.update_success_msg', ['module' => 'LeaveType']);
 
-
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $leavetype,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_ADD_LEAVETYPE,
                 $message
             );
 
-            return redirect('/admin/leavetypes')->with('successmessage',$message);
+            return redirect('/admin/leavetypes')->with('successmessage', $message);
         }
-        catch(Exception $e)
+        catch (Exception $e)
         {
             //dd($e->getMessage());
         }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified leave type.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse|null
      */
     public function destroy($id)
     {
         //
         try
         {
-            $leavetype = LeaveType::where('id',$id)->first();
-
+            $leavetype = LeaveType::where('id', $id)->first();
             $leavetype->delete();
 
-            $message= trans('messages.delete_success_msg',['module' => 'LeaveType']);
+            $message = trans('messages.delete_success_msg', ['module' => 'LeaveType']);
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $leavetype,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_DELETE_LEAVETYPE,
                 $message
             );
 
-            return redirect()->back()->with('successmessage',$message);
+            return redirect()->back()->with('successmessage', $message);
         }
-        catch(Exception $e)
+        catch (Exception $e)
         {
             //dd($e->getMessage());
         }

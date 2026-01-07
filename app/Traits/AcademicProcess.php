@@ -27,6 +27,13 @@ trait AcademicProcess
 {
     use EventProcess;
 
+    /**
+     * Bulk create default standards for a school based on level selection.
+     *
+     * @param int $school_id School identifier
+     * @param object $data Request payload containing standards scope
+     * @return \App\Models\Standard Last created standard model
+     */
     public function addStandard($school_id , $data)
     {
         try
@@ -73,6 +80,13 @@ trait AcademicProcess
         }
     }
 
+    /**
+     * Insert a single standard in relation to a reference standard order.
+     *
+     * @param int $school_id School identifier
+     * @param object $data Request payload containing standard name, reference id, and position
+     * @return \App\Models\Standard Newly created standard
+     */
     public function createStandard($school_id , $data)
     {
         try
@@ -103,6 +117,13 @@ trait AcademicProcess
         }
     }
 
+    /**
+     * Create a section for a school.
+     *
+     * @param int $school_id School identifier
+     * @param object $data Request payload containing section name
+     * @return \App\Models\Section Newly created section
+     */
     public function createSection($school_id , $data)
     {
         try
@@ -123,6 +144,14 @@ trait AcademicProcess
         }
     }
 
+    /**
+     * Create a subject within an academic year and link to standard/section.
+     *
+     * @param int $school_id School identifier
+     * @param int $academic_year_id Academic year identifier
+     * @param object $data Request payload containing subject details
+     * @return \App\Models\Subject Newly created subject
+     */
     public function createSubject($school_id , $academic_year_id , $data)
     {
         try
@@ -148,6 +177,14 @@ trait AcademicProcess
         }
     }
 
+    /**
+     * Create a standard link and related teacher assignments.
+     *
+     * @param int $school_id School identifier
+     * @param int $academic_year_id Academic year identifier
+     * @param object $data Request payload including class teacher, subjects, and counts
+     * @return \App\Models\StandardLink Newly created standard link
+     */
     public function createStandardLink($school_id , $academic_year_id , $data)
     {
         DB::beginTransaction();
@@ -207,6 +244,15 @@ trait AcademicProcess
         }
     }
 
+    /**
+     * Update a standard link and refresh assigned teachers/subjects.
+     *
+     * @param int $school_id School identifier
+     * @param int $academic_year_id Academic year identifier
+     * @param int $standardLink_id Standard link identifier
+     * @param object $data Request payload including teacher/subject updates
+     * @return \App\Models\StandardLink Updated standard link
+     */
     public function editStandardLink($school_id , $academic_year_id , $standardLink_id , $data)
     {
         DB::beginTransaction();
@@ -301,6 +347,15 @@ trait AcademicProcess
         }
     }
 
+    /**
+     * Record attendance for students and trigger notifications for absentees.
+     *
+     * @param int $school_id School identifier
+     * @param int $academic_year_id Academic year identifier
+     * @param int $admin Admin user ID recording attendance
+     * @param object $data Request payload with absent/present lists and session info
+     * @return \App\Models\Attendance Last saved attendance record
+     */
     public function createAttendance($school_id , $academic_year_id , $admin , $data)
     {
         DB::beginTransaction();
@@ -380,6 +435,15 @@ trait AcademicProcess
         }
     }
 
+    /**
+     * Record attendance for staff members and notify absent staff.
+     *
+     * @param int $school_id School identifier
+     * @param int $academic_year_id Academic year identifier
+     * @param int $admin Admin user ID recording attendance
+     * @param object $data Request payload with absent/present staff data
+     * @return \App\Models\Attendance Last saved attendance record
+     */
     public function createStaffAttendance($school_id , $academic_year_id , $admin , $data)
     {
         DB::beginTransaction();

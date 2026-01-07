@@ -12,9 +12,20 @@ use Illuminate\Http\Request;
 use App\Models\NoticeBoard;
 use App\Helpers\SiteHelper;
 
+/**
+ * Notice board controller for accountant.
+ *
+ * Handles listing and rendering of notices for the accountant dashboard.
+ */
 class NoticeBoardController extends Controller
 {
 
+    /**
+     * Return active (or optionally expired) notices as a resource collection.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function showList(Request $request)
     {
         //

@@ -38,6 +38,13 @@ use Carbon\Carbon;
  */
 trait Dashboard
 {
+    /**
+     * Build data required for admin dashboard metrics and widgets.
+     *
+     * @param int $school_id School identifier
+     * @param int $admin_id Admin user identifier
+     * @return array Aggregated dashboard data
+     */
     public function adminDashboard($school_id,$admin_id)
     {
         $seconds = 300;
@@ -175,6 +182,18 @@ trait Dashboard
         return $array;
     }
 
+    /**
+     * Build data required for student dashboard including exams, marks, and attendance.
+     *
+     * @param int $school_id School identifier
+     * @param \App\Models\User $user_id Student user model (expects ->id)
+     * @param int $standardLink_id Standard link identifier
+     * @param mixed $subject Subject filter (nullable)
+     * @param mixed $exam Exam filter (nullable)
+     * @param mixed $mark Mark filter (nullable)
+     * @param mixed $exam_date Exam date filter (nullable)
+     * @return array Student dashboard data
+     */
     public function studentDashboard($school_id,$user_id,$standardLink_id,$subject,$exam,$mark,$exam_date)
     {
         $array = [];
@@ -239,6 +258,13 @@ trait Dashboard
         return $array;
     }
 
+    /**
+     * Build data required for teacher dashboard including timetable, notices, and exams.
+     *
+     * @param int $school_id School identifier
+     * @param int $teacher_id Teacher user identifier
+     * @return array Teacher dashboard data
+     */
     public function teacherDashboard($school_id,$teacher_id)
     {
         $array = [];
@@ -299,6 +325,13 @@ trait Dashboard
         return $array;
     }
 
+    /**
+     * Build dashboard metrics for receptionist users.
+     *
+     * @param int $school_id School identifier
+     * @param int $receptionist_id Receptionist user identifier
+     * @return array Reception dashboard data
+     */
     public function receptionDashboard($school_id,$receptionist_id)
     {
         $seconds = 300;
@@ -328,6 +361,13 @@ trait Dashboard
         return $array;
     }
 
+    /**
+     * Build dashboard metrics for librarian users.
+     *
+     * @param int $school_id School identifier
+     * @param int $librarian_id Librarian user identifier
+     * @return array Librarian dashboard data
+     */
     public function librarianDashboard($school_id,$librarian_id)
     {
         $seconds = 300;
@@ -366,6 +406,13 @@ trait Dashboard
         return $array;
     }
 
+    /**
+     * Build dashboard metrics for accountant users.
+     *
+     * @param int $school_id School identifier
+     * @param int $accountant_id Accountant user identifier
+     * @return array Accountant dashboard data
+     */
     public function accountantDashboard($school_id,$accountant_id)
     {
         $seconds = 300;

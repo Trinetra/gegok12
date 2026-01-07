@@ -14,7 +14,14 @@ use Log;
 
 trait EventProcess
 {
-  
+    /**
+     * Dispatch reminder events for an event across notification, SMS, and mail channels.
+     *
+     * @param \App\Models\Events $events Event instance containing schedule info
+     * @param string $executed_at Date string used to schedule the reminder (Y-m-d)
+     * @param string $check Indicator for recurrence handling (e.g., 'next')
+     * @return void
+     */
     public function sendToReminderEvent($events,$executed_at,$check)
     {
         try
@@ -72,6 +79,18 @@ trait EventProcess
         } 
     }
   
+    /**
+     * Send birthday or work anniversary reminders to a user via multiple channels.
+     *
+     * @param int $school_id School identifier
+     * @param int $entity_id User identifier
+     * @param string $date_of_birth Birth date for the user
+     * @param array $data Payload passed to the reminder event
+     * @param string|null $mobile_no Mobile number for SMS
+     * @param string|null $mail Email address for mail delivery
+     * @param string $type Reminder type ('birthday' or 'work_anniversary')
+     * @return void
+     */
     public function sendToBirthdayReminder($school_id,$entity_id,$date_of_birth,$data,$mobile_no,$mail,$type)
     {
         try
@@ -106,6 +125,19 @@ trait EventProcess
         }  
     }
 
+    /**
+     * Notify admins about a user's birthday via all channels.
+     *
+     * @param int $school_id School identifier
+     * @param string $user_name Name of the user
+     * @param string $user_email Email of the user
+     * @param int $entity_id User identifier
+     * @param string $date_of_birth Birth date of the user
+     * @param string|null $mobile_no Mobile number for SMS
+     * @param string|null $mail Email address for mail delivery
+     * @param string $birth_date Date used to schedule the notification
+     * @return void
+     */
     public function adminBirthdayReminder($school_id,$user_name,$user_email,$entity_id,$date_of_birth,$mobile_no,$mail,$birth_date)
     {
         try
@@ -134,6 +166,17 @@ trait EventProcess
         } 
     }
 
+    /**
+     * Send absentee notifications to parents across available channels.
+     *
+     * @param int $school_id School identifier
+     * @param string $date Date of absence
+     * @param int $entity_id Student identifier
+     * @param string|null $mobile_no Mobile number for SMS
+     * @param string|null $email Email address for mail delivery
+     * @param string $student_name Name of the absent student
+     * @return void
+     */
     public function sendToAttendanceReminder($school_id,$date,$entity_id,$mobile_no,$email,$student_name)
     {
         try
@@ -159,7 +202,7 @@ trait EventProcess
         }  
     }
 
-  /*  public function sendToAssignmentReminder($school_id,$date,$subject_name,$title,$entity_id,$mail,$mobile_no)
+    /*  public function sendToAssignmentReminder($school_id,$date,$subject_name,$title,$entity_id,$mail,$mobile_no)
     {
         try
         {
@@ -179,6 +222,17 @@ trait EventProcess
         }  
     }*/
 
+    /**
+     * Dispatch task reminder to a user over notification, SMS, and email.
+     *
+     * @param int $school_id School identifier
+     * @param string $date Date to execute reminder
+     * @param string $title Task title
+     * @param int $entity_id Task identifier
+     * @param string|null $mail Email address for mail delivery
+     * @param string|null $mobile_no Mobile number for SMS
+     * @return void
+     */
     public function sendToTaskReminder($school_id,$date,$title,$entity_id,$mail,$mobile_no)
     {
         try
@@ -203,6 +257,18 @@ trait EventProcess
     }
 
 
+    /**
+     * Send assignment reminder to a user two days before due date.
+     *
+     * @param int $school_id School identifier
+     * @param string $date Assignment due date
+     * @param string $subject_name Name of the subject
+     * @param string $title Assignment title
+     * @param int $entity_id User identifier
+     * @param string|null $mail Email address for mail delivery
+     * @param string|null $mobile_no Mobile number for SMS
+     * @return void
+     */
     public function sendToAssignmentReminder($school_id,$date,$subject_name,$title,$entity_id,$mail,$mobile_no)
     {
         try
@@ -223,6 +289,17 @@ trait EventProcess
         }  
     }
 
+    /**
+     * Send snooze reminder for a task through notifications.
+     *
+     * @param int $school_id School identifier
+     * @param string $date Rescheduled reminder date
+     * @param string $title Task title
+     * @param int $entity_id Task identifier
+     * @param string|null $mail Email address for mail delivery
+     * @param string|null $mobile_no Mobile number for SMS
+     * @return void
+     */
     public function sendToSnoozeTask($school_id,$date,$title,$entity_id,$mail,$mobile_no)
     {
         try
@@ -242,6 +319,17 @@ trait EventProcess
         }  
     }
 
+    /**
+     * Send web notification for snoozed tasks.
+     *
+     * @param int $school_id School identifier
+     * @param string $date Rescheduled reminder date
+     * @param string $title Task title
+     * @param int $entity_id Task identifier
+     * @param string|null $mail Email address for mail delivery
+     * @param string|null $mobile_no Mobile number for SMS
+     * @return void
+     */
     public function sendToSnoozeTaskWeb($school_id,$date,$title,$entity_id,$mail,$mobile_no)
     {
         try
@@ -261,6 +349,16 @@ trait EventProcess
         }  
     }
 
+    /**
+     * Notify users when added to a chat room via SMS and mail.
+     *
+     * @param int $school_id School identifier
+     * @param int $entity_id Room link identifier
+     * @param string|null $mobile_no Mobile number for SMS
+     * @param string|null $email Email address for mail delivery
+     * @param string $date Notification execution date
+     * @return void
+     */
     public function userNotifyGroup($school_id,$entity_id,$mobile_no,$email,$date)
     {
         try

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\StandardRequest;
@@ -16,6 +17,14 @@ use App\Models\Standard;
 use App\Traits\Common;
 use Exception;
 
+/**
+ * Class StandardController
+ *
+ * Handles standard (class) creation and setup
+ * operations for the admin module.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class StandardController extends Controller
 {
     use AcademicProcess;
@@ -23,10 +32,13 @@ class StandardController extends Controller
     use Common;
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created standard.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Creates a standard for the authenticated
+     * school and logs the activity.
+     *
+     * @param StandardRequest $request
+     * @return array
      */
     public function store(StandardRequest $request)
     { 
@@ -39,7 +51,7 @@ class StandardController extends Controller
 
             $message = trans('messages.add_success_msg',['module' => 'Standard']);
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $standard,
                 Auth::user(),
@@ -59,7 +71,10 @@ class StandardController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new standard.
+     *
+     * Loads current academic year details
+     * for standard creation.
      *
      * @return \Illuminate\Http\Response
      */
@@ -68,14 +83,20 @@ class StandardController extends Controller
         //
         $academic_year = SiteHelper::getAcademicYear(Auth::user()->school_id);
 
-        return view('/admin/school/standards/add' , ['academic_year_id' => $academic_year->id]);
+        return view(
+            '/admin/school/standards/add',
+            ['academic_year_id' => $academic_year->id]
+        );
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Add standard during initial school setup.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Used in standard setup flow and logs
+     * the setup activity.
+     *
+     * @param Request $request
+     * @return array
      */
     public function add(Request $request)
     { 
@@ -88,7 +109,7 @@ class StandardController extends Controller
 
             $message = trans('messages.standard_setup_success_msg');
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $standard,
                 Auth::user(),

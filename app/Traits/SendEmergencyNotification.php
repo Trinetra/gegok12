@@ -25,6 +25,17 @@ trait SendEmergencyNotification
 {
     use MSG91;
 
+    /**
+     * Send an emergency notification via SMS, push, and activity log.
+     *
+     * @param object $data Payload containing the emergency message
+     * @param int $school_id School identifier
+     * @param string $admin_email Sender email address
+     * @param \App\Models\User $parent Parent user receiving the message
+     * @param \App\Models\User $admin Admin user performing the action
+     * @param \App\Models\User $student Student associated with the parent
+     * @return void
+     */
     public function selectEmergencyNotification($data , $school_id , $admin_email , $parent , $admin , $student)
     { 
        // dump($data);

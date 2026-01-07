@@ -19,6 +19,14 @@ trait SmsProcess
 
     use MSG91;
 
+    /**
+     * Send SMS event notification using template placeholders.
+     *
+     * @param string $to Recipient mobile number(s)
+     * @param string $start_date Event start date
+     * @param string $location Event location text
+     * @return void
+     */
     public function sendSmsNotification($to,$start_date,$location)
     {
         try
@@ -42,6 +50,13 @@ trait SmsProcess
         }
     }
 
+    /**
+     * Send password reset SMS with reset URL.
+     *
+     * @param string $to Recipient mobile number(s)
+     * @param string $url Reset URL to include in the message
+     * @return void
+     */
     public function sendUserResetPassword($to,$url)
     {
         try
@@ -64,6 +79,14 @@ trait SmsProcess
         }
     }
 
+    /**
+     * Send absence notification SMS to parents.
+     *
+     * @param string $to Recipient mobile number(s)
+     * @param string $message Absence message text
+     * @param string $school_name School name to include in the template
+     * @return void
+     */
     public function sendAbsentRecord($to,$message,$school_name)
     { 
         try
@@ -87,6 +110,14 @@ trait SmsProcess
         }
     }
 
+    /**
+     * Send birthday wishes SMS.
+     *
+     * @param string $to Recipient mobile number(s)
+     * @param string $message Message content
+     * @param string $school_name School name to include in the template
+     * @return void
+     */
     public function sendBirthday($to,$message,$school_name)
     { 
         try
@@ -110,6 +141,12 @@ trait SmsProcess
         }
     }
 
+    /**
+     * Send admission approval SMS including application number.
+     *
+     * @param array $data Data containing application_no, school_name, and mobile_no
+     * @return void
+     */
     public function sendAdmissionApproval($data)
     { 
         try

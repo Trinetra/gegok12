@@ -16,6 +16,21 @@ use Log;
 trait ReminderProcess
 {
   
+    /**
+     * Create a reminder entry for later dispatch.
+     *
+     * @param int $school_id School identifier
+     * @param string $from Sender address
+     * @param string $to Recipient address
+     * @param string $subject Reminder subject
+     * @param string $message Reminder body
+     * @param int $entity_id Related entity identifier
+     * @param string $entity_name Related entity model name
+     * @param string $via Delivery channel (notification, sms, mail)
+     * @param mixed $data Additional payload to store with reminder
+     * @param string $executed_at Scheduled execution datetime
+     * @return void
+     */
     public function createReminder($school_id,$from,$to,$subject,$message,$entity_id,$entity_name,$via,$data,$executed_at)
     {
         try

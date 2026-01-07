@@ -14,6 +14,17 @@ use Carbon\Carbon;
  */
 trait StudentHistoryProcess
 {
+    /**
+     * Record that a parent has read an entity related to a student.
+     *
+     * @param int $school_id School identifier
+     * @param int $student_id Student identifier
+     * @param int $parent_id Parent identifier
+     * @param int $entity_id Related entity identifier
+     * @param string $entity_name Entity model name
+     * @param string $type Type of history entry
+     * @return void
+     */
      public static function createReadHistory($school_id,$student_id,$parent_id,$entity_id,$entity_name,$type){
       try{
 
@@ -35,6 +46,14 @@ trait StudentHistoryProcess
         Log::info($e->getMessage());
       }
      }
+    /**
+     * Count read history entries for an entity.
+     *
+     * @param int $school_id School identifier
+     * @param int $entity_id Related entity identifier
+     * @param string $entity_name Entity name to filter on
+     * @return int Number of read records
+     */
      public static function getReadCount($school_id,$entity_id,$entity_name){
          $count=StudentHistory::where([['school_id',$school_id],['entity_id',$entity_id],['entity_name',$entity_name]])->whereNotNull('read_at')->count();
          return $count;

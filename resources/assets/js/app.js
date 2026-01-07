@@ -191,6 +191,7 @@ Vue.component('approve-student-leave', require('./components/leave/student/Appro
 //reception leave application
 Vue.component('reception-leave-list', require('./components/leave/reception/List.vue').default);
 Vue.component('reception-create-leave', require('./components/leave/reception/Create.vue').default);
+Vue.component('reception-edit-leave', require('./components/leave/reception/Edit.vue').default);
 
 //absentees
 Vue.component('absentees-student', require('./components/dashboard/StudentAttendance.vue').default);

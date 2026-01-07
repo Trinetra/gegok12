@@ -1,4 +1,7 @@
 <?php
+/**
+ * Handles user authentication workflow including validation, throttling, and responses.
+ */
 
 namespace App\Traits;
 

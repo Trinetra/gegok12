@@ -16,7 +16,12 @@ use Illuminate\Support\Facades\Auth;
 
 class VideosController extends Controller
 {
-  
+        /**
+         * Return all video items available to a student.
+         *
+         * @param int $student_id
+         * @return \Illuminate\Http\JsonResponse
+         */
         public function showvideo($student_id)
         {        	
             $school_id = Auth::user()->school_id;
@@ -35,6 +40,12 @@ class VideosController extends Controller
 
         }
 
+        /**
+         * Return all audio items available to a student.
+         *
+         * @param int $student_id
+         * @return \Illuminate\Http\JsonResponse
+         */
         public function showaudio($student_id)
         {        	
 
@@ -55,6 +66,12 @@ class VideosController extends Controller
 
         }
 
+        /**
+         * Return all image items available to a student.
+         *
+         * @param int $student_id
+         * @return \Illuminate\Http\JsonResponse
+         */
         public function showimage($student_id)
         {
             $school_id = Auth::user()->school_id;
@@ -73,6 +90,11 @@ class VideosController extends Controller
             
         }
 
+        /**
+         * Return uploaded media files for the authenticated user's school.
+         *
+         * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+         */
         public function showfiles()
         {
 
@@ -83,6 +105,12 @@ class VideosController extends Controller
 
         }
 
+        /**
+         * Return study media items for a student.
+         *
+         * @param int $student_id
+         * @return \Illuminate\Http\JsonResponse
+         */
         public function showmedia($student_id)
         {
             //
@@ -101,6 +129,11 @@ class VideosController extends Controller
             ],200);
         }
 
+        /**
+         * Return value education audio items for the authenticated user's school.
+         *
+         * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+         */
         public function showaudiovalueducation()
         {
             $video = Video::where([['school_id',Auth::user()->school_id],['media','value_education'],['type','audio']])->get();
@@ -109,6 +142,11 @@ class VideosController extends Controller
             return $video; 
         }
 
+        /**
+         * Return value education video items for the authenticated user's school.
+         *
+         * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+         */
         public function showvideovalueducation()
         {
             $video = Video::where([['school_id',Auth::user()->school_id],['media','value_education'],['type','video']])->get();
@@ -117,6 +155,11 @@ class VideosController extends Controller
             return $video; 
         }
 
+        /**
+         * Return value education image items for the authenticated user's school.
+         *
+         * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+         */
         public function showimagevalueducation()
         {
             $video =Video::where([['school_id',Auth::user()->school_id],['media','value_education'],['type','image']])->get();

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Support\Facades\Auth;
@@ -15,15 +16,22 @@ use App\Traits\Common;
 use App\Models\User;
 use PDF;
 
+/**
+ * Class ExportMemberController
+ *
+ * Handles student/member export operations such as
+ * CSV export (default & custom fields) and PDF export.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class ExportMemberController extends Controller
 {
-
     use MemberProcess;
     use LogActivity;
     use Common;
 
     /**
-     * Display a listing of the resource.
+     * Display the export page.
      *
      * @return \Illuminate\Http\Response
      */
@@ -33,12 +41,13 @@ class ExportMemberController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Export students with default columns as CSV.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return void
      */
     public function exportUsers(Request $request)
-   {
+    {
         $users = $this->MemberFilter($request,Auth::user()->school_id,6,'active');    
         $csv = Writer::createFromFileObject(new \SplTempFileObject());
 
@@ -90,35 +99,40 @@ class ExportMemberController extends Controller
             LOGNAME_EXPORT_STUDENT,
             $message
         );
-        //\Session::put('successmessage','Member Exported Successfully'); 
-   }
+    }
 
-   public function studentexport(Request $request)
-   {
-    
-     /* if(!\Session::has('headings'))
-       {*/
+    /**
+     * Store selected headings for CSV export in session.
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function studentexport(Request $request)
+    {
         \Session::forget('headings');
-      // }
-    $heads=[];
-    $heads=array_values($request->headings);
-    \Session::put('headings', $heads);
-       // dd($heads);
+        $heads=[];
+        $heads=array_values($request->headings);
+        \Session::put('headings', $heads);
+    }
 
-   }
-   public function studentexports(Request $request)
-   {
-    $headings=\Session::get('headings');
-    $heads=array_values($headings);
-    //dd($heads);
-     $users = $this->MemberFilter($request,Auth::user()->school_id,6,'active');    
+    /**
+     * Export students as CSV with selected headings.
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function studentexports(Request $request)
+    {
+        $headings=\Session::get('headings');
+        $heads=array_values($headings);
+
+        $users = $this->MemberFilter($request,Auth::user()->school_id,6,'active');    
         $csv = Writer::createFromFileObject(new \SplTempFileObject());
-     $default=array('name','email','mobile_no','parent_name','standard','gender','admission_number','EMIS','Joining_date','caste','adhaar','blood_group','date_of_birth','address','city','state','country','pincode','notes');
-     $result=[];
-     $result = array_intersect($default, $heads);
-     $result = array_map('ucfirst', $result);
-     //$result = array_map(create_function('$value', 'return ucfirst($value);'), $result);
-     //dd($result);
+
+        $default=array('name','email','mobile_no','parent_name','standard','gender','admission_number','EMIS','Joining_date','caste','adhaar','blood_group','date_of_birth','address','city','state','country','pincode','notes');
+        $result=[];
+        $result = array_intersect($default, $heads);
+        $result = array_map('ucfirst', $result);
 
         if(count($users) > 0)
         {
@@ -137,18 +151,16 @@ class ExportMemberController extends Controller
                 }
                 if(in_array('mobile_no', $heads))
                 {
-                    //$data[]=$user->mobile_no;
                     if(count($user->parents)>0)
-                    $data[]=$user->parents[0]['userParent']['mobile_no'];
+                        $data[]=$user->parents[0]['userParent']['mobile_no'];
                     else
-                    $data[]=$user->mobile_no;
+                        $data[]=$user->mobile_no;
                 }
                 if(in_array('parent_name', $heads))
                 {
-                    //$data[]=$user->parents[0]['userprofile']['firstname'].' '.$user->parents[0]['userprofile']['lastname'];
                     if(count($user->parents)>0)
-                     $data[]=$user->parents[0]['userParent']['userprofile']['firstname'].' '.$user->parents[0]['userParent']['userprofile']['lastname'].'('.ucfirst($user->parents[0]['userParent']->getParentDetails()['relation']).')';
-                     else
+                        $data[]=$user->parents[0]['userParent']['userprofile']['firstname'].' '.$user->parents[0]['userParent']['userprofile']['lastname'].'('.ucfirst($user->parents[0]['userParent']->getParentDetails()['relation']).')';
+                    else
                         $data[]='';
                 }
                 if(in_array('standard', $heads))
@@ -171,19 +183,19 @@ class ExportMemberController extends Controller
                 {
                     $data[]=$user->userprofile->joining_date;
                 }
-                 if(in_array('caste', $heads))
+                if(in_array('caste', $heads))
                 {
                     $data[]=$user->userprofile->caste;
                 }
-                 if(in_array('adhaar', $heads))
+                if(in_array('adhaar', $heads))
                 {
                     $data[]=$user->userprofile->aadhar_number;
                 }
-                 if(in_array('blood_group', $heads))
+                if(in_array('blood_group', $heads))
                 {
                     $data[]=$user->userprofile->blood_group;
                 }
-                 if(in_array('date_of_birth', $heads))
+                if(in_array('date_of_birth', $heads))
                 {
                     $data[]=date('d-m-Y',strtotime($user->userprofile->date_of_birth));
                 }
@@ -216,6 +228,7 @@ class ExportMemberController extends Controller
            $csv->insertOne(['No Records Found']);
            $csv->output('SP Student Export'.date('_d-m-Y_H:i').'.csv');
         }
+
         $csv->output('SP Student Export'.date('_d-m-Y_H:i').'.csv');
         $message= trans('messages.export_success_msg',['module' => 'Student']);
 
@@ -227,49 +240,41 @@ class ExportMemberController extends Controller
             LOGNAME_EXPORT_STUDENT,
             $message
         );
+    }
 
-   }
+    /**
+     * Store selected headings for PDF export.
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function exportpdf(Request $request)
+    {
+        \Session::forget('headings');
+        $heads=[];
+        $heads=array_values($request->headings);
+        \Session::put('headings', $heads);
+    }
 
-   public function exportpdf(Request $request)
-   {
-     \Session::forget('headings');
-      // }
-    $heads=[];
-    $heads=array_values($request->headings);
-    \Session::put('headings', $heads);
-   }
-   public function exportpdfs(Request $request)
-   {
-    /*$headings=\Session::get('headings');
-    $heads=array_values($headings);
-    //dd($heads);
-       
-        $csv = Writer::createFromFileObject(new \SplTempFileObject());
-     $default=array('name','email','mobile_no','parent_name','standard','gender','admission_number','EMIS','Joining_date','caste','adhaar','blood_group','date_of_birth','address','city','state','country','pincode','notes');
-     $result=[];
-     $result = array_intersect($default, $heads);
-     $result = array_map('ucfirst', $result);
+    /**
+     * Export students as PDF.
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function exportpdfs(Request $request)
+    {
+        $array=[];
+        $users = $this->MemberFilter($request,Auth::user()->school_id,6,'active');  
+        $array['users']=$users;
 
-         $array['result']=$result;*/
-         $array=[];
-          $users = $this->MemberFilter($request,Auth::user()->school_id,6,'active');  
-          $array['users']=$users;
+        $pdf = PDF::loadView('/admin/export/student', $array);
 
-            $pdf = PDF::loadView('/admin/export/student', $array);
+        $folder = Auth::user()->school->slug.'/export';
+        $filename="ExportStudents-".date('d-m-Y').'.pdf';
 
-          //  dd($pdf->output());
-            
-            $folder = Auth::user()->school->slug.'/export';
+        $file=$this->putContents($folder.'/'.$filename, $pdf->output());
 
-
-            $filename="ExportStudents-".date('d-m-Y').'.pdf';
-
-
-            $file=$this->putContents($folder.'/'.$filename, $pdf->output());
-
-            return $pdf->download($filename);
-   }
-
-
-
+        return $pdf->download($filename);
+    }
 }

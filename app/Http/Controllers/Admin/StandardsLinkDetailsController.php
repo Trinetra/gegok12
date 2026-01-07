@@ -35,13 +35,25 @@ use App\Models\User;
 use App\Models\Fee;
 use Carbon\Carbon;
 
+/**
+ * Class StandardsLinkDetailsController
+ *
+ * Provides detailed information for a specific
+ * standard–section (class) including students,
+ * teachers, attendance, timetable, exams, fees,
+ * events, class wall, and online conferences.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class StandardsLinkDetailsController extends Controller
 {
-    //
     /**
-     * Display the specified resource.
+     * Show standard overview details.
      *
-     * @param  int  $id
+     * Displays class information and student count
+     * after authorization check.
+     *
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -63,10 +75,10 @@ class StandardsLinkDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get timetable details for a standard.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return array
      */
     public function showTimetable($id)
     {
@@ -108,10 +120,10 @@ class StandardsLinkDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get teachers assigned to a standard.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function showTeachers($id)
     {
@@ -135,10 +147,10 @@ class StandardsLinkDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get students enrolled in a standard.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function showStudents($id)
     {
@@ -162,10 +174,12 @@ class StandardsLinkDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get aggregated student attendance summary.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Groups absent sessions month-wise.
+     *
+     * @param int $id
+     * @return array
      */
     public function getStudentAttendance($id)
     {
@@ -218,10 +232,10 @@ class StandardsLinkDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get daily attendance with chart data.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return array
      */
     public function getAttendance($id)
     {
@@ -657,7 +671,12 @@ class StandardsLinkDetailsController extends Controller
 
         return $array;
     }
-
+    /**
+     * Get online conference sessions for a class.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function showConference($id)
     {
         //

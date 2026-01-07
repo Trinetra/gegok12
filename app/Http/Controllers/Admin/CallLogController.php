@@ -15,19 +15,31 @@ use App\Models\CallLog;
 use App\Models\User;
 use App\Traits\Common;
 use App\Traits\LogActivity;
-
+/**
+ * Class CallLogController
+ *
+ * Controller for managing call logs: listing, creating, editing,
+ * viewing and deleting phone call records for the school.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class CallLogController extends Controller
 {
     use Common;
     use LogActivity;
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+        * Display a listing of the resource.
+        *
+        * @return \Illuminate\Http\Response
+        */
 
-
-    public function showlist(Request $request)
+        /**
+        * Return call log records for the authenticated user's school and current academic year.
+        *
+        * @param \Illuminate\Http\Request $request
+        * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection|array
+        */
+        public function showlist(Request $request)
     {
         $academic_year = SiteHelper::getAcademicYear(Auth::user()->school_id);
 
@@ -40,21 +52,36 @@ class CallLogController extends Controller
     }
     
 
+    /**
+     * Show the call log index view.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     { 
-        //$calllog=CallLog::where('id',$id)->first();
         return view('/admin/calllog/index');
     }
 
 
+    /**
+     * Show the create call log form.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function create()
     {
          $date=date('Y-m-d');
         return view('/admin/calllog/create',['date'=>$date]);
     }
 
+    /**
+     * Store a newly created call log record.
+     *
+     * @param \App\Http\Requests\LogRequest $request
+     * @return array
+     */
     public function store(LogRequest $request)
-    {//dump($request);
+    {
         try 
         {
 
@@ -124,13 +151,17 @@ class CallLogController extends Controller
 
     }
 
-     public function show($id)
+    /**
+     * Return a single call log record as a resource collection.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function show($id)
     {
         $calllog=CallLog::where('id',$id)->get();
 
         $calllog=CallLogResource::collection($calllog);
-
-        //dump($calllog);
 
         return $calllog;
     }

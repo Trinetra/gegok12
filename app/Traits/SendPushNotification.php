@@ -1,4 +1,7 @@
 <?php
+/**
+ * Sends push notifications through FCM for users and teachers.
+ */
 namespace App\Traits;
 use FCM;
 use LaravelFCM\Message\OptionsBuilder;
@@ -10,11 +13,12 @@ trait SendPushNotification
 
 {
    /**
-    * Store a newly created for user details in storage.
-    * @param array $data
-    * @return array
+    * Send a push notification to a user via FCM.
+    *
+    * @param array $array Payload containing at least 'type' and 'message'
+    * @param array|string $usertoken Single token or array of device tokens
+    * @return \LaravelFCM\Message\DownstreamResponse|null Response object or null on failure
     */
-
    public function sendNotification($array,$usertoken)
    {
     try
@@ -55,6 +59,13 @@ trait SendPushNotification
     }
   }
 
+     /**
+      * Send a teacher-specific push notification via FCM.
+      *
+      * @param array $array Payload containing at least 'type' and 'message'
+      * @param array|string $usertoken Single token or array of device tokens
+      * @return \LaravelFCM\Message\DownstreamResponse|null Response object or null on failure
+      */
      public function sendTeacherNotification($array,$usertoken)
    {
     try

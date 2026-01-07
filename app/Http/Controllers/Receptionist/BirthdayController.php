@@ -16,111 +16,157 @@ use App\Models\User;
 
 class BirthdayController extends Controller
 {
-    //
-
+    /**
+     * Return today's student birthdays as a collection resource.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function showBirthday()
     {
-        //
         $birthday = Userprofile::with('user')
-                    ->whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') = DATE_FORMAT(now(),'%m-%d')")
-                    ->where('school_id',Auth::user()->school_id)
-                    ->ByRole(6)
-                    ->get();
-                            
+            ->whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') = DATE_FORMAT(now(),'%m-%d')")
+            ->where('school_id', Auth::user()->school_id)
+            ->ByRole(6)
+            ->get();
+
         $users = BirthdayResource::collection($birthday);
-         
+
         return $users;
     }
 
+    /**
+     * Return birthday list and available SMS templates for students.
+     *
+     * @return array{
+     *     birthdaylist: \Illuminate\Database\Eloquent\Collection,
+     *     templatelist: \Illuminate\Database\Eloquent\Collection
+     * }
+     */
     public function birthdayUser()
     {
-        $array = [];
-
         $birthday = Userprofile::with('user')
-                    ->whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') = DATE_FORMAT(now(),'%m-%d')")
-                    ->where('school_id',Auth::user()->school_id)
-                    ->ByRole(6)
-                    ->get();
-        $templates = Smstemplate::where('name','birthday_message')->get();
+            ->whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') = DATE_FORMAT(now(),'%m-%d')")
+            ->where('school_id', Auth::user()->school_id)
+            ->ByRole(6)
+            ->get();
 
-        $array['birthdaylist'] = $birthday;
-        $array['templatelist'] = $templates;
+        $templates = Smstemplate::where('name', 'birthday_message')->get();
 
-        return $array;
+        return [
+            'birthdaylist' => $birthday,
+            'templatelist' => $templates,
+        ];
     }
 
+    /**
+     * Show the receptionist birthday dashboard view.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function birthday()
     {
         return view('/receptionist/dashboard/birthday');
     }
 
+    /**
+     * Return today's teacher birthdays as a collection resource.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function showBirthdayTeacher()
     {
-        //
         $birthday = Userprofile::with('user')
-                    ->whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') = DATE_FORMAT(now(),'%m-%d')")
-                    ->where('school_id',Auth::user()->school_id)
-                    ->ByRole(5)
-                    ->get();
-                            
+            ->whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') = DATE_FORMAT(now(),'%m-%d')")
+            ->where('school_id', Auth::user()->school_id)
+            ->ByRole(5)
+            ->get();
+
         $users = BirthdayResource::collection($birthday);
-         
+
         return $users;
     }
 
+    /**
+     * Return teacher birthday list and available SMS templates.
+     *
+     * @return array{
+     *     birthdaylist: \Illuminate\Database\Eloquent\Collection,
+     *     templatelist: \Illuminate\Database\Eloquent\Collection
+     * }
+     */
     public function birthdayTeacher()
     {
-        $array = [];
-
         $birthday = Userprofile::with('user')
-                    ->whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') = DATE_FORMAT(now(),'%m-%d')")
-                    ->where('school_id',Auth::user()->school_id)
-                    ->ByRole(5)
-                    ->get();
-        $templates = Smstemplate::where('name','birthday_message')->get();
+            ->whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') = DATE_FORMAT(now(),'%m-%d')")
+            ->where('school_id', Auth::user()->school_id)
+            ->ByRole(5)
+            ->get();
 
-        $array['birthdaylist'] = $birthday;
-        $array['templatelist'] = $templates;
+        $templates = Smstemplate::where('name', 'birthday_message')->get();
 
-        return $array;
+        return [
+            'birthdaylist' => $birthday,
+            'templatelist' => $templates,
+        ];
     }
 
+    /**
+     * Show the receptionist teacher birthday creation view.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function birthdayCreate()
     {
         return view('/receptionist/dashboard/birthdayTeacher');
     }
 
+    /**
+     * Return today's work anniversaries as a collection resource.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function showWorkAnniversary()
     {
-        //
         $workanniversary = Userprofile::with('user')
-                    ->whereRaw("DATE_FORMAT(joining_date, '%m-%d') = DATE_FORMAT(now(),'%m-%d')")
-                    ->where('school_id',Auth::user()->school_id)
-                    ->ByRole(5)
-                    ->get();
-                            
+            ->whereRaw("DATE_FORMAT(joining_date, '%m-%d') = DATE_FORMAT(now(),'%m-%d')")
+            ->where('school_id', Auth::user()->school_id)
+            ->ByRole(5)
+            ->get();
+
         $workanniversary = WorkAnniversaryResource::collection($workanniversary);
-         
+
         return $workanniversary;
     }
 
+    /**
+     * Return work anniversary list and templates for display.
+     *
+     * @return array{
+     *     workanniversarylist: \Illuminate\Database\Eloquent\Collection,
+     *     templatelist: \Illuminate\Database\Eloquent\Collection
+     * }
+     */
     public function workAnniversary()
     {
-        $array = [];
-
         $workanniversary = Userprofile::with('user')
-                    ->whereRaw("DATE_FORMAT(joining_date, '%m-%d') = DATE_FORMAT(now(),'%m-%d')")
-                    ->where('school_id',Auth::user()->school_id)
-                    ->ByRole(5)
-                    ->get();
-        $templates = Smstemplate::where('name','work_anniversary_message')->get();
+            ->whereRaw("DATE_FORMAT(joining_date, '%m-%d') = DATE_FORMAT(now(),'%m-%d')")
+            ->where('school_id', Auth::user()->school_id)
+            ->ByRole(5)
+            ->get();
 
-        $array['workanniversarylist'] = $workanniversary;
-        $array['templatelist'] = $templates;
+        $templates = Smstemplate::where('name', 'work_anniversary_message')->get();
 
-        return $array;
+        return [
+            'workanniversarylist' => $workanniversary,
+            'templatelist' => $templates,
+        ];
     }
 
+    /**
+     * Show the receptionist work anniversary view.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function workAnniversaryCreate()
     {
         return view('/receptionist/dashboard/workAnniversary');

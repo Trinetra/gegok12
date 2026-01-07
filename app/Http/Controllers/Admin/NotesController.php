@@ -20,13 +20,30 @@ use App\Models\Notes;
 use App\Models\User;
 use Exception;
 
+/**
+ * Class NotesController
+ *
+ * Handles CRUD operations for notes related to different entities
+ * within the admin panel. Includes permission checks, activity logging,
+ * and note processing through reusable traits.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class NotesController extends Controller
-
 {
   use NotesProcess;
   use LogActivity;
   use Common;
 
+  /**
+   * Display a list of notes for a given entity.
+   *
+   * Fetches all notes related to the provided entity ID and entity name,
+   * ordered by latest first.
+   *
+   * @param \Illuminate\Http\Request $request
+   * @return \Illuminate\Database\Eloquent\Collection
+   */
   public function index(Request $request)
   {
     $note = Notes::where([
@@ -37,17 +54,38 @@ class NotesController extends Controller
     return $note;
   }
 
+  /**
+   * Show the form for creating a new note.
+   *
+   * @return \Illuminate\View\View
+   */
   public function create()
   {
     return view('admin.notes.add_notes');
   }
 
+  /**
+   * Store or update a note.
+   *
+   * Creates a new note if the ID is empty, otherwise updates
+   * the existing note. Logs the activity after completion.
+   *
+   * @param \App\Http\Requests\NotesRequest $request
+   * @return array
+   */
   public function store(NotesRequest $request)
   {
     $userid = Auth::id();
 
     if ($request->id == '') {
-      $note = $this->createNotes($request->notes, $request->school_id, $request->entity_id, $request->entity_name, $userid, $userid);
+      $note = $this->createNotes(
+        $request->notes,
+        $request->school_id,
+        $request->entity_id,
+        $request->entity_name,
+        $userid,
+        $userid
+      );
     } else {
       $note = Notes::where('id', $request->id)->first();
       $note->notes = $request->notes;
@@ -56,6 +94,7 @@ class NotesController extends Controller
 
     $message = __('notes.notes_message');
     $ip = $this->getRequestIP();
+
     $this->doActivityLog(
       $note,
       Auth::user(),
@@ -68,9 +107,19 @@ class NotesController extends Controller
     return $res;
   }
 
+  /**
+   * Edit an existing note.
+   *
+   * Returns the note content if the user has permission,
+   * otherwise throws a 403 unauthorized error.
+   *
+   * @param int $id
+   * @return string
+   */
   public function edit($id)
   {
     $notes = Notes::where('id', $id)->first();
+
     if (Gate::allows('note', $notes)) {
       return $notes->notes;
     } else {
@@ -78,15 +127,23 @@ class NotesController extends Controller
     }
   }
 
+  /**
+   * Delete a note.
+   *
+   * Removes the specified note and logs the delete activity.
+   *
+   * @param int $id
+   * @return array|null
+   */
   public function delete($id)
   {
     try {
-
       $notes = Notes::where('id', $id)->first();
       $notes->delete();
 
       $message = "Notes Deleted Successfully";
       $ip = $this->getRequestIP();
+
       $this->doActivityLog(
         $notes,
         Auth::user(),

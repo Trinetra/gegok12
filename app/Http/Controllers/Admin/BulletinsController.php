@@ -24,6 +24,14 @@ use Carbon\Carbon;
 use Exception;
 use Log;
 
+/**
+ * Class BulletinsController
+ *
+ * Controller for managing school bulletins/magazines: listing,
+ * creating, downloading and deleting bulletin records.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class BulletinsController extends Controller
 {
     use LogActivity;

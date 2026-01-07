@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Events\Notification\SingleNotificationEvent;
@@ -21,6 +22,14 @@ use App\Models\User;
 use Exception;
 use Log;
 
+/**
+ * Class PostCommentDetailsController
+ *
+ * Handles like and dislike actions on post comments,
+ * triggers notifications, and logs activities.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class PostCommentDetailsController extends Controller
 {
     //
@@ -28,96 +37,121 @@ class PostCommentDetailsController extends Controller
     use Common;
 
     /**
-     * Store a newly created resource in storage.
+     * Like or remove like from a comment.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Creates or updates the comment like record,
+     * sends notification to the content owner,
+     * and logs the activity.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $comment_id
+     * @return array|null
      */
-    public function like(Request $request,$comment_id)
+    public function like(Request $request, $comment_id)
     {
         //
         try
         {
-            $post_comment_detail = PostCommentDetail::where([['user_id',Auth::id()],['post_comment_id',$comment_id]])->first();
+            $post_comment_detail = PostCommentDetail::where([
+                ['user_id', Auth::id()],
+                ['post_comment_id', $comment_id]
+            ])->first();
 
-            if($post_comment_detail != null)
+            if ($post_comment_detail != null)
             {
-                $post_comment_detail->like = $request->like;
+                $post_comment_detail->like   = $request->like;
                 $post_comment_detail->status = 1;
-
                 $post_comment_detail->save();
             }
             else
             {
                 $post_comment_detail = new PostCommentDetail;
 
-                $post_comment_detail->user_id           = Auth::id();
-                $post_comment_detail->post_comment_id   = $comment_id;
-                $post_comment_detail->like              = $request->like;
-                $post_comment_detail->status            = 1;
-
+                $post_comment_detail->user_id         = Auth::id();
+                $post_comment_detail->post_comment_id = $comment_id;
+                $post_comment_detail->like            = $request->like;
+                $post_comment_detail->status          = 1;
                 $post_comment_detail->save();
             }
 
-            if($post_comment_detail->postComment->post->entity_name == 'App\Models\User')
+            if ($post_comment_detail->postComment->post->entity_name == 'App\Models\User')
             {
-                $user = User::where('id',$post_comment_detail->postComment->post->entity_id)->first();
-                if($request->like == 1)
+                $user = User::where(
+                    'id',
+                    $post_comment_detail->postComment->post->entity_id
+                )->first();
+
+                if ($request->like == 1)
                 {
-                    $details = trans('notification.page_comment_like_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Post']);
+                    $details = trans('notification.page_comment_like_success_msg', [
+                        'user'   => Auth::user()->FullName,
+                        'entity' => 'Post'
+                    ]);
                 }
                 else
                 {
-                    $details = trans('notification.page_comment_remove_like_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Post']);
+                    $details = trans('notification.page_comment_remove_like_success_msg', [
+                        'user'   => Auth::user()->FullName,
+                        'entity' => 'Post'
+                    ]);
                 }
             }
-            elseif($post_comment_detail->postComment->post->entity_name == 'App\Models\Page')
+            elseif ($post_comment_detail->postComment->post->entity_name == 'App\Models\Page')
             {
-                $page = ClassRoomPage::where('id',$post_comment_detail->postComment->post->entity_id)->first();
-                $user = User::where('id',$page->created_by)->first();
+                $page = ClassRoomPage::where(
+                    'id',
+                    $post_comment_detail->postComment->post->entity_id
+                )->first();
 
-                if($request->like == 1)
+                $user = User::where('id', $page->created_by)->first();
+
+                if ($request->like == 1)
                 {
-                    $details = trans('notification.page_comment_like_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Page']);
+                    $details = trans('notification.page_comment_like_success_msg', [
+                        'user'   => Auth::user()->FullName,
+                        'entity' => 'Page'
+                    ]);
                 }
                 else
                 {
-                    $details = trans('notification.page_comment_remove_like_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Page']);
+                    $details = trans('notification.page_comment_remove_like_success_msg', [
+                        'user'   => Auth::user()->FullName,
+                        'entity' => 'Page'
+                    ]);
                 }
             }
 
-            if($request->like == 1)
+            if ($request->like == 1)
             {
-                $message = trans('messages.like_success_msg',['page' => 'comment']);
+                $message = trans('messages.like_success_msg', ['page' => 'comment']);
             }
             else
             {
-                $message = trans('messages.remove_like_success_msg',['page' => 'comment']);
+                $message = trans('messages.remove_like_success_msg', ['page' => 'comment']);
             }
 
-            if($user->id != Auth::id())
+            if ($user->id != Auth::id())
             {
                 $data = [];
-
-                $data['user']       =   $user;
-                $data['details']    =   $details;
+                $data['user']    = $user;
+                $data['details'] = $details;
 
                 event(new SingleNotificationEvent($data));
             }
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $post_comment_detail,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_LIKE_COMMENT,
                 $message
-            ); 
+            );
 
             $res['success'] = $message;
             return $res;
         }
-        catch(Exception $e)
+        catch (Exception $e)
         {
             Log::info($e->getMessage());
             //dd($e->getMessage());
@@ -125,96 +159,121 @@ class PostCommentDetailsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Dislike or remove dislike from a comment.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Creates or updates the comment dislike record,
+     * sends notification to the content owner,
+     * and logs the activity.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $comment_id
+     * @return array|null
      */
-    public function dislike(Request $request,$comment_id)
+    public function dislike(Request $request, $comment_id)
     {
         //
         try
         {
-            $post_comment_detail = PostCommentDetail::where([['user_id',Auth::id()],['post_comment_id',$comment_id]])->first();
+            $post_comment_detail = PostCommentDetail::where([
+                ['user_id', Auth::id()],
+                ['post_comment_id', $comment_id]
+            ])->first();
 
-            if($post_comment_detail != null)
+            if ($post_comment_detail != null)
             {
-                $post_comment_detail->unlike  = $request->dislike;
-                $post_comment_detail->status  = 1;
-
+                $post_comment_detail->unlike = $request->dislike;
+                $post_comment_detail->status = 1;
                 $post_comment_detail->save();
             }
             else
             {
                 $post_comment_detail = new PostCommentDetail;
 
-                $post_comment_detail->user_id           = Auth::id();
-                $post_comment_detail->post_comment_id   = $comment_id;
-                $post_comment_detail->unlike        = $request->dislike;
-                $post_comment_detail->status            = 1;
-
+                $post_comment_detail->user_id         = Auth::id();
+                $post_comment_detail->post_comment_id = $comment_id;
+                $post_comment_detail->unlike          = $request->dislike;
+                $post_comment_detail->status          = 1;
                 $post_comment_detail->save();
             }
 
-            if($post_comment_detail->postComment->post->entity_name == 'App\Models\User')
+            if ($post_comment_detail->postComment->post->entity_name == 'App\Models\User')
             {
-                $user = User::where('id',$post_comment_detail->postComment->post->entity_id)->first();
-                if($request->dislike == 1)
+                $user = User::where(
+                    'id',
+                    $post_comment_detail->postComment->post->entity_id
+                )->first();
+
+                if ($request->dislike == 1)
                 {
-                    $details = trans('notification.page_comment_dislike_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Post']);
+                    $details = trans('notification.page_comment_dislike_success_msg', [
+                        'user'   => Auth::user()->FullName,
+                        'entity' => 'Post'
+                    ]);
                 }
                 else
                 {
-                    $details = trans('notification.page_comment_remove_dislike_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Post']);
+                    $details = trans('notification.page_comment_remove_dislike_success_msg', [
+                        'user'   => Auth::user()->FullName,
+                        'entity' => 'Post'
+                    ]);
                 }
             }
-            elseif($post_comment_detail->postComment->post->entity_name == 'App\Models\Page')
+            elseif ($post_comment_detail->postComment->post->entity_name == 'App\Models\Page')
             {
-                $page = ClassRoomPage::where('id',$post_comment_detail->postComment->post->entity_id)->first();
-                $user = User::where('id',$page->created_by)->first();
+                $page = ClassRoomPage::where(
+                    'id',
+                    $post_comment_detail->postComment->post->entity_id
+                )->first();
 
-                if($request->dislike == 1)
+                $user = User::where('id', $page->created_by)->first();
+
+                if ($request->dislike == 1)
                 {
-                    $details = trans('notification.page_comment_dislike_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Page']);
+                    $details = trans('notification.page_comment_dislike_success_msg', [
+                        'user'   => Auth::user()->FullName,
+                        'entity' => 'Page'
+                    ]);
                 }
                 else
                 {
-                    $details = trans('notification.page_comment_remove_dislike_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Page']);
+                    $details = trans('notification.page_comment_remove_dislike_success_msg', [
+                        'user'   => Auth::user()->FullName,
+                        'entity' => 'Page'
+                    ]);
                 }
             }
 
-            if($request->dislike == 1)
+            if ($request->dislike == 1)
             {
-                $message = trans('messages.unlike_success_msg',['page' => 'comment']);
+                $message = trans('messages.unlike_success_msg', ['page' => 'comment']);
             }
             else
             {
-                $message = trans('messages.remove_unlike_success_msg',['page' => 'comment']);
+                $message = trans('messages.remove_unlike_success_msg', ['page' => 'comment']);
             }
 
-            if($user->id != Auth::id())
+            if ($user->id != Auth::id())
             {
                 $data = [];
-
-                $data['user']       =   $user;
-                $data['details']    =   $details;
+                $data['user']    = $user;
+                $data['details'] = $details;
 
                 event(new SingleNotificationEvent($data));
             }
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $post_comment_detail,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_UNLIKE_COMMENT,
                 $message
-            ); 
+            );
 
             $res['success'] = $message;
             return $res;
         }
-        catch(Exception $e)
+        catch (Exception $e)
         {
             Log::info($e->getMessage());
             //dd($e->getMessage());

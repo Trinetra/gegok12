@@ -6,6 +6,13 @@ use Log;
 
 trait HandlesGuzzleRequests
 {
+    /**
+     * Perform a GET request using Guzzle and return decoded JSON.
+     *
+     * @param string $url Endpoint URL
+     * @param array $params Query parameters
+     * @return array|null Decoded response or null on failure
+     */
     protected function guzzleGet($url, $params  = [])
     {
 
@@ -28,6 +35,14 @@ trait HandlesGuzzleRequests
         return null;
     }
 
+    /**
+     * Perform a POST request using Guzzle and return decoded JSON.
+     *
+     * @param string $url Endpoint URL
+     * @param array $data Payload data
+     * @param bool $asJson When true sends JSON, otherwise form-params
+     * @return array|null Decoded response or null on failure
+     */
     protected function guzzlePost($url, $data = [], $asJson = false)
     {
         $client = new \GuzzleHttp\Client(
@@ -52,6 +67,15 @@ trait HandlesGuzzleRequests
 
         return null;
     }
+
+    /**
+     * Perform a POST request that can send files using multipart/form-data.
+     *
+     * @param string $url Endpoint URL
+     * @param array $data Form data or files
+     * @param bool $hasFile Whether the payload includes uploaded files
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function guzzleImagePost($url, $data = [], $hasFile = false)
     {
         $client = new \GuzzleHttp\Client(['verify' => false]);

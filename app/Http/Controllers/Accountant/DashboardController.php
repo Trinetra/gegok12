@@ -27,6 +27,11 @@ use App\Models\Fee;
 use Exception;
 use Log;
 
+/**
+ * Accountant dashboard controller.
+ *
+ * Provides endpoints used by the accountant dashboard (fees, tasks, reminders, etc.).
+ */
 class DashboardController extends Controller
 {
     use LogActivity;
@@ -48,7 +53,14 @@ class DashboardController extends Controller
         return view('/accountant/dashboard',['dashboard' => $dashboard]); 
     }
 
-    public function list(Request $request,$task_flag)
+    /**
+     * Return a collection of tasks for the authenticated accountant filtered by flag.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int|string  $task_flag
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function list(Request $request, $task_flag)
     {
         //
         $tasks = Task::where([['school_id',Auth::user()->school_id],['task_status',0],['task_flag',$task_flag]])->ByType('to_me',Auth::id());
@@ -64,6 +76,11 @@ class DashboardController extends Controller
         return $tasks;    
     }
 
+    /**
+     * Return task counts grouped by flag for the authenticated accountant.
+     *
+     * @return array|\\Illuminate\\Support\\Collection
+     */
     public function listCount()
     {
         //
@@ -202,15 +219,29 @@ class DashboardController extends Controller
         return $fees;
     }
 
+    /**
+     * Show the unpaid fees view for a given fee id.
+     *
+     * @param  int  $fee_id
+     * @return \Illuminate\View\View
+     */
     public function show($fee_id)
     {
-        //
         return view('/accountant/dashboard/unpaidfees', ['fee_id' => $fee_id]);
     }
 
+    /**
+     * Return unpaid fees list and count for a specific fee group.
+     *
+     * @param  int  $fee_id
+     * @return array{
+     *     unpaidCount: int,
+     *     unpaidList: \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * }
+     */
     public function feeslist($fee_id)
     {
-        $fees = Fee::where('id',$fee_id)->first();
+        $fees = Fee::where('id', $fee_id)->first();
 
         $unpaidfees  = FeePayment::where('fee_id',$fees->id)->where('status',0);
 

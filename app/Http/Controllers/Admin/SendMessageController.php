@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Events\SendMessageTeacherEvent;
@@ -24,6 +25,14 @@ use App\Models\AcademicYear;
 use App\Models\Userprofile;
 use App\Traits\RegisterUser;
 
+/**
+ * Class SendMessageController
+ *
+ * Handles sending messages to users (students, parents,
+ * teachers, alumni) and manages student academic shifting.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class SendMessageController extends Controller
 {
     use LogActivity;
@@ -31,8 +40,12 @@ class SendMessageController extends Controller
     use RegisterUser;
 
     /**
-     * Display a listing of the resource.
+     * Display sent messages list.
      *
+     * Retrieves sent messages for the current academic year
+     * and applies optional user type filtering.
+     *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -40,7 +53,12 @@ class SendMessageController extends Controller
         //
         $school_id = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
-        $messages =  SendMail::with('user')->where([['school_id',$school_id],['academic_year_id',$academic_year->id]])->orderBy('fired_at','desc');
+        $messages =  SendMail::with('user')
+            ->where([
+                ['school_id',$school_id],
+                ['academic_year_id',$academic_year->id]
+            ])
+            ->orderBy('fired_at','desc');
 
         if($request->type!= '')
         { 
@@ -67,17 +85,25 @@ class SendMessageController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Send message to all selected users.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Dispatches SendMessageEvent for asynchronous
+     * message processing.
+     *
+     * @param SendMailRequest $request
+     * @return array
      */
     public function store(SendMailRequest $request)
     {
         //
         try
         {
-            event (new SendMessageEvent ($request , Auth::user()->school_id , Auth::user()->email , Auth::user() ) );
+            event (new SendMessageEvent (
+                $request,
+                Auth::user()->school_id,
+                Auth::user()->email,
+                Auth::user()
+            ));
                   
             $res['message'] = trans('messages.message_success_msg');
             return $res;
@@ -90,10 +116,13 @@ class SendMessageController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Send message specifically to teachers.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Prepares teacher-specific message payload
+     * and dispatches SendMessageTeacherEvent.
+     *
+     * @param SendMailRequest $request
+     * @return array
      */
     public function storeTeacher(SendMailRequest $request)
     {
@@ -101,14 +130,19 @@ class SendMessageController extends Controller
         try
         {
             $data=[];
-            $data['selected'] =$request->selected;
-            $data['subject']=$request->subject;
-            $data['message']=$request->message;
-            $data['send_later']=$request->send_later;
-            $data['executed_at']=$request->executed_at;
+            $data['selected']     = $request->selected;
+            $data['subject']      = $request->subject;
+            $data['message']      = $request->message;
+            $data['send_later']   = $request->send_later;
+            $data['executed_at']  = $request->executed_at;
             $datas=(object)$data;
             
-            event (new SendMessageTeacherEvent ($datas , Auth::user()->school_id , Auth::user()->email , Auth::user() ) );
+            event (new SendMessageTeacherEvent (
+                $datas,
+                Auth::user()->school_id,
+                Auth::user()->email,
+                Auth::user()
+            ));
                   
             $res['message'] = trans('messages.message_success_msg');
             return $res;
@@ -120,77 +154,69 @@ class SendMessageController extends Controller
         }
     }
 
-    public function shift(request $request)
+    /**
+     * Shift selected students to another standard
+     * or convert them to alumni if applicable.
+     *
+     * Handles student academic transitions based on
+     * selected users and target standard.
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function shift(Request $request)
     {
         //
-       // dd($request);  
-        
+        // dd($request);  
         try
         {
-             $school_id = Auth::user()->school_id;
-        $academic_year = SiteHelper::getAcademicYear($school_id);
+            $school_id = Auth::user()->school_id;
+            $academic_year = SiteHelper::getAcademicYear($school_id);
 
-        foreach ($request->selectedUsers as $key => $value) {
-            
-           $studentAcademic = StudentAcademic::where([['user_id',$value],['school_id',$school_id],['academic_year_id',$academic_year->id]])->latest()->first();
+            foreach ($request->selectedUsers as $key => $value)
+            {
+                $studentAcademic = StudentAcademic::where([
+                    ['user_id',$value],
+                    ['school_id',$school_id],
+                    ['academic_year_id',$academic_year->id]
+                ])->latest()->first();
           
-                
-               if($studentAcademic)
-               {
-                if( $studentAcademic->standardLink_id != 42 )
+                if($studentAcademic)
                 {
-                    $studentAcademic->standardLink_id              = $request->shift_std;
-                    $studentAcademic->update();
-                }
-                else
-                {
-                   
-                    $user=User::where('id', $value)->first();
-                    $user->usergroup_id="9";
-                    $user->save();
-                    $userprofile=Userprofile::where('user_id',$value)->first();
-                    $userprofile->usergroup_id="9";
-                    $userprofile->save();
-                    $academic_year_data=AcademicYear::where('id',$academic_year->id)->first();
-                    $passing_session_year=explode("-",$academic_year_data->name);//dd($user->userprofile);
-                    $data=$user;
-                    $data['name']=$user->userprofile->firstname;
-                    /*$data['mobile_no']=$user->mobile_no;
-                    $data['email']=$user->email;*/
-                    $data['passing_session']=$passing_session_year['1'];
-                    $data['current_studying']=$academic_year->id;
-                    $data['institution_name']="";
-                    $data['degree']="";
-                    $data['specialization']="";
-                    $data['college_start_year']="";
-                    $data['college_end_year']="";
-                    $data['grade']="";
-                    $data['company_name']="";
-                    $data['designation']="";
-                    $data['location']="";
-                    $data['job_start_year']="";
-                    $data['job_start_month']="";
-                    $data['present']="";
-                    $data['twitter']="";
-                    $data['linkedin']="";
-                    $data['telegram']="";
-                    $data['facebook']="";
-                    $data['about_me']="";
-                    $path = '';
-                    $usergroup_id="9";
-                  
-                  //  $alumniprofile = $this->CreateAlumni($data, $path, $usergroup_id, $school_id, $user);
+                    if($studentAcademic->standardLink_id != 42)
+                    {
+                        $studentAcademic->standardLink_id = $request->shift_std;
+                        $studentAcademic->update();
+                    }
+                    else
+                    {
+                        $user = User::where('id', $value)->first();
+                        $user->usergroup_id = "9";
+                        $user->save();
 
-           // \DB::commit();
-                }
-                
-               }
+                        $userprofile = Userprofile::where('user_id',$value)->first();
+                        $userprofile->usergroup_id = "9";
+                        $userprofile->save();
 
-         }
+                        $academic_year_data = AcademicYear::where('id',$academic_year->id)->first();
+                        $passing_session_year = explode("-",$academic_year_data->name);
+
+                        $data = $user;
+                        $data['name'] = $user->userprofile->firstname;
+                        $data['passing_session'] = $passing_session_year['1'];
+                        $data['current_studying'] = $academic_year->id;
+
+                        $path = '';
+                        $usergroup_id = "9";
+
+                        // Alumni profile creation intentionally commented
+                        // $alumniprofile = $this->CreateAlumni($data, $path, $usergroup_id, $school_id, $user);
+                    }
+                }
+            }
        
-          $res['message'] = count($request->selectedUsers)." Students shifted sucessfully";
+            $res['message'] = count($request->selectedUsers)." Students shifted sucessfully";
             return $res;
-            
         }
         catch(Exception $e)
         {
@@ -198,5 +224,4 @@ class SendMessageController extends Controller
             //dd($e->getMessage());
         }
     }
-
 }

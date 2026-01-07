@@ -27,6 +27,16 @@ use Log;
  */
 trait RegisterUser
 {
+    /**
+     * Create a new student user with profile and academic details.
+     *
+     * @param object $data Request payload containing user, profile, and academic info
+     * @param int $school_id School identifier
+     * @param int $academic_year_id Academic year identifier
+     * @param string $path Avatar path if available
+     * @param int $usergroup_id User group id for the student
+     * @return \App\Models\User Newly created user
+     */
     public function CreateUser($data , $school_id , $academic_year_id , $path , $usergroup_id)
     {
         \DB::beginTransaction();
@@ -181,6 +191,16 @@ trait RegisterUser
         } 
     }
 
+    /**
+     * Update an existing student user profile and academic record.
+     *
+     * @param object $data Request payload with updated fields
+     * @param int $school_id School identifier
+     * @param int $academic_year_id Academic year identifier
+     * @param int $user_id User identifier to update
+     * @param string $path Avatar path if replaced
+     * @return \App\Models\Userprofile Updated profile
+     */
     public function UpdateUser($data , $school_id , $academic_year_id ,$user_id , $path)
     {
         \DB::beginTransaction();
@@ -325,6 +345,15 @@ trait RegisterUser
         } 
     }
 
+    /**
+     * Create a parent user and link to a student.
+     *
+     * @param int|null $student_id Student identifier to attach (optional)
+     * @param object $data Request payload containing parent details
+     * @param int $school_id School identifier
+     * @param int $usergroup_id Parent role id
+     * @return \App\Models\User Parent user model
+     */
     public function CreateParent($student_id ,$data , $school_id , $usergroup_id)
     {
         \DB::beginTransaction();
@@ -441,6 +470,15 @@ trait RegisterUser
         } 
     }
 
+    /**
+     * Update parent profile details and qualifications.
+     *
+     * @param int $student_id Associated student id
+     * @param object $data Request payload containing parent updates
+     * @param int $school_id School identifier
+     * @param int $user_id Parent user identifier
+     * @return \App\Models\Userprofile Updated parent profile
+     */
     public function UpdateParent($student_id , $data , $school_id , $user_id)
     {
         \DB::beginTransaction();
@@ -516,6 +554,16 @@ trait RegisterUser
         } 
     }
 
+    /**
+     * Create a teacher user with profile and teacher-specific attributes.
+     *
+     * @param object $data Request payload with teacher info
+     * @param int $school_id School identifier
+     * @param \App\Models\AcademicYear $academic_year Academic year model
+     * @param string $path Avatar path if provided
+     * @param int $usergroup_id Teacher role id
+     * @return \App\Models\User Newly created teacher
+     */
     public function CreateTeacher($data , $school_id , $academic_year , $path , $usergroup_id)
     { 
         \DB::beginTransaction();
@@ -689,6 +737,16 @@ trait RegisterUser
         } 
     }
 
+    /**
+     * Create or update a mark entry for a student exam.
+     *
+     * @param object $data Payload with mark details and associations
+     * @param int $school_id School identifier
+     * @param \App\Models\AcademicYear $academic_year Academic year model
+     * @param int $sc_grade Scholastic grading scheme id
+     * @param int|null $non_sc_grade Non-scholastic grading scheme id
+     * @return \App\Models\Mark|\Gegok12\Exam\Models\Mark Persisted mark model
+     */
     public function CreateMark($data , $school_id , $academic_year,$sc_grade,$non_sc_grade)
     {
         \DB::beginTransaction();
@@ -752,6 +810,15 @@ trait RegisterUser
         } 
     }
 
+    /**
+     * Create or fetch an alumni user and seed profile data.
+     *
+     * @param object $data Request payload with alumni details
+     * @param int $usergroup_id Alumni role id
+     * @param int $school_id School identifier
+     * @param string $passing_session Passing year/batch
+     * @return \App\Models\User Alumni user model
+     */
     public function AddAlumni($data, $usergroup_id, $school_id, $passing_session)
     { 
         \DB::beginTransaction();
@@ -820,6 +887,16 @@ trait RegisterUser
         } 
     }
 
+    /**
+     * Create an alumni profile record for an existing user.
+     *
+     * @param object $data Alumni profile payload
+     * @param string $path Photo path
+     * @param int $usergroup_id Alumni role id
+     * @param int $school_id School identifier
+     * @param \App\Models\User $user User to link
+     * @return mixed Persisted alumni profile
+     */
     public function CreateAlumni($data, $path,$usergroup_id,$school_id,$user)
     { 
         \DB::beginTransaction();

@@ -16,48 +16,63 @@ use App\Models\Task;
 class DashboardController extends Controller
 {
     use Dashboard;
-    
+
     /**
-     * Display a listing of the resource.
+     * Display the receptionist dashboard view.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\View
      */
     public function index()
     {
-        $receptionist_id  =   Auth::id();
-        $school_id =   Auth::user()->school_id;
+        $receptionist_id = Auth::id();
+        $school_id = Auth::user()->school_id;
 
-        $dashboard = $this->receptionDashboard( $school_id, $receptionist_id );
+        $dashboard = $this->receptionDashboard($school_id, $receptionist_id);
 
-        return view( '/reception/dashboard', ['dashboard' => $dashboard]);
+        return view('/reception/dashboard', ['dashboard' => $dashboard]);
     }
 
-    public function list(Request $request,$task_flag)
+    /**
+     * Return a list of tasks for the given flag.
+     *
+     * @param  Request  $request
+     * @param  mixed  $task_flag
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function list(Request $request, $task_flag)
     {
-        //
-        $tasks = Task::where([['school_id',Auth::user()->school_id],['task_status',0],['task_flag',$task_flag]])->ByType('to_me',Auth::id());
+        $tasks = Task::where([
+            ['school_id', Auth::user()->school_id],
+            ['task_status', 0],
+            ['task_flag', $task_flag],
+        ])->ByType('to_me', Auth::id());
 
-        if($request->q != null)
-        {
-            $tasks = $tasks->where('title','LIKE','%'.$request->q.'%');
+        if ($request->q != null) {
+            $tasks = $tasks->where('title', 'LIKE', '%' . $request->q . '%');
         }
+
         $tasks = $tasks->get();
 
-        $tasks = TaskResource::collection($tasks);
-
-        return $tasks;    
+        return TaskResource::collection($tasks);
     }
 
+    /**
+     * Return counts of pending tasks grouped by flag for the current user.
+     *
+     * @return array<string,int>
+     */
     public function listCount()
     {
-        //
-        $tasks = Task::where([['school_id',Auth::user()->school_id],['user_id',Auth::id()],['task_status',0]])->ByType('to_me',Auth::id())->get()->groupBy('Flag');
+        $tasks = Task::where([
+            ['school_id', Auth::user()->school_id],
+            ['user_id', Auth::id()],
+            ['task_status', 0],
+        ])->ByType('to_me', Auth::id())->get()->groupBy('Flag');
 
-        foreach ($tasks as $key => $value) 
-        {
+        foreach ($tasks as $key => $value) {
             $tasks[$key] = count($value);
         }
 
-        return $tasks;    
+        return $tasks;
     }
 }

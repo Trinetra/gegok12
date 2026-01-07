@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Classwall\PostAttachmentRequest;
@@ -16,6 +17,16 @@ use App\Traits\Common;
 use App\Models\Post;
 use Exception;
 
+/**
+ * Class PostEditController
+ *
+ * Handles editing of classwall posts including
+ * fetching edit data, updating post content,
+ * managing scheduled posts, updating attachments,
+ * and logging activities.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class PostEditController extends Controller
 {
     //
@@ -23,33 +34,40 @@ class PostEditController extends Controller
     use Common;
 
     /**
-     * Show the form for editing the specified resource.
+     * Get post data for edit form (API use).
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Returns post details such as description,
+     * visibility, attachments, scheduling info,
+     * and standard link list for editing.
+     *
+     * @param int $id Post ID
+     * @return array
      */
     public function editList($id)
     {
         //
-        $post = Post::where('id',$id)->first();
+        $post = Post::where('id', $id)->first();
 
-        if($post->created_by == Auth::id())
+        if ($post->created_by == Auth::id())
         {
             $array = [];
 
-            $array['description']       = $post->description;
-            $array['visibility']        = $post->visibility;
-            if($post->visibility == 'select_class')
+            $array['description']      = $post->description;
+            $array['visibility']       = $post->visibility;
+
+            if ($post->visibility == 'select_class')
             {
-                $array['visible_for']   = $post->visible_for;
+                $array['visible_for'] = $post->visible_for;
             }
             else
             {
-            	$array['visible_for']   = '';
+                $array['visible_for'] = '';
             }
-            $array['post_created_at']   = date('d-m-Y H:i:s',strtotime($post->post_created_at));
-            $array['is_posted']         = $post->is_posted;
-            if($post->is_posted == 1)
+
+            $array['post_created_at']  = date('d-m-Y H:i:s', strtotime($post->post_created_at));
+            $array['is_posted']        = $post->is_posted;
+
+            if ($post->is_posted == 1)
             {
                 $array['post_later'] = 0;
             }
@@ -57,8 +75,9 @@ class PostEditController extends Controller
             {
                 $array['post_later'] = 1;
             }
-            $array['attachment']        = $post->AttachmentPath;
-            $array['standardLinkList']  = SiteHelper::getStandardLinkList(Auth::user()->school_id);
+
+            $array['attachment']       = $post->AttachmentPath;
+            $array['standardLinkList'] = SiteHelper::getStandardLinkList(Auth::user()->school_id);
 
             return $array;
         }
@@ -69,22 +88,29 @@ class PostEditController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the post edit page.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Ensures only the post creator can access
+     * the edit screen.
+     *
+     * @param int $id Post ID
+     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
         //
-        $post = Post::where('id',$id)->first();
+        $post = Post::where('id', $id)->first();
 
-        if($post->created_by == Auth::id())
+        if ($post->created_by == Auth::id())
         {
-            $entity_id      = Auth::id();
-            $entity_name    = 'App\Models\User';
+            $entity_id   = Auth::id();
+            $entity_name = 'App\Models\User';
 
-            return view('/admin/classwall/post/edit',[ 'post' => $post , 'entity_id' => $entity_id , 'entity_name' => $entity_name ]);
+            return view('/admin/classwall/post/edit', [
+                'post'        => $post,
+                'entity_id'   => $entity_id,
+                'entity_name' => $entity_name
+            ]);
         }
         else
         {
@@ -93,98 +119,114 @@ class PostEditController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update post content and scheduling.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Updates description, visibility, and
+     * scheduled or immediate posting status.
+     *
+     * @param \App\Http\Requests\Classwall\PostRequest $request
+     * @param int $id Post ID
+     * @return array|null
      */
     public function update(PostRequest $request, $id)
     {
         //
         try
         {
-            $post = Post::where('id',$id)->first();
+            $post = Post::where('id', $id)->first();
 
-            $post->description      = $request->description;
-            $post->visibility       = $request->visibility;
-            if($request->post_later == 'true')
+            $post->description = $request->description;
+            $post->visibility  = $request->visibility;
+
+            if ($request->post_later == 'true')
             {
-                $post->post_created_at = date('Y-m-d H:i:s',strtotime($request->posted_at));
-                $post->status  = 'pending';
+                $post->post_created_at = date('Y-m-d H:i:s', strtotime($request->posted_at));
+                $post->status          = 'pending';
             }
             else
             {
                 $post->post_created_at = date('Y-m-d H:i:s');
-                $post->posted_at = date('Y-m-d H:i:s');
-                $post->is_posted = 1;
-                $post->status  = 'posted';
+                $post->posted_at       = date('Y-m-d H:i:s');
+                $post->is_posted       = 1;
+                $post->status          = 'posted';
             }
 
             $post->save();
 
-            $message = trans('messages.update_success_msg',['module' => 'Post']);
+            $message = trans('messages.update_success_msg', ['module' => 'Post']);
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $post,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_EDIT_POST,
                 $message
-            ); 
+            );
 
             $res['success'] = $message;
             return $res;
         }
-        catch(Exception $e)
+        catch (Exception $e)
         {
             //dd($e->getMessage());
         }
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Update post attachments.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Handles existing attachment retention,
+     * removal, and new file uploads.
+     *
+     * @param \App\Http\Requests\Classwall\PostAttachmentRequest $request
+     * @param int $id Post ID
+     * @return void
      */
-    public function editAttachment(PostAttachmentRequest $request,$id)
+    public function editAttachment(PostAttachmentRequest $request, $id)
     {
         //
         try
         {
-            $post = Post::where('id',$id)->first();
-            if($request->attachment_count > 0)
+            $post = Post::where('id', $id)->first();
+
+            if ($request->attachment_count > 0)
             {
                 $post->attachment_file = null;
                 $post->save();
+
                 $initial_path = [];
-                for($j = 0 ; $j < $request->attachment_count ; $j++)
+                for ($j = 0; $j < $request->attachment_count; $j++)
                 {
-                    $attachment = 'attachment'.$j;
+                    $attachment = 'attachment' . $j;
                     $initial_path[$j] = $request->$attachment;
                 }
+
                 $post->attachment_file = $initial_path;
                 $post->save();
             }
 
             $files = $request->file;
-            
-            if(count($files) > 0) 
+
+            if (count($files) > 0)
             {
-                $i = $request->count+1;
+                $i = $request->count + 1;
                 $path = [];
-                foreach($files as $file) 
+
+                foreach ($files as $file)
                 {
-                    $path[$i] = $this->uploadFile(Auth::user()->school->slug.'/posts/'.$id,$file); 
-                    $i++;     
+                    $path[$i] = $this->uploadFile(
+                        Auth::user()->school->slug . '/posts/' . $id,
+                        $file
+                    );
+                    $i++;
                 }
-                $post->attachment_file = array_merge($post->attachment_file,$path);
+
+                $post->attachment_file = array_merge($post->attachment_file, $path);
                 $post->save();
             }
         }
-        catch(Exception $e)
+        catch (Exception $e)
         {
             //dd($e->getMessage());
         }

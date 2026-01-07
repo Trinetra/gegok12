@@ -18,6 +18,14 @@ use App\Traits\Common;
 use App\Models\User;
 use Exception;
 
+/**
+ * Class DocumentsController
+ *
+ * Controller for managing user documents: listing, uploading,
+ * updating (versioning) and deleting documents.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class DocumentsController extends Controller
 {
     use LogActivity;

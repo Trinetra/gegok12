@@ -28,13 +28,32 @@ use Carbon\Carbon;
 use Exception;
 use Hash;
 
+/**
+ * Class StudentController
+ *
+ * Handles student management including
+ * listing, creation, update, deletion,
+ * attendance, academic mapping, and
+ * blocked student handling.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class StudentController extends Controller
 {
     use RegisterUser; 
     use MemberProcess;
     use LogActivity;
     use Common;
- 
+    
+    /**
+     * Filter and fetch students list.
+     *
+     * Applies standard-based default filtering
+     * and returns filtered student collection.
+     *
+     * @param Request $request
+     * @return mixed
+     */
     public function find(Request $request)
     {
         //
@@ -52,7 +71,11 @@ class StudentController extends Controller
 
         return $this->MemberFilter($request,Auth::user()->school_id,6,'active');
     }
-
+    /**
+     * Display student listing page.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         $school_id = Auth::user()->school_id;
@@ -85,7 +108,7 @@ class StudentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show student creation form.
      *
      * @return \Illuminate\Http\Response
      */
@@ -98,6 +121,11 @@ class StudentController extends Controller
       return view('/admin/member/create',['count'=>$count , 'subscription'=>$subscription]);
     }
 
+    /**
+     * Load supporting data for student creation.
+     *
+     * @return array
+     */
     public function member()
     {
       $academic_year  = SiteHelper::getAcademicYear(Auth::user()->school_id);
@@ -119,10 +147,10 @@ class StudentController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Validate student creation request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param UserProfileAddRequest $request
+     * @return void
      */
     public function validationUser(UserProfileAddRequest $request)
     {
@@ -130,9 +158,9 @@ class StudentController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store newly created student.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -178,10 +206,10 @@ class StudentController extends Controller
   
 
     /**
-     * Show the form for editing the specified resource.
+     * Fetch student data for edit API.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param string $name
+     * @return array
      */
     public function editStudent($name)
     {
@@ -244,9 +272,9 @@ class StudentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show student edit form.
      *
-     * @param  int  $id
+     * @param string $name
      * @return \Illuminate\Http\Response
      */
     public function edit($name)
@@ -265,10 +293,11 @@ class StudentController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Validate student update request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param UserProfileUpdateRequest $request
+     * @param string $name
+     * @return void
      */
     public function editValidationUser(UserProfileUpdateRequest $request,$name)
     {
@@ -276,10 +305,10 @@ class StudentController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update student details.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param Request $request
+     * @param string $name
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request,$name)
@@ -326,7 +355,13 @@ class StudentController extends Controller
         //dd($e->getMessage());
       } 
     }
-
+    
+    /**
+     * Delete student and related records.
+     *
+     * @param string $name
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($name)
     {
         try
@@ -364,7 +399,12 @@ class StudentController extends Controller
         //dd($e->getMessage());
       } 
     }
-
+    
+    /**
+     * Display blocked students list.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function blockedstudents()
     {
         $school_id = Auth::user()->school_id;

@@ -26,6 +26,17 @@ use Exception;
  */
 trait AutoPostProcess
 {
+    /**
+     * Create birthday event and post for a user.
+     *
+     * @param object $data User data with profiles and academic info
+     * @param int $school_id School identifier
+     * @param string $birth_date Birthday date
+     * @param string $date Current date/time for posting
+     * @param string|null $argument Optional scheduled post date
+     * @param string $image Attachment path for the post
+     * @return mixed Event object created via Calendar helper
+     */
     public function CreateBirthday($data,$school_id,$birth_date,$date,$argument,$image)
     {
         \DB::beginTransaction();
@@ -151,6 +162,16 @@ trait AutoPostProcess
     }
 
 
+    /**
+     * Create work anniversary event and announcement post.
+     *
+     * @param object $data User data with teacher profile
+     * @param string $image Attachment path for the post
+     * @param string $description Description to use in the event/post
+     * @param string $anniversary_date Anniversary date
+     * @param string $date Current date/time for posting
+     * @return mixed Event object created via Calendar helper
+     */
     public function CreateWorkAnniversary($data,$image,$description,$anniversary_date,$date)
     {
         \DB::beginTransaction();
@@ -248,6 +269,14 @@ trait AutoPostProcess
     }
 
 
+    /**
+     * Create an exam post announcement.
+     *
+     * @param object $data Exam context including exam, standardlink, and subject
+     * @param string $date Post creation date
+     * @param string $image Attachment path for the post
+     * @return mixed|null Variable $exam is referenced but not defined (returns null)
+     */
     public function CreateExam($data,$date,$image)
     {
         \DB::beginTransaction();

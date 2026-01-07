@@ -18,9 +18,25 @@ use App\Models\Post;
 use App\Models\Tag;
 use Exception;
 
+/**
+ * Class FeedController
+ *
+ * Handles classwall feed listing and filtering
+ * for the accountant dashboard.
+ *
+ * Responsibilities:
+ * - Display classwall feeds
+ * - Filter feeds by visibility
+ * - Filter feeds by tags
+ * - Prepare banner images for feed views
+ *
+ * @package App\Http\Controllers\Accountant
+ */
 class FeedController extends Controller
 {
-    //
+    /**
+     * Controller for account feed (classwall) listing and filtering.
+     */
     use LogActivity;
     use Common;
   
@@ -40,6 +56,12 @@ class FeedController extends Controller
         return view('/accountant/feed/feed',['feeds'=>$feeds,'tags'=>$tags,'birthday'=>$birthday, 'anniversary'=>$anniversary,'exam'=>$exam]);
     }
 
+    /**
+     * Filter posts by tag or visibility category and return the filtered view.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Contracts\View\View
+     */
     public function filter(Request $request)
     {
         $tags = Tag::join('post_tag', 'tags.id', '=', 'post_tag.tag_id')
