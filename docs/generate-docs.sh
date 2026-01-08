@@ -40,7 +40,8 @@ mkdir -p "$OUTPUT_DIR"
 
 # Generate documentation
 cd "$PROJECT_ROOT"
-"$PHPDOC_FILE" -d ./app -t "$OUTPUT_DIR" --config="$CONFIG_FILE"
+"$PHPDOC_FILE" --config="$CONFIG_FILE" -d "$PROJECT_ROOT/app"
+
 
 if [ $? -eq 0 ]; then
     echo ""

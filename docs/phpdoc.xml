@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <phpdocumentor
     configVersion="3"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -8,20 +8,12 @@
     <title>GegoK12 API Documentation</title>
 
     <paths>
-        <output>./storage/phpdoc</output>
+        <output>storage/phpdoc</output>
     </paths>
 
-    <version number="1.1.1">
-        <folder>
-            <path>./app</path>
-            <exclude>
-                <path>./app/Console</path>
-                <path>./app/Providers</path>
-            </exclude>
-        </folder>
-    </version>
-
-    <template name="responsive"/>
-
-    <setting name="guides.enabled" value="true"/>
+    <versions>
+        <version number="1.0.0">
+            <folder>app</folder>
+        </version>
+    </versions>
 </phpdocumentor>
