@@ -8,16 +8,31 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\MailTemplate;
 
+/**
+ * ContactMail
+ *
+ * Mailable class for sending contact form submission emails.
+ * Contains contact details including phone, email, role, and inquiry information.
+ *
+ * @package App\Mail
+ */
 class ContactMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     /**
+     * The contact form data
+     *
+     * @var mixed
+     */
+    protected $contact;
+
+    /**
      * Create a new message instance.
      *
+     * @param mixed $contact The contact form submission data
      * @return void
      */
-   protected $contact;
     public function __construct($contact)
     {
         $this->queue='emails';
@@ -26,6 +41,9 @@ class ContactMail extends Mailable implements ShouldQueue
 
     /**
      * Build the message.
+     *
+     * Retrieves the contact template and replaces placeholders
+     * with contact form data including phone, email, name, role, and location.
      *
      * @return $this
      */

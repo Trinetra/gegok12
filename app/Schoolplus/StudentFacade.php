@@ -3,7 +3,7 @@
 namespace App\Schoolplus;
 use Illuminate\Support\Facades\Facade;
 
-class Student extends Facade
+class StudentFacade extends Facade
 {
 	protected static function getFacadeAccessor()
     {

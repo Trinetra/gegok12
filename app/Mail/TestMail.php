@@ -7,12 +7,20 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+/**
+ * TestMail
+ *
+ * Mailable class for sending test emails.
+ * Used for verifying mail configuration and functionality.
+ *
+ * @package App\Mail
+ */
 class TestMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     /**
-     * Create a new content instance.
+     * Create a new test message instance.
      *
      * @return void
      */
@@ -22,7 +30,10 @@ class TestMail extends Mailable implements ShouldQueue
     }
 
     /**
-     * Build the message.
+     * Build the test message.
+     *
+     * Renders a simple test message to verify that the mailing
+     * system is configured and working correctly.
      *
      * @return $this
      */

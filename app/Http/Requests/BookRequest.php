@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
-use Axiom\Rules\ISBN;
 use App\Models\Book;
 
 class BookRequest extends FormRequest
@@ -41,7 +40,38 @@ class BookRequest extends FormRequest
            
             return TRUE;               
 
-      });
+        });
+
+        Validator::extend('isbn', function ($attribute, $value, $parameters, $validator) {
+            $isbn = str_replace(['-', ' '], '', $value);
+            
+            // Check ISBN-10
+            if (strlen($isbn) === 10) {
+                if (!preg_match('/^\d{9}[\dX]$/', $isbn)) {
+                    return false;
+                }'required|unique:books|isbn'
+                $check = 0;
+                for ($i = 0; $i < 9; $i++) {
+                    $check += (10 - $i) * intval($isbn[$i]);
+                }
+                $check += ($isbn[9] === 'X') ? 10 : intval($isbn[9]);
+                return $check % 11 === 0;
+            }
+            
+            // Check ISBN-13
+            if (strlen($isbn) === 13) {
+                if (!preg_match('/^\d{13}$/', $isbn)) {
+                    return false;
+                }
+                $check = 0;
+                for ($i = 0; $i < 13; $i++) {
+                    $check += (($i % 2 === 0) ? 1 : 3) * intval($isbn[$i]);
+                }
+                return $check % 10 === 0;
+            }
+            
+            return false;
+        });
         
 
         return [
