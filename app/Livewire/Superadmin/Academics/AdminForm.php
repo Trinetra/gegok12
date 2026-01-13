@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Rule;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
+use App\Models\Userprofile;
 
 class AdminForm extends Component
 {	
@@ -96,6 +97,16 @@ class AdminForm extends Component
             ]);
 
 			$adminUser = User::create($data);
+
+			Userprofile::create([
+		                'school_id'     =>  $this->school_id,
+		                'user_id'       =>  $adminUser->id,
+		                'usergroup_id'  =>  3,
+		                'firstname'     =>  $this->name,
+		                'lastname'      =>  'school',
+		                'profession'    =>  'admin',
+		                // 'avatar'        =>  'uploads/male.png',
+		            ]);
 
 			//dd($adminUser);
 
