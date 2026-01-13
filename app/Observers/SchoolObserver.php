@@ -4,7 +4,9 @@ namespace App\Observers;
 
 use App\Models\SchoolDetail;
 use Illuminate\Support\Str;
+use App\Models\AcademicYear;
 use App\Models\School;
+use Carbon\Carbon;
 use Exception;
 use Log;
 
@@ -35,6 +37,37 @@ class SchoolObserver
                     'meta_value' => "-",
                 ]);
             }
+
+            if (AcademicYear::where('school_id', $school->id)->exists()) {
+                return;
+            }
+
+            $currentYear = Carbon::now()->year;
+            $prevYear    = $currentYear - 1;
+
+            // Previous Academic Year
+            AcademicYear::create([
+                'school_id'   => $school->id,
+                'name'        => $prevYear . '-' . $currentYear,
+                'description' => 'Previous Academic Year',
+                'start_date'  => $prevYear . '-06-01',
+                'end_date'    => $currentYear . '-04-30',
+                'status'      => 0, // OLD
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ]);
+
+            // Current Academic Year
+            AcademicYear::create([
+                'school_id'   => $school->id,
+                'name'        => $currentYear . '-' . ($currentYear + 1),
+                'description' => 'Current Academic Year',
+                'start_date'  => $currentYear . '-06-01',
+                'end_date'    => ($currentYear + 1) . '-04-30',
+                'status'      => 1, // CURRENT
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ]);
         }
         catch(Exception $e)
         {
