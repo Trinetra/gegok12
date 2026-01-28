@@ -156,6 +156,8 @@ Route::post( '/leave/edit/{id}', 'LeaveController@update' );
 //delete
 Route::get( '/leave/delete/{id}', 'LeaveController@destroy' );
 
+Route::get( '/notice/list', 'NoticeBoardController@noticelist' );
+
 //class wall
 
 //page

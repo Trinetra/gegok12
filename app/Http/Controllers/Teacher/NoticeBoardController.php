@@ -60,7 +60,7 @@ class NoticeBoardController extends Controller
             }
         }
 
-        $notices = $notices->get();
+        $notices = $notices->paginate(10);
 
         $notices = NoticeResource::collection($notices);
         

@@ -31,9 +31,13 @@ class NoticeBoardController extends Controller
             { 
                 $notices = $notices->orWhere([['status',0],['expire_date','<=',date('Y-m-d')]]);
             }
+            if($request->search != '')
+            { 
+                $notice = $notices->where('title','LIKE','%'.$request->search.'%')->orWhere('description','LIKE','%'.$request->search.'%');
+            }
         }
 
-        $notices = $notices->get();
+        $notices = $notices->paginate(10);
 
         $notices = NoticeResource::collection($notices);
         

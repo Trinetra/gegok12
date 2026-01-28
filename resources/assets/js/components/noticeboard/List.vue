@@ -132,6 +132,7 @@
                 success:null,
                 currentScope: this.scope,
                 page_count: 0,
+                page: 1, 
             }
         },
 
