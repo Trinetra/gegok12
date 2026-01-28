@@ -14,6 +14,7 @@ use App\Models\StudentParentLink;
 use App\Traits\MemberProcess;
 use App\Traits\RegisterUser;
 use App\Models\StudentAcademic;
+use App\Models\Users\StudentUser;
 use App\Models\StandardLink;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
@@ -80,7 +81,7 @@ class StudentController extends Controller
     {
         $school_id = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
-        $count    = User::ByRole(6)->where('school_id',$school_id)->where('deleted_at',NULL)->//count();dd($count);
+        $count    = StudentUser::ByRole(6)->where('school_id',$school_id)->where('deleted_at',NULL)->//count();dd($count);
         $alphabet = request('alphabet')?request('alphabet'):'';
         $query    = \Request::getQueryString();
         $standardLink = SiteHelper::getStandardLinkList($school_id);
@@ -115,7 +116,7 @@ class StudentController extends Controller
     public function create()
     {
       //
-      $count    = User::where('school_id',Auth::user()->school_id)->where('usergroup_id',6)->count();
+      $count    = StudentUser::where('school_id',Auth::user()->school_id)->where('usergroup_id',6)->count();
       $subscription = Subscription::where('school_id',Auth::user()->school_id)->first();
 
       return view('/admin/member/create',['count'=>$count , 'subscription'=>$subscription]);
@@ -214,7 +215,7 @@ class StudentController extends Controller
     public function editStudent($name)
     {
       //
-      $user             = User::where('name',$name)->first();
+      $user             = StudentUser::where('name',$name)->first();
       $userprofile      = Userprofile::where('user_id',$user->id)->first();
       $studentAcademic  = $user->studentAcademicLatest;
         
@@ -280,7 +281,7 @@ class StudentController extends Controller
     public function edit($name)
     {
       //
-      $user = User::where('name',$name)->first();
+      $user = StudentUser::where('name',$name)->first();
       $userprofile = Userprofile::where('user_id',$user->id)->first();
       if(Gate::allows('member',$user))
       {
@@ -316,7 +317,7 @@ class StudentController extends Controller
       //
       try
       {
-        $user = User::where('name',$name)->first();
+        $user = StudentUser::where('name',$name)->first();
 
         $userprofile = Userprofile::where('user_id',$user->id)->first();
 
@@ -366,7 +367,7 @@ class StudentController extends Controller
     {
         try
       {
-        $user = User::with('userprofile')->where('name',$name)->first();
+        $user = StudentUser::with('userprofile')->where('name',$name)->first();
 
          $studentacademic = StudentAcademic::where('user_id',$user->id);
        if($studentacademic!=null){
@@ -409,7 +410,7 @@ class StudentController extends Controller
     {
         $school_id = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
-        $count    = User::ByRole(6)->where([['school_id',$school_id],['status','inactive']])->where('deleted_at',NULL)->count();
+        $count    = StudentUser::ByRole(6)->where([['school_id',$school_id],['status','inactive']])->where('deleted_at',NULL)->count();
         $alphabet = request('alphabet')?request('alphabet'):'';
         $query    = \Request::getQueryString();
         $standardLink = SiteHelper::getStandardLinkList($school_id);

@@ -11,6 +11,7 @@ use App\Http\Resources\Teacher as TeacherResource;
 use App\Http\Resources\Alumni as AlumniResource;
 use App\Http\Resources\User as UserResource;
 use App\Models\Users\TeacherUser;
+use App\Models\Users\StudentUser;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
@@ -36,9 +37,9 @@ trait MemberProcess
     {
         try {
             if ($usergroup_id == 6 && $request->status == 'active') {
-                $users = User::BySchool($school_id)->ByRole($usergroup_id)->ByStatus($status);
+                $users = StudentUser::BySchool($school_id)->ByRole($usergroup_id)->ByStatus($status);
             } else {
-                $users = User::BySchool($school_id)->ByRole($usergroup_id);
+                $users = StudentUser::BySchool($school_id)->ByRole($usergroup_id);
             }
 
 
@@ -466,9 +467,9 @@ trait MemberProcess
 
         try {
             if ($usergroup_id == 6 && $request->status == 'active') {
-                $users = User::BySchool($school_id)->ByRole($usergroup_id)->ByStatus($status);
+                $users = StudentUser::BySchool($school_id)->ByRole($usergroup_id)->ByStatus($status);
             } else {
-                $users = User::BySchool($school_id)->ByRole($usergroup_id);
+                $users = StudentUser::BySchool($school_id)->ByRole($usergroup_id);
             }
 
 
@@ -557,7 +558,7 @@ trait MemberProcess
     {
 
         try {
-            $users = User::where('school_id', $school_id)->ByRole($usergroup_id)->whereHas('userprofile', function ($q) {
+            $users = TeacherUser::where('school_id', $school_id)->ByRole($usergroup_id)->whereHas('userprofile', function ($q) {
                 $q->where('status', 'active')->orWhere('status', 'inactive');
             });
 

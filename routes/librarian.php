@@ -1,6 +1,8 @@
 <?php
 
 Route::get( '/dashboard', 'DashboardController@index' );
+Route::get( '/dashboard/tasklist/{task_flag}','DashboardController@list' );
+Route::get( '/dashboard/task/count','DashboardController@listCount' );
 //category
 Route::get( '/bookscategory/index', 'BookCategoryController@index' );
 Route::get( '/bookscategory/add', 'BookCategoryController@create' );

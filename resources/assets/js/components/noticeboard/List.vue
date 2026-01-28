@@ -108,6 +108,9 @@
                         </tr>
                     </tbody>
                 </table>
+                <div v-if="this.page_count>1">
+                    <paginate v-model="page" :page-count="this.page_count" :page-range="3" :margin-pages="1" :click-handler="getData" :prev-text="'<'" :next-text="'>'" :container-class="'pagination'" :page-class="'page-item'" :prev-link-class="'prev'" :next-link-class="'next'"></paginate>
+                </div>
             </div>
         </div>
     </div>
@@ -128,6 +131,7 @@
                 errors:[],
                 success:null,
                 currentScope: this.scope,
+                page_count: 0,
             }
         },
 
@@ -135,8 +139,10 @@
         {
             getData()
             {
-                axios.get('/'+this.mode+'/notice/show/list/?standardLink_id='+this.currentScope+'&search='+this.search).then(response => {
+                axios.get('/'+this.mode+'/notice/show/list/?standardLink_id='+this.currentScope+'&search='+this.search+'&page='+this.page).then(response => {
                     this.notices    = response.data.data;
+                    this.page_count     = response.data.meta.last_page;
+                    this.total          = response.data.meta.total;
                     //console.log(this.notices);    
                     //console.log(this.hidecolumns);    
                 });

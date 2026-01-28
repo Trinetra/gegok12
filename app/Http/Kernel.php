@@ -66,7 +66,6 @@ class Kernel extends HttpKernel
         'guest'                 =>  \App\Http\Middleware\RedirectIfAuthenticated::class,
         'signed'                =>  \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle'              =>  \Illuminate\Routing\Middleware\ThrottleRequests::class,
-         'superadmin'            =>  \App\Http\Middleware\MustBeSuperadmin::class,
         'siteadmin'             =>  \App\Http\Middleware\MustBeSiteAdmin::class,
         'sitesubadmin'          =>  \App\Http\Middleware\MustBeSiteSubAdmin::class,
         'role'                  =>  \Laratrust\Middleware\Role::class,

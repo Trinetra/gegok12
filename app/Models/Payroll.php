@@ -8,6 +8,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Users\TeacherUser;
 use Carbon\Carbon;
 
 /**
@@ -47,7 +48,7 @@ class Payroll extends Model
    */
   public function user()
     {
-         return $this->belongsTo(User::class,'staff_id');
+         return $this->belongsTo(TeacherUser::class,'staff_id');
     }
 
     /**

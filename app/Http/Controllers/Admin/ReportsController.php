@@ -8,6 +8,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Resources\ParentDetail as ParentDetailResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\Users\TeacherUser;
 use App\Imports\HolidaysImport;
 use App\Traits\MemberProcess;
 use App\Models\PurchaseOrder;
@@ -378,7 +379,7 @@ class ReportsController extends Controller
             }
             elseif($type == 'teacher')
             {
-                $users = User::with('userprofile')->where('school_id',Auth::user()->school_id)->ByRole(5)->get();    
+                $users = TeacherUser::with('userprofile')->where('school_id',Auth::user()->school_id)->ByRole(5)->get();    
                 $csv = Writer::createFromFileObject(new \SplTempFileObject());
 
                 if(count($users) > 0)

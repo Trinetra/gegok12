@@ -23,7 +23,7 @@ class VisitorLog extends JsonResource
             'address'               =>  $this->address,
             'standardLink_id'       =>  $this->getstandard($this->student_id),
             'student_id'            =>  $this->student_id,
-            'student_name'          =>  $this->student[0]['FullName'],
+            'student_name'          =>  $this->student->FullName,
             'user_name'             =>  $this->user->FullName,
             'phone_number'          =>  $this->contact_number,
             'relation_with_student' =>  $this->relation_with_student,

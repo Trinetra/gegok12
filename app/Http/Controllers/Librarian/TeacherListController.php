@@ -7,17 +7,14 @@ namespace App\Http\Controllers\Librarian;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\Users\TeacherUser;
 use App\Traits\MemberProcess;
 use Illuminate\Http\Request;
 use App\Traits\LogActivity;
 use App\Traits\Common;
 use App\Models\User;
 use App\Models\AcademicYear;
-// use App\Models\StandardLink;
- use App\Helpers\SiteHelper;
- 
-
-
+use App\Helpers\SiteHelper;
 use Exception;
 use PDF;
 
@@ -50,7 +47,7 @@ class TeacherListController extends Controller
     {
       //
       
-      $count    = User::ByRole(5)->where('school_id',Auth::user()->school_id)->count();
+      $count    = TeacherUser::ByRole(5)->where('school_id',Auth::user()->school_id)->count();
       $alphabet = request('alphabet')?request('alphabet'):'';
       $query    = \Request::getQueryString();
       if(request('date_of_birth') != null)
@@ -92,7 +89,7 @@ class TeacherListController extends Controller
    
 
        $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
-      $teachers    = User::ByRole(5)->where('school_id',Auth::user()->school_id)->get();
+      $teachers    = TeacherUser::ByRole(5)->where('school_id',Auth::user()->school_id)->get();
       // dd($teachers);
         // $teachers=SiteHelper::getteachers(Auth::user()->school_id,$academic->id,$standardLink->id);
 //          return view('admin.id-card.id-card-new',compact('standardLink','students','academic'));
@@ -103,7 +100,7 @@ class TeacherListController extends Controller
     public function printidcard()
     {
        $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
-      $teachers    = User::ByRole(5)->where('school_id',Auth::user()->school_id)->get();
+      $teachers    = TeacherUser::ByRole(5)->where('school_id',Auth::user()->school_id)->get();
         $pdf = PDF::loadView('admin/teacher/idcard-print', compact('teachers','academic'));
          return $pdf->stream('result.pdf', array('Attachment'=>0)); 
     }

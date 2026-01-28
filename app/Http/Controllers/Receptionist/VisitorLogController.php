@@ -10,6 +10,7 @@ use App\Http\Resources\User as UserResource;
 use App\Http\Requests\VisitorLogRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\Users\StudentUser;
 use App\Models\ParentProfile;
 use Illuminate\Http\Request;
 use App\Traits\LogActivity;
@@ -61,7 +62,7 @@ class VisitorLogController extends Controller
 
         if($request->standardLink_id != null)
         {
-            $studentlist = User::BySchool(Auth::user()->school_id)->ByRole(6)->ByStandard($request->standardLink_id)->get();
+            $studentlist = StudentUser::BySchool(Auth::user()->school_id)->ByRole(6)->ByStandard($request->standardLink_id)->get();
             $array['studentlist']   = UserResource::collection($studentlist);
         }
 

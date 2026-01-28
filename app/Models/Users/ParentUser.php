@@ -203,4 +203,22 @@ class ParentUser extends User
         }
         return $array;
     }
+    /**
+     * Get children names in formatted string.
+     *
+     * @return string
+     */
+    public function getChildren()
+    {
+        $i = 0;
+        $array = [];
+        foreach ($this->children as $children)
+        {
+            $data[] = $children->userStudent->FullName.' ('.$children->userStudent->studentAcademicLatest->standardLink->StandardSection.')';
+            $i++;
+        }
+        $child  = implode(', ',$data);
+
+        return $child;
+    }
 }

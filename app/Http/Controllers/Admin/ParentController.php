@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Models\StudentParentLink;
+use App\Models\Users\ParentUser;
 use App\Models\Qualification;
 use App\Traits\MemberProcess;
 use Illuminate\Http\Request;
@@ -111,7 +112,7 @@ class ParentController extends Controller
 
         if ($request->standardLink_id != null)
         {
-            $parent = User::where('school_id', Auth::user()->school_id)
+            $parent = ParentUser::where('school_id', Auth::user()->school_id)
                           ->ByRole(7)
                           ->ByStandardLinkParentList($request->standardLink_id)
                           ->get();
@@ -184,7 +185,7 @@ class ParentController extends Controller
     public function show($name)
     {
         //
-        $user = User::where('name', $name)->first();
+        $user = ParentUser::where('name', $name)->first();
         $userprofile = Userprofile::where('user_id', $user->id)->first();
         $parentprofile = $user->getParentDetails();
 
@@ -204,7 +205,7 @@ class ParentController extends Controller
     public function showChildren($name)
     {
         //
-        $parent = User::where('name', $name)->first();
+        $parent = ParentUser::where('name', $name)->first();
         return ChildrenResource::collection($parent->children);
     }
 
@@ -217,7 +218,7 @@ class ParentController extends Controller
     public function showFeedbacks($name)
     {
         //
-        $parent = User::where('name', $name)->first();
+        $parent = ParentUser::where('name', $name)->first();
         $conversation = Feedback::where('parent_id', $parent->id)->get();
 
         return FeedbackResource::collection($conversation);
@@ -232,7 +233,7 @@ class ParentController extends Controller
     public function showActivityLog($name)
     {
         //
-        $user = User::with('userprofile')->where('name', $name)->first();
+        $user = ParentUser::with('userprofile')->where('name', $name)->first();
 
         if (Gate::allows('member', $user))
         {
@@ -254,7 +255,7 @@ class ParentController extends Controller
     public function editList($name)
     {
         //
-        $user = User::where('name', $name)->first();
+        $user = ParentUser::where('name', $name)->first();
         $userprofile = Userprofile::where('user_id', $user->id)->first();
         $parentprofile = $user->getParentDetails();
 
@@ -287,7 +288,7 @@ class ParentController extends Controller
     {
         //
         $ref_name = Request('ref_name') ? Request('ref_name') : '';
-        $user = User::where('name', $name)->first();
+        $user = ParentUser::where('name', $name)->first();
         $userprofile = Userprofile::where('user_id', $user->id)->first();
         $parentprofile = $user->getParentDetails();
 
@@ -323,7 +324,7 @@ class ParentController extends Controller
         //
         try
         {
-            $user = User::where('name', $name)->first();
+            $user = ParentUser::where('name', $name)->first();
             $school_id = Auth::user()->school_id;
 
             $userprofile = $this->UpdateParent('', $request, $school_id, $user->id);
@@ -358,7 +359,7 @@ class ParentController extends Controller
 
         try
         {
-            $user = User::where('name', $name)->first();
+            $user = ParentUser::where('name', $name)->first();
             $studentparentlink = StudentParentLink::where('parent_id', $user->id)->first();
 
             if ($studentparentlink)

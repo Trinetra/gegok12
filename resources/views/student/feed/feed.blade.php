@@ -10,7 +10,9 @@
 		<ul class="list-reset leading-loose py-2">
 			<li class="py-1"><a href="{{url('/student/feeds?search=achievement')}}">Achivements / Kudos</a></li>
 			<li class="py-1"><a href="{{url('/student/feeds?search=birthday')}}" value="birthday">Birthdays</a></li>
+            @if(config('gexam.enabled', false))
 			<li class="py-1"><a href="{{url('/student/feeds?search=exam')}}" value="workanniversary">Exam</a></li>
+            @endif
 			<!-- <li class="py-1"><a href="{{url('/admin/feeds?search=teacher')}}" value="teacher">By Teacher / Staff</a></li>
 			<li class="py-1"><a href="{{url('/admin/feeds?search=student')}}" value="student">By Students</a></li> -->
 		</ul>

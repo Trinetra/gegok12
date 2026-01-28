@@ -15,30 +15,23 @@ class MustBeLibrarian
      */
      public function handle($request, Closure $next)
     {
-        //dd('kjjkh');
 
-        if(\Auth::user()->usergroup_id==8)
+        if(\Auth::user()->isLibrarian())
         {
-            return $next($request);  
-            // return redirect('/library/dashboard');            
+            return $next($request);            
         }
           
-        if(\Auth::user()->usergroup_id==1)
-        {
-            return redirect('/superadmin/dashboard');
-        }
-          
-        if(\Auth::user()->usergroup_id==3)
+        if(\Auth::user()->isAdmin())
         {
             return redirect('/admin/dashboard');
         }
 
-        if(\Auth::user()->usergroup_id==5)
+        if(\Auth::user()->isTeacher())
         {
             return redirect('/teacher/dashboard');
         }
 
-        if(\Auth::user()->usergroup_id==6)
+        if(\Auth::user()->isStudent())
         {
             return redirect('/student/dashboard');
         }

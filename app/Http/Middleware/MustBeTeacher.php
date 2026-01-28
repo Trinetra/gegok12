@@ -22,11 +22,6 @@ class MustBeTeacher
             return $next($request);
         }
 
-        if (\Auth::user()->isSiteAdmin())
-        {
-            return redirect('/superadmin/dashboard');
-        }
-
         if (\Auth::user()->isAdmin())
         {
             return redirect('/admin/dashboard');

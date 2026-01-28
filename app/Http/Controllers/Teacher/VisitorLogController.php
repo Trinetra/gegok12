@@ -11,6 +11,7 @@ use App\Http\Resources\User as UserResource;
 use App\Http\Requests\VisitorLogRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\Users\StudentUser;
 use App\Models\ParentProfile;
 use Illuminate\Http\Request;
 use App\Helpers\SiteHelper;
@@ -38,7 +39,7 @@ class VisitorLogController extends Controller
 
         $visitorlog = VisitorLog::where([['school_id',Auth::user()->school_id],['academic_year_id',$academic_year->id]])->orderBy('date_of_visit','DESC')->paginate(5);       
        
-        $visitorloglist = VisitorlogResource::collection($visitorlog);
+        $visitorloglist = VisitorLogResource::collection($visitorlog);
         
         return $visitorloglist;
     }
@@ -60,7 +61,7 @@ class VisitorLogController extends Controller
 
         if($request->standardLink_id != null)
         {
-            $studentlist = User::BySchool(Auth::user()->school_id)->ByRole(6)->ByStandard($request->standardLink_id)->get();
+            $studentlist = StudentUser::BySchool(Auth::user()->school_id)->ByRole(6)->ByStandard($request->standardLink_id)->get();
             $array['studentlist']   = UserResource::collection($studentlist);
         }
 

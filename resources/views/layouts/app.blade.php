@@ -38,6 +38,7 @@
     <!-- end -->
 
  <livewire:styles>
+
     </head>
     <body class="font-primary antialiased min-h-screen overflow-x-hidden">
         <div id="app">
@@ -61,6 +62,8 @@
         @stack('scripts')
 
         <livewire:scripts>
+            <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{{ asset('vendor/livewire-alert/livewire-alert.js') }}"></script> 
 
         <script>
    window.addEventListener('alert', event => {

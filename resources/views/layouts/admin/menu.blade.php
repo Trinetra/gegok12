@@ -808,7 +808,7 @@
 
     @php
         $class='';
-        $array=array('schooldetails','academics','academic','promotion','leavetypes','leavetype','examrules','holidays','holiday','admissions','admission');
+        $array=array('schooldetails','academics','academic','promotion','leavetypes','leavetype','examrules','holidays','holiday','admissions','admission','setting');
         if(in_array(\Request()->segment('2'),$array))
         {
             $class='active';
@@ -882,6 +882,38 @@
                     <!--<img src="{{asset('uploads/icons/sidebar/rooms.svg')}}" class="w-5 h-5"> -->
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" height="512px" viewBox="0 0 512 512.00025" width="512px"><g><path d="m396.425781 268.34375h59.996094v143.65625h-59.996094zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m282.808594 268.34375h60v143.65625h-60zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m169.191406 268.34375h60v143.65625h-60zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m55.578125 268.34375h59.996094v143.65625h-59.996094zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m476.425781 223.34375v-15h-440.847656v15c0 8.285156 6.714844 15 15 15h410.847656c8.28125 0 15-6.714844 15-15zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m496.992188 442h-481.976563c-8.285156 0-15 6.714844-15 15v40c0 8.285156 6.714844 15 15 15h481.976563c8.285156 0 15-6.714844 15-15v-40c0-8.285156-6.714844-15-15-15zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/><path d="m15 178.34375h482c6.710938 0 12.605469-4.457031 14.433594-10.914062 1.824218-6.457032-.855469-13.34375-6.570313-16.859376l-241-148.34375c-4.820312-2.96875-10.902343-2.96875-15.726562 0l-241 148.34375c-5.714844 3.519532-8.394531 10.402344-6.566407 16.859376 1.828126 6.457031 7.722657 10.914062 14.429688 10.914062zm230.804688-90.117188h20.394531c8.285156 0 15 6.714844 15 15 0 8.285157-6.714844 15-15 15h-20.394531c-8.285157 0-15-6.714843-15-15 0-8.285156 6.714843-15 15-15zm0 0" data-original="#000000" class="active-path" data-old_color="#000000" fill="#FFFFFF"/></g> </svg>
                     <span class="mx-3 whitespace-no-wrap">Leave Master</span>
+                </a>
+            </li>
+
+            <li class="py-3 px-3 hover:font-semibold{{Request::segment ('3') == 'countries' ? 'active':''}} && {{Request::segment ('3') == 'country' ? 'active':''}}">
+                <a href="{{ url('/admin/setting/countries') }}" class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                              d="M12 3v18M3 12h18M5.6 5.6a9 9 0 0112.8 12.8 9 9 0 01-12.8-12.8z"/>
+                    </svg>
+                    <span class="mx-3 whitespace-no-wrap">Countries</span>
+                </a>
+            </li>
+
+            <li class="py-3 px-3 hover:font-semibold{{Request::segment ('3') == 'states' ? 'active':''}} && {{Request::segment ('3') == 'state' ? 'active':''}}">
+                <a href="{{ url('/admin/setting/states') }}" class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                              d="M9 20l-5.447-2.724A2 2 0 013 15.382V6.618a2 2 0 011.553-1.894L9 3m0 17l6-3m-6 3V3m6 14l5.447-2.724A2 2 0 0021 12.382V3.618a2 2 0 00-1.553-1.894L15 3m0 14V3"/>
+                    </svg>
+                    <span class="mx-3 whitespace-no-wrap">States</span>
+                </a>
+            </li>
+            <li class="py-3 px-3 hover:font-semibold {{Request::segment ('3') == 'cities' ? 'active':''}} && {{Request::segment ('3') == 'city' ? 'active':''}}">
+                <a href="{{ url('/admin/setting/cities') }}" class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                              d="M3 21h18M4 21V7l8-4 8 4v14M9 21v-6h6v6"/>
+                    </svg>
+                    <span class="mx-3 whitespace-no-wrap">Cities</span>
                 </a>
             </li>
         </ul>

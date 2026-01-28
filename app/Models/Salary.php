@@ -7,6 +7,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Users\TeacherUser;
+
 
 /**
  * Class Salary
@@ -34,11 +36,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class Salary extends Model
 {
-    //
+  //
   use SoftDeletes;
   use HasFactory;
 
-  protected $fillable = ['school_id' , 'staff_id','','effective_date','comments'];
+  protected $fillable = ['school_id', 'staff_id', '', 'effective_date', 'comments'];
 
   /**
    * Get the payroll template for this salary.
@@ -46,9 +48,9 @@ class Salary extends Model
    * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
    */
   public function payrolltemplate()
-    {
-        return $this->belongsTo(PayrollTemplate::class,'template_id');
-    }
+  {
+    return $this->belongsTo(PayrollTemplate::class, 'template_id');
+  }
 
   /**
    * Get the user (staff) for this salary.
@@ -56,9 +58,9 @@ class Salary extends Model
    * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
    */
   public function user()
-    {
-         return $this->belongsTo(User::class,'staff_id');
-    }
+  {
+    return $this->belongsTo(TeacherUser::class, 'staff_id');
+  }
 
   /**
    * Get salary items for this salary.
@@ -66,87 +68,80 @@ class Salary extends Model
    * @return \Illuminate\Database\Eloquent\Relations\HasMany
    */
   public function salaryitems()
-    {
-        return $this->hasMany(SalaryItem::class, 'salary_id', 'id');
-    }
+  {
+    return $this->hasMany(SalaryItem::class, 'salary_id', 'id');
+  }
 
   /**
    * Get payrolls for this salary.
    *
    * @return \Illuminate\Database\Eloquent\Relations\HasMany
    */
-   public function payrolls()
-    {
-         return $this->hasMany(Payroll::class,'salary_id');
-    }
+  public function payrolls()
+  {
+    return $this->hasMany(Payroll::class, 'salary_id');
+  }
 
-    /**
-     * Calculate total earnings for this salary.
-     *
-     * @return float
-     */
-    public function totalearnings()
-   {
-     if(count($this->salaryitems)!=0 )
-        {
-          /*$earning=$this->salaryitems()->whereHas('payrollitem', function($query) {
+  /**
+   * Calculate total earnings for this salary.
+   *
+   * @return float
+   */
+  public function totalearnings()
+  {
+    if (count($this->salaryitems) != 0) {
+      /*$earning=$this->salaryitems()->whereHas('payrollitem', function($query) {
             $query->where('type', 'earning');
           })->sum('amount');*/
-            $earning=$this->salaryitems()->whereHas('templateitem', function($query) {
-            $query->whereHas('payrollitem',function($query){
-              $query->where('type', 'earning');
-            });
-          })->sum('amount');
-           return $earning;
-        }
-        return 0;
-   }
+      $earning = $this->salaryitems()->whereHas('templateitem', function ($query) {
+        $query->whereHas('payrollitem', function ($query) {
+          $query->where('type', 'earning');
+        });
+      })->sum('amount');
+      return $earning;
+    }
+    return 0;
+  }
 
-   /**
-    * Calculate total deductions for this salary.
-    *
-    * @return float
-    */
-   public function totaldeductions()
-   {
+  /**
+   * Calculate total deductions for this salary.
+   *
+   * @return float
+   */
+  public function totaldeductions()
+  {
 
-    if(count($this->salaryitems)!=0 )
-        {
-/*          $deduction=$this->salaryitems()->whereHas('payrollitem', function($query) {
+    if (count($this->salaryitems) != 0) {
+      /*          $deduction=$this->salaryitems()->whereHas('payrollitem', function($query) {
             $query->where('type', 'deduction');
           })->sum('amount');
 */
-          $deduction=$this->salaryitems()->whereHas('templateitem', function($query) {
-            $query->whereHas('payrollitem',function($query){
-              $query->where('type', 'deduction');
-            });
-          })->sum('amount');
+      $deduction = $this->salaryitems()->whereHas('templateitem', function ($query) {
+        $query->whereHas('payrollitem', function ($query) {
+          $query->where('type', 'deduction');
+        });
+      })->sum('amount');
 
 
-           return $deduction;
-        }
-        return 0;
+      return $deduction;
+    }
+    return 0;
+  }
 
-   }
+  /**
+   * Calculate total salary for this record.
+   *
+   * @return float
+   */
+  public function totalsalary()
+  {
 
-   /**
-    * Calculate total salary for this record.
-    *
-    * @return float
-    */
-   public function totalsalary()
-   {
+    if (count($this->salaryitems) != 0) {
+      //$total=$this->totalearnings()-$this->totaldeductions();
+      $total = ($this->gross_salary + $this->totalearnings()) - $this->totaldeductions();
 
-    if(count($this->salaryitems)!=0 )
-        {
-          //$total=$this->totalearnings()-$this->totaldeductions();
-           $total=($this->gross_salary+$this->totalearnings())-$this->totaldeductions();
-
-           return round($total);
-        }
-        return 0;
-
-   }
-
-
+      return round($total);
+    }
+    return 0;
+  }
 }

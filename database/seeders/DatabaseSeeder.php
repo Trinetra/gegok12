@@ -26,10 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(QualificationTableSeeder::class);
         $this->call(AbsentReasonsTableSeeder::class);
         $this->call(RolesTableSeeder::class);
-
-        // Removed for single-school version - no longer need SiteAdmin
-        // $this->call(UsersSiteAdminTableSeeder::class);
-
         $this->call(SchoolsTableSeeder::class);  
         $this->call(SchoolDetailsTableSeeder::class);  
         $this->call(AcademicYearsTableSeeder::class);  

@@ -8,7 +8,7 @@
 2. MySQL
 3. Redis (Optional)
 4. Node (v 24)
-5. Php 8.3
+5. Php 8.4
 
 ## How to Install
 

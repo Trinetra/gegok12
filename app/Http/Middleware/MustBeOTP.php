@@ -21,7 +21,7 @@ class MustBeOTP
      */
     public function handle($request, Closure $next)
     {
-        if(auth()->user()->userprofile->usergroup_id == 3)
+        if(auth()->user()->isAdmin())
         {
             $user = User::where('id',Auth::id())->first();
 

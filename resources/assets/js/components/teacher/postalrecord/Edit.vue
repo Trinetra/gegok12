@@ -185,7 +185,7 @@
 
 <script>
   export default {
-    props:[],
+    props:['id'],
     data(){
       return{
         postalrecord:[],

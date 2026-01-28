@@ -76,7 +76,7 @@ class NoticeBoardController extends Controller
                 $notice = $notice->where('title','LIKE','%'.$request->search.'%')->orWhere('description','LIKE','%'.$request->search.'%');
             }
         }
-        $notice = $notice->get();
+        $notice = $notice->paginate(10);
         $noticelist = NoticeResource::collection($notice);
         
         return $noticelist;

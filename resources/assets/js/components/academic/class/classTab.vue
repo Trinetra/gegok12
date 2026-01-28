@@ -38,7 +38,7 @@
             <li class="px-2 mx-1 lg:mx-2 md:mx-2 py-2 lg:py-3 md:py-2" v-bind:class="[{'active' : profile_tab === '12'}]">
                 <a href="#" class="text-gray-700 font-medium"  @click="setProfileTab('12')">WallBoard</a>
             </li>
-             <li class="px-2 mx-1 lg:mx-2 md:mx-2 py-2 lg:py-3 md:py-2" v-bind:class="[{'active' : profile_tab === '13'}]" v-if="this.mode == 'admin'">
+             <li v-if="gvideoroomEnabled && this.mode == 'admin'"  class="px-2 mx-1 lg:mx-2 md:mx-2 py-2 lg:py-3 md:py-2" v-bind:class="[{'active' : profile_tab === '13'}]">
                 <a href="#" class="text-gray-700 font-medium"  @click="setProfileTab('13')">Online Class</a>
             </li>
         </ul>
@@ -46,17 +46,17 @@
             <div class="px-3 overflow-x-scroll lg:overflow-x-auto md:overflow-x-auto py-3" v-bind:class="[this.profile_tab==1?'block' :'hidden']">
                 <notice-board-list :url="this.url" :scope="this.id" :hidecolumns="true" :mode="this.mode"></notice-board-list>
             </div>
-            <timetable :url="this.url" :id="this.id" :mode="this.mode"></timetable>
+            <timetable v-if="gtimetableEnabled" :url="this.url" :id="this.id" :mode="this.mode"></timetable>
             <div class="px-3 overflow-x-scroll lg:overflow-x-auto md:overflow-x-auto py-3" v-bind:class="[this.profile_tab==3?'block' :'hidden']">
                 <home-work-list :url="this.url" :scope="this.id" :hidecolumns="true" :searchquery="null" :mode="this.mode"></home-work-list>
             </div>
             <teachers :url="this.url" :id="this.id" :mode="this.mode"></teachers>
             <students :url="this.url" :id="this.id" :mode="this.mode"></students>
             <attendance :url="this.url" :id="this.id" :mode="this.mode"></attendance>
-            <upcomingExams :url="this.url" :id="this.id" :mode="this.mode"></upcomingExams>
-            <pastExams :url="this.url" :id="this.id" :mode="this.mode"></pastExams>
+            <upcomingExams v-if="gexamEnabled" :url="this.url" :id="this.id" :mode="this.mode"></upcomingExams>
+            <pastExams v-if="gexamEnabled" :url="this.url" :id="this.id" :mode="this.mode"></pastExams>
             <events :url="this.url" :id="this.id" :mode="this.mode"></events>
-            <fees :url="this.url" :id="this.id" :mode="this.mode"></fees>
+            <fees v-if="gfeeEnabled" :url="this.url" :id="this.id" :mode="this.mode"></fees>
             <wallBoard :url="this.url" :id="this.id" :mode="this.mode" :auth_id="this.auth_id"></wallBoard>
         </portal>
         <portal to="notes">
@@ -64,7 +64,7 @@
                 <notes :url="this.url" :entity_id="this.id" entity_name="class" :school_id="this.school_id"></notes>
             </div>
         </portal>
-        <conference :url="this.url" :id="this.id" :mode="this.mode"></conference>
+        <conference v-if="gvideoroomEnabled" :url="this.url" :id="this.id" :mode="this.mode"></conference>
     </div>
 </template>
 
@@ -93,13 +93,15 @@
                 profile_tab:'1', 
                 gtimetableEnabled: false,
                 gexamEnabled: false,
-                gfeeEnabled: false,    
+                gfeeEnabled: false,
+                gvideoroomEnabled: false,    
             }
         },
         mounted() {
               this.gtimetableEnabled = window.AppConfig?.gtimetable_enabled ?? false;
               this.gexamEnabled = window.AppConfig?.gexam_enabled ?? false;
               this.gfeeEnabled = window.AppConfig?.gfee_enabled ?? false;
+              this.gvideoroomEnabled = window.AppConfig?.gvideoroom_enabled ?? false;
             },
 
         components: {

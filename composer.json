@@ -3,7 +3,10 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.4",
@@ -12,7 +15,7 @@
         "barryvdh/laravel-dompdf": "v3.1.1",
         "filament/tables": "^3.2",
         "guzzlehttp/guzzle": "^7.8",
-        "jantinnerezo/livewire-alert": "^3.0",
+        "jantinnerezo/livewire-alert": "^3.0-stable",
         "kreait/laravel-firebase": "^6.1",
         "laracasts/presenter": "dev-master",
         "laravel-notification-channels/fcm": "^5.0",
@@ -35,13 +38,13 @@
         "spatie/laravel-ignition": "^2.0",
         "spatie/laravel-medialibrary": "^11.17.0",
         "stevebauman/purify": "v6.3.1",
+        "symfony/expression-language": "*",
         "symfony/http-client": "^7.2",
         "symfony/mailgun-mailer": "^7.2",
         "symfony/postmark-mailer": "^7.2",
         "symfony/process": "^7.0",
         "titasgailius/search-relations": "dev-master",
         "twilio/sdk": "dev-main"
-
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",
@@ -91,7 +94,8 @@
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"

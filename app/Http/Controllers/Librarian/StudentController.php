@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Models\StudentParentLink;
+use App\Models\Users\StudentUser;
 use App\Traits\MemberProcess;
 use App\Traits\RegisterUser;
 use App\Models\StudentAcademic;
@@ -57,7 +58,7 @@ class StudentController extends Controller
         $school_id = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
 
-        $count    = User::ByRole(6)->where('school_id',$school_id)->where('deleted_at',NULL)->//count();dd($count);
+        $count    = StudentUser::ByRole(6)->where('school_id',$school_id)->where('deleted_at',NULL)->//count();dd($count);
         $alphabet = request('alphabet')?request('alphabet'):'';
         $query    = \Request::getQueryString();
         $standardLink = SiteHelper::getStandardLinkList($school_id);
@@ -94,7 +95,7 @@ class StudentController extends Controller
     {
     
       //
-      $count    = User::where('school_id',Auth::user()->school_id)->where('usergroup_id',6)->count();
+      $count    = StudentUser::where('school_id',Auth::user()->school_id)->where('usergroup_id',6)->count();
       $subscription = Subscription::where('school_id',Auth::user()->school_id)->first();
 
       return view('/admin/member/create',['count'=>$count , 'subscription'=>$subscription]);

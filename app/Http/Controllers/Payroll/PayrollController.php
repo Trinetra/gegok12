@@ -6,6 +6,7 @@
 namespace App\Http\Controllers\Payroll;
 
 use App\Http\Requests\Payroll\PayrollDetailRequest;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use App\Http\Requests\Payroll\PayrollUpdateRequest;
 use App\Http\Resources\Payroll\PayrollDetailResource;
 use App\Http\Resources\Payroll\PayrollListResource;
@@ -62,7 +63,7 @@ class PayrollController extends Controller
     public function showlist(Request $request)
     {
        // $salary=Payroll::where('school_id',Auth::user()->school_id)->with('user')->get();
-        $payroll=Payroll::with('user')->where([['school_id',Auth::user()->school_id],['status',$request->status]])->paginate(20);
+        $payroll=Payroll::with('user')->where([['school_id',Auth::user()->school_id],['status',$request->status]])->orderBy('id','desc')->paginate(20);
         $payroll=PayrollListResource::collection($payroll);
         return $payroll;
     }
@@ -266,8 +267,9 @@ class PayrollController extends Controller
         }
         $total_amount = str_replace(array_keys($newArray[0]), $newArray[0], $request->$category_value); 
 
-          eval('$amount_tot ='.$total_amount.";");
-          return "$amount_tot";
+        $el = new ExpressionLanguage();
+
+        return $el->evaluate($total_amount);
 
     }
 
