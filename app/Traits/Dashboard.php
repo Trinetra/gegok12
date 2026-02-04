@@ -7,10 +7,10 @@ namespace App\Traits;
 use App\Http\Resources\Teacher\Timetable as TimetableResource;
 use App\Models\TeacherLeaveApplication;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Users\TeacherUser;
 use App\Models\TeacherProfile;
 use App\Models\BookCategory;
 use App\Models\Subscription;
-use App\Models\ExamSchedule;
 use App\Models\BookLending;
 use App\Models\LibraryCard;
 use App\Models\Teacherlink;
@@ -19,13 +19,11 @@ use App\Models\Userprofile;
 use App\Models\ActivityLog;
 use App\Helpers\SiteHelper;
 use App\Models\Attendance;
-use Gegok12\Timetable\Models\Timetable;
 use App\Models\Bulletin;
 use App\Models\Feedback;
 use App\Models\Product;
 use App\Models\Events;
 use App\Models\Video;
-use App\Models\Mark;
 use App\Models\User;
 use App\Models\Task;
 use App\Models\Book;
@@ -125,8 +123,8 @@ trait Dashboard
          $array['events']=$events->orderBy('id','DESC')->take(5)->get();
 
         $array['products'] =[];
-        if (class_exists('App\Models\Product')) {
-            $array['products']    = Product::where('school_id',$school_id)->where('product_type','sellable')->orderBy('created_at','DESC')->take(5)->get();
+        if (class_exists('Gegok12\Exam\Models\Inventory\Product')) {
+            $array['products']    = \Gegok12\Inventory\Models\Product::where('school_id',$school_id)->where('product_type','sellable')->orderBy('created_at','DESC')->take(5)->get();
         } 
 
    
@@ -269,8 +267,8 @@ trait Dashboard
     {
         $array = [];
 
-        $teacher = User::find($teacher_id);
-        $user = User::with('teacherlink')->where('id',$teacher_id)->get();
+        $teacher = TeacherUser::find($teacher_id);
+        $user = TeacherUser::with('teacherlink')->where('id',$teacher_id)->get();
         $academic_year  = SiteHelper::getAcademicYear($school_id);
         $teacherlinks   = $teacher->teacherlinkCurrentAcademicYear;
 

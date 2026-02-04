@@ -884,6 +884,19 @@
                     <span class="mx-3 whitespace-no-wrap">Leave Master</span>
                 </a>
             </li>
+        <li class="py-3 px-3 hover:font-semibold {{ in_array(Request::segment(3), ['smstemplates']) ? 'active' : '' }}">
+        <a href="{{ url('/admin/setting/smstemplates') }}" class="flex items-center">
+            <!-- SMS Template Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                      d="M8 10h8M8 14h5M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4-.8L3 20l1.3-3.9A7.9 7.9 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+
+            <span class="mx-3 whitespace-no-wrap">SMS Templates</span>
+        </a>
+        </li>
+
 
             <li class="py-3 px-3 hover:font-semibold{{Request::segment ('3') == 'countries' ? 'active':''}} && {{Request::segment ('3') == 'country' ? 'active':''}}">
                 <a href="{{ url('/admin/setting/countries') }}" class="flex items-center">

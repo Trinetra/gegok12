@@ -27,9 +27,33 @@ use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
 use App\Models\User;
+/**
+ * Class SiteHelper
+ *
+ * Central helper class providing cached lookup data
+ * and reusable business logic across the application.
+ *
+ * Responsibilities include:
+ * - Academic year resolution
+ * - Location data (Country, State, City)
+ * - Teacher & student related utilities
+ * - Static dropdown lists
+ * - Cached master data access
+ *
+ * All methods are static and cache-aware.
+ *
+ * @package App\Helpers
+ */
 
 class SiteHelper
 {
+    /**
+     * Get the current academic year for a school.
+     *
+     * @param int|string $school_id
+     * @return \App\Models\AcademicYear|null
+     */
+
     public static function getAcademicYear($school_id)
     {
         $schoolCacheKey = "academic_year_for_school_" . $school_id;
@@ -44,7 +68,16 @@ class SiteHelper
             return $academic_year;
         });
     }
-
+    /**
+     * Get the administrator user for a given school.
+     *
+     * The result is cached to improve performance.
+     * The administrator is resolved based on the
+     * school ID and user role.
+     *
+     * @param int|string $school_id School identifier
+     * @return \App\Models\User|null
+     */
     public static function getAdmin($school_id)
     {
         $schoolCacheKey = "admin" . $school_id;
@@ -54,7 +87,14 @@ class SiteHelper
             return User::where('school_id', $school_id)->ByRole(3)->first();
         });
     }
-
+     /**
+     * Get the list of active countries.
+     *
+     * The countries are cached to improve performance
+     * and returned as a resource collection keyed by ID.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public static function getCountries()
     {
         return Cache::remember("countries", env('CACHE_TIME'), function () {
@@ -62,7 +102,14 @@ class SiteHelper
             return CountryResource::collection($country)->keyby('id');
         });
     }
-
+    /**
+     * Get the list of states grouped by country.
+     *
+     * The states are cached and returned as a
+     * resource collection grouped by `country_id`.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public static function getStates()
     {
         return Cache::remember("states", env('CACHE_TIME'), function () {
@@ -70,7 +117,14 @@ class SiteHelper
             return StateResource::collection($state)->groupby('country_id');
         });
     }
-
+    /**
+     * Get the list of cities grouped by state.
+     *
+     * The cities are cached and returned as a
+     * resource collection grouped by `state_id`.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public static function getCities()
     {
         return Cache::remember("cities", env('CACHE_TIME'), function () {
@@ -78,35 +132,81 @@ class SiteHelper
             return CityResource::collection($city)->groupby('state_id');
         });
     }
-
+     /**
+     * Get the list of qualifications.
+     *
+     * Returns active qualifications of types:
+     * - others
+     * - pg
+     * - ug
+     *
+     * Results are cached for performance.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public static function getQualifications()
     {
         return Cache::remember("qualifications", env('CACHE_TIME'), function () {
             return Qualification::where([['status', 1], ['type', 'others']])->orWhere('type', 'pg')->orWhere('type', 'ug')->orderBy('id', 'DESC')->get();
         });
     }
-
+    /**
+     * Get the list of additional certificates.
+     *
+     * Returns active qualifications of types:
+     * - teacher
+     * - others
+     *
+     * Results are cached for performance.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public static function getAdditionalCertificates()
     {
         return Cache::remember("additionalcertificates", env('CACHE_TIME'), function () {
             return Qualification::where([['status', 1], ['type', 'teacher']])->orWhere('type', 'others')->orderBy('id', 'DESC')->get();
         });
     }
-
+    /**
+     * Get the list of undergraduate (UG) qualifications.
+     *
+     * Returns active qualifications of type `ug`.
+     * Results are cached for performance.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public static function getUGList()
     {
         return Cache::remember("UGList", env('CACHE_TIME'), function () {
             return Qualification::where([['status', 1], ['type', 'ug']])->get();
         });
     }
-
+    /**
+     * Get the list of postgraduate (PG) qualifications.
+     *
+     * Returns active qualifications of type `pg`.
+     * Results are cached for better performance.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public static function getPGList()
     {
         return Cache::remember("PGList", env('CACHE_TIME'), function () {
             return Qualification::where([['status', 1], ['type', 'pg']])->get();
         });
     }
-
+    /**
+     * Get the list of standard links for a school.
+     *
+     * Fetches standards and sections mapped for the
+     * current academic year and returns them as a
+     * resource collection ordered by standard and section.
+     *
+     * Results are cached per school.
+     *
+     * @param int|string $school_id School identifier
+     * @return \Illuminate\Support\Collection|null
+     */
     public static function getStandardLinkList($school_id)
     {
         $academic_year = SiteHelper::getAcademicYear($school_id);
@@ -120,7 +220,17 @@ class SiteHelper
             }
         });
     }
-
+    /**
+     * Get the list of standards for a school.
+     *
+     * Returns standards ordered by display order
+     * and wrapped in a resource collection.
+     *
+     * Results are cached per school.
+     *
+     * @param int|string $school_id School identifier
+     * @return \Illuminate\Support\Collection|null
+     */
     public static function getStandardList($school_id)
     {
         $standardCacheKey = 'standard_' . $school_id;
@@ -131,7 +241,14 @@ class SiteHelper
             }
         });
     }
-
+    /**
+     * Get the list of teaching staff designations.
+     *
+     * Returns a cached list of predefined teaching
+     * designations with identifier and display name.
+     *
+     * @return array
+     */
     public static function getTeachingDesignations()
     {
         return Cache::remember("teaching_designations", env('CACHE_TIME'), function () {
@@ -145,7 +262,14 @@ class SiteHelper
             return $array;
         });
     }
-
+    /**
+     * Get the list of non-teaching staff designations.
+     *
+     * Returns a cached list of predefined non-teaching
+     * designations with identifier and display name.
+     *
+     * @return array
+     */
     public static function getNonTeachingDesignations()
     {
         return Cache::remember("non_teaching_designations", env('CACHE_TIME'), function () {
@@ -161,7 +285,14 @@ class SiteHelper
             return $array;
         });
     }
-
+    /**
+     * Get the list of blood groups.
+     *
+     * Returns a cached list of blood groups with
+     * identifier and display name.
+     *
+     * @return array
+     */
     public static function getBloodGroups()
     {
         $array = [];
@@ -177,7 +308,14 @@ class SiteHelper
             return $array;
         });
     }
-
+    /**
+     * Get the list of marital statuses.
+     *
+     * Returns a cached list of marital status options
+     * with identifier and display name.
+     *
+     * @return array
+     */
     public static function getMaritalList()
     {
         $array = [];
@@ -194,7 +332,14 @@ class SiteHelper
             return $array;
         });
     }
-
+    /**
+     * Get the list of caste categories.
+     *
+     * Returns a cached list of caste options
+     * with identifier and display name.
+     *
+     * @return array
+     */
     public static function getCasteList()
     {
         $array = [];
@@ -212,7 +357,14 @@ class SiteHelper
             return $array;
         });
     }
-
+    /**
+     * Get the list of transport modes.
+     *
+     * Returns a cached list of transport options
+     * with identifier and display name.
+     *
+     * @return array
+     */
     public static function getTransportList()
     {
         $array = [];
@@ -230,7 +382,21 @@ class SiteHelper
             return $array;
         });
     }
-
+    /**
+     * Get the total number of active students in a class.
+     *
+     * Counts students based on:
+     * - School
+     * - Academic year
+     * - Standard & section (standardLink)
+     *
+     * Result is cached per class for performance.
+     *
+     * @param int|string $school_id School identifier
+     * @param int|string $academic_year_id Academic year identifier
+     * @param int|string $standardLink_id Standard-link identifier
+     * @return int
+     */
     public static function getClassStudentCount($school_id, $academic_year_id, $standardLink_id)
     {
         $key = "class_student_count" . $standardLink_id;
@@ -244,7 +410,19 @@ class SiteHelper
             })->count();
         });
     }
-
+    /**
+     * Get the list of Heads of Department (HOD) for a school.
+     *
+     * Filters teachers by:
+     * - Active status
+     * - Head of the Department designation
+     * - Current academic year
+     *
+     * Results are cached per school and academic year.
+     *
+     * @param int|string $school_id School identifier
+     * @return \Illuminate\Support\Collection
+     */
     public static function getHODList($school_id)
     {
         $academic_year = SiteHelper::getAcademicYear($school_id);
@@ -261,7 +439,18 @@ class SiteHelper
             return $teachers;
         });
     }
-
+    /**
+     * Get the list of principals and vice principals for a school.
+     *
+     * Filters active teaching staff with designation:
+     * - principal
+     * - vice_principal
+     *
+     * Results are cached per school and academic year.
+     *
+     * @param int|string $school_id School identifier
+     * @return \Illuminate\Support\Collection
+     */
     public static function getPrincipalList($school_id)
     {
         $academic_year = SiteHelper::getAcademicYear($school_id);
@@ -278,7 +467,20 @@ class SiteHelper
             return $teachers;
         });
     }
-
+    /**
+     * Get the list of active teaching staff for a school.
+     *
+     * Filters users by:
+     * - Teaching user group
+     * - Active status
+     * - Academic year
+     *
+     * Results are cached per school and academic year.
+     *
+     * @param int|string $school_id School identifier
+     * @param int|string $academic_year_id Academic year identifier
+     * @return \Illuminate\Support\Collection
+     */
     public static function getTeachingStaffList($school_id, $academic_year_id)
     {
         $key = "teaching_staff_lists_" . $school_id . '_' . $academic_year_id;
@@ -292,7 +494,23 @@ class SiteHelper
         });
     }
 
-
+    /**
+     * Get standard and subject list assigned to a teacher.
+     *
+     * This method returns:
+     * - Standards where the teacher is a class teacher
+     * - Standards where the teacher is assigned as a subject teacher
+     * - Subjects grouped by standard link
+     *
+     * Data is resolved for the current academic year.
+     *
+     * @param int|string $school_id School identifier
+     * @param int|string $teacher_id Teacher identifier
+     * @return array{
+     *     standardLinklist: \Illuminate\Support\Collection,
+     *     subjectlist: \Illuminate\Support\Collection
+     * }
+     */
     public static function getStandardSubjectList($school_id, $teacher_id)
     {
         $academic_year = SiteHelper::getAcademicYear($school_id);
@@ -332,7 +550,14 @@ class SiteHelper
         return $array;
         // });
     }
-
+    /**
+     * Get the list of feedback categories.
+     *
+     * Returns a cached list of predefined feedback
+     * categories used for feedback and support modules.
+     *
+     * @return array
+     */
     public static function getFeedbackCategoryList()
     {
         $array = [];
@@ -349,7 +574,22 @@ class SiteHelper
             return $array;
         });
     }
-
+    /**
+     * Get the list of students for a specific class.
+     *
+     * Fetches active students based on:
+     * - School
+     * - Academic year
+     * - Standard & section (standardLink)
+     *
+     * Results are cached per class and sorted
+     * by student's first name.
+     *
+     * @param int|string $school_id School identifier
+     * @param int|string $academic_year_id Academic year identifier
+     * @param int|string $standardLink_id Standard-link identifier
+     * @return \Illuminate\Support\Collection
+     */
     public static function getClassStudents($school_id, $academic_year_id, $standardLink_id)
     {
         //dd($standardLink_id);
@@ -365,7 +605,18 @@ class SiteHelper
             })->get()->sortBy('userprofile.firstname');
         });
     }
-
+    /**
+     * Get the list of teachers for a school and academic year.
+     *
+     * Fetches active teaching staff across multiple
+     * user groups and sorts them by first name.
+     *
+     * Results are cached per school and academic year.
+     *
+     * @param int|string $school_id School identifier
+     * @param int|string $academic_year_id Academic year identifier
+     * @return \Illuminate\Support\Collection
+     */
     public static function getTeachers($school_id, $academic_year_id)
     {
         $key = "teacher_lists_" . $school_id . '_' . $academic_year_id;
@@ -378,7 +629,20 @@ class SiteHelper
             })->get()->sortBy('userprofile.firstname');
         });
     }
-
+    /**
+     * Get the count of pending leave applications under a teacher.
+     *
+     * Calculates pending leave requests submitted by teachers
+     * who report to the given teacher for a specific
+     * school and academic year.
+     *
+     * Result is cached per school, academic year, and teacher.
+     *
+     * @param int|string $school_id School identifier
+     * @param int|string $academic_year_id Academic year identifier
+     * @param int|string $teacher_id Reporting teacher identifier
+     * @return int
+     */
     public static function getPendingLeaveCount($school_id, $academic_year_id, $teacher_id)
     {
         $key = "pending_leave_count_" . $school_id . '_' . $academic_year_id . '_' . $teacher_id;
@@ -398,7 +662,17 @@ class SiteHelper
             return $pending_count;
         });
     }
-
+    /**
+     * Get the scholastic grading list for a school.
+     *
+     * Returns scholastic grade definitions configured
+     * for the given school as a resource collection.
+     *
+     * Results are cached per school.
+     *
+     * @param int|string $school_id School identifier
+     * @return \Illuminate\Support\Collection
+     */
     public static function getScholasticList($school_id)
     {
         $key = "scholastic_list_" . $school_id;
@@ -407,7 +681,17 @@ class SiteHelper
             return ScholasticResource::collection($sc_grade);
         });
     }
-
+    /**
+     * Get the non-scholastic grading list for a school.
+     *
+     * Returns non-scholastic grade definitions configured
+     * for the given school as a resource collection.
+     *
+     * Results are cached per school.
+     *
+     * @param int|string $school_id School identifier
+     * @return \Illuminate\Support\Collection
+     */
     public static function getNonScholasticList($school_id)
     {
         $key = "non_scholastic_list_" . $school_id;
@@ -416,7 +700,14 @@ class SiteHelper
             return NonScholasticResource::collection($non_sc_grade);
         });
     }
-
+    /**
+     * Get the list of task assignee types.
+     *
+     * Returns a cached list of predefined task assignees
+     * used in task or reminder modules.
+     *
+     * @return array
+     */
     public static function getTaskAssigneeList()
     {
         $array = [];
@@ -432,7 +723,14 @@ class SiteHelper
             return $array;
         });
     }
-
+    /**
+     * Get the list of task reminder options.
+     *
+     * Returns a cached list of predefined reminder timings
+     * used for task notifications.
+     *
+     * @return array
+     */
     public static function getTaskReminderList()
     {
         $array = [];
@@ -448,7 +746,14 @@ class SiteHelper
             return $array;
         });
     }
-
+    /**
+     * Get the list of academic year statuses.
+     *
+     * Returns a cached list of academic year states
+     * used across academic year management.
+     *
+     * @return array
+     */
     public static function getAcademicYearStatusList()
     {
         $array = [];
@@ -464,7 +769,16 @@ class SiteHelper
             return $array;
         });
     }
-
+    /**
+     * Get class coordinators for a school.
+     *
+     * Returns active users (excluding the authenticated user)
+     * who are assigned the `class_coordinator` role.
+     *
+     * @param int|string $school_id School identifier
+     * @param int|string $auth_id Authenticated user identifier
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public static function getClasCooridnators($school_id, $auth_id)
     {
         return User::where([['id', '!=', $auth_id], ['school_id', $school_id], ['status', 'active']])->whereHas(

@@ -102,9 +102,10 @@ class CheckAnniversary extends Command
                     }
 
 
-                    $academic_year_id=$teacher->teacherprofile[0][academic_year_id]; 
+                    $academic_year_id=$teacher->teacherprofile[0]['academic_year_id']; 
 
-                    $image = $this->getFilePath('uploads/images/work_anniversary.jpg');
+                    // $image = $this->getFilePath('uploads/images/work_anniversary.jpg');
+                    $image = 'uploads/images/work_anniversary.jpg';
 
                     //dd($academic_year_id);            
 

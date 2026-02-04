@@ -22,16 +22,24 @@ use App\Traits\Common;
 use App\Models\User;
 use Exception;
 use Log;
-
+/**
+ * Class VisitorLogController
+ *
+ * Handles visitor log management for teachers including
+ * listing, creating, viewing, updating and deleting visitor records.
+ *
+ * @package App\Http\Controllers\Teacher
+ */
 class VisitorLogController extends Controller
 {
     use LogActivity;
     use Common;
 
     /**
-     * Display a listing of the resource.
+     * Display paginated visitor log list (API).
      *
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function showlist(Request $request)
     {
@@ -43,12 +51,25 @@ class VisitorLogController extends Controller
         
         return $visitorloglist;
     }
-    
+
+    /**
+     * Show visitor log listing page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     { 
         return view('/teacher/visitorlog/index');
     }
-
+     
+     /**
+     * Get required data for visitor log create/edit forms.
+     *
+     * Includes teachers, standards and students based on standard selection.
+     *
+     * @param  Request  $request
+     * @return array
+     */ 
      public function list(Request $request)
     {
         //
@@ -68,13 +89,24 @@ class VisitorLogController extends Controller
         return $array;
     }
 
+    /**
+     * Show visitor log create page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $date = date('Y-m-d');
 
         return view('/teacher/visitorlog/create',['date' => $date]);
     }
-
+    
+    /**
+     * Store a new visitor log entry.
+     *
+     * @param  VisitorLogRequest  $request
+     * @return array
+     */
     public function store(VisitorLogRequest $request)
     {
         try 
@@ -163,7 +195,13 @@ class VisitorLogController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    
+    /**
+     * Display visitor log details.
+     *
+     * @param  int  $id
+     * @return array
+     */
     public function show($id)
     {
         $visitorlog=VisitorLog::where('id',$id)->first();

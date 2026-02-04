@@ -9,6 +9,7 @@ use App\Http\Requests\ChangePasswordRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Users\TeacherUser;
 use App\Models\User;
 use Exception;
 use Hash;
@@ -19,7 +20,7 @@ class MeController extends Controller
     //
     public function myInfo()
     {
-        $user = User::where('id',Auth::user()->id)->first();
+        $user = TeacherUser::where('id',Auth::user()->id)->first();
 
         $details = $user->getTeacherDetails();
         

@@ -8,6 +8,7 @@ namespace App\Http\Controllers\Api\Teacher;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\TeacherLoginRequest;
 use App\Http\Controllers\Controller;
+use App\Models\Users\TeacherUser;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Userprofile;
@@ -47,7 +48,7 @@ class LoginController extends Controller
 
                 //$token  = $auth_user->createToken($request->device_name)->plainTextToken;
 
-                $user   = User::where([['id',$auth_user->id],['school_id',$auth_user->school_id]])->first();
+                $user   = TeacherUser::where([['id',$auth_user->id],['school_id',$auth_user->school_id]])->first();
                      
                 $user->platform_token = $request->device_name;
 

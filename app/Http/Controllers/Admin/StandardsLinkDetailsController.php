@@ -301,13 +301,13 @@ class StandardsLinkDetailsController extends Controller
                 { 
                     if($session == 'forenoon')
                     {
-                        $forenoonpresent[$i]    = count($student[1]);
-                        $forenoonabsent[$i]     = count($student[0]);
+                        $forenoonpresent[$i]    = isset($student[1]) ? count($student[1]) : 0;
+                        $forenoonabsent[$i]     = isset($student[0]) ? count($student[0]) : 0;
                     }
                     else
                     {
-                        $afternoonpresent[$i]   = count($student[1]);
-                        $afternoonabsent[$i]    = count($student[0]);
+                        $afternoonpresent[$i]   = isset($student[1]) ? count($student[1]) : 0;
+                        $afternoonabsent[$i]    = isset($student[0]) ? count($student[0]) : 0;
                     }
                 }
                 for ($j = 0 ;$j < count($attendancechart) ; $j++) 
