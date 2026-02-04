@@ -24,5 +24,5 @@ class Smstemplate extends Model
 {
     //
      protected $table    = 'sms_templates';
-     protected $fillable = ['name','content','status'];
+     protected $fillable = ['name','template','content','status','template_id'];
 }

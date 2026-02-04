@@ -19,6 +19,7 @@ class CreateSmsTemplatesTable extends Migration
             $table->text('template')->nullable();
             $table->text('content')->nullable();
             $table->boolean('status')->default('1');
+            $table->string('template_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

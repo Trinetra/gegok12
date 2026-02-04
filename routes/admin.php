@@ -828,7 +828,7 @@ Route::get('/purchase/addon/histories', function () {
     Route::get('setting/state/create', function () {
     	$id='';
         return view('admin.setting.stateform', compact('id'));
-    })->name('admin.setting.states.update');
+    })->name('admin.setting.states.create');
 
     Route::get('setting/state/update/{id}', function ($id) {
         return view('admin.setting.stateform', compact('id'));
@@ -837,4 +837,13 @@ Route::get('/purchase/addon/histories', function () {
     Route::get('setting/state/detail/{id}', function ($id) {
         return view('admin.setting.statedetail',compact('id'));
     })->name('admin.setting.states.detail');
+
+    // sms
+    Route::get('setting/smstemplates', function () {
+        return view('admin.setting.smstemplates');
+    })->name('admin.setting.smstemplate');
+
+    Route::get('setting/smstemplate/{id}/update', function ($id) {
+        return view('admin.setting.edit_smstemplate',compact('id'));
+    })->name('admin.setting.smstemplate.update');
 
