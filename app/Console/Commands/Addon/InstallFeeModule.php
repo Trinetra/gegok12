@@ -123,21 +123,26 @@ class InstallFeeModule extends Command
             }
 
             // Step 6: Add to app.js
-            $appJsPath = resource_path('js/app.js');
+            $appJsPath = resource_path('assets/js/app.js');
             if (!str_contains(file_get_contents($appJsPath), "require('./gfee')")) {
                 file_put_contents($appJsPath, file_get_contents($appJsPath) . "\nrequire('./gfee');\n");
                 $this->info("Updated app.js");
             }
 
             // Step 7: NPM install/build
-            // exec('npm install', $npmOut, $npmStatus);
-            // exec('npm run dev', $devOut, $devStatus);
+            exec('npm install', $npmOut, $npmStatus);
+            exec('npm run dev', $devOut, $devStatus);
             $this->info("NPM build complete");
 
             // Step 8: Migrate
             // Artisan::call('migrate', ['--force' => true]);
             exec("php artisan migrate --force", $output);
             $this->info("Database migrated");
+
+             //step 9: Seeder
+            exec('php artisan db:seed --class="Gegok12\Fee\Database\Seeders\FeeGroupTableSeeder"');
+
+            $this->info("Table Seeded");
 
             // Artisan::call('cache:clear');
             // Artisan::call('view:clear');

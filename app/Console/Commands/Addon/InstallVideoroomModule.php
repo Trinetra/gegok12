@@ -124,15 +124,15 @@ class InstallVideoroomModule extends Command
             }
 
             // Step 6: Add to app.js
-            $appJsPath = resource_path('js/app.js');
+            $appJsPath = resource_path('assets/js/app.js');
             if (!str_contains(file_get_contents($appJsPath), "require('./gvideoroom')")) {
                 file_put_contents($appJsPath, file_get_contents($appJsPath) . "\nrequire('./gvideoroom');\n");
                 $this->info("Updated app.js");
             }
 
             // Step 7: NPM install/build
-            // exec('npm install', $npmOut, $npmStatus);
-            // exec('npm run dev', $devOut, $devStatus);
+            exec('npm install', $npmOut, $npmStatus);
+            exec('npm run dev', $devOut, $devStatus);
             $this->info("NPM build complete");
 
             // Step 8: Migrate
