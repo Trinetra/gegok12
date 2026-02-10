@@ -21,7 +21,7 @@ class CreateLeaveTypesTable extends Migration
             $table->foreign('academic_year_id')->references('id')->on('academic_years');
             $table->text('name');
             $table->string('max_no_of_days');
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

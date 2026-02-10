@@ -18,7 +18,7 @@ class CreateSectionsTable extends Migration
             $table->bigInteger('school_id')->unsigned();
             $table->foreign('school_id')->references('id')->on('schools');
             $table->string('name');
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

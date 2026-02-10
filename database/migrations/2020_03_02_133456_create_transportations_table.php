@@ -24,7 +24,7 @@ class CreateTransportationsTable extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->longtext('stops');
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -16,6 +16,7 @@ class CreateConversationChatTable extends Migration
         Schema::create('conversation_chat', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('uuid');
+            $table->timestamp('last_message_at')->nullable();
             $table->timestamps();
         });
     }

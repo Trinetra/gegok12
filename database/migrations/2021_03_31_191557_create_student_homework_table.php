@@ -20,6 +20,10 @@ class CreateStudentHomeworkTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->longText('attachment');
+            $table->date('submitted_on')->nullable();
+            $table->integer('checked_by')->unsigned()->nullable();
+            $table->foreign('checked_by')->references('id')->on('users');
+            $table->date('checked_on')->nullable();
             $table->enum('status',['unchecked','checked'])->default('unchecked');
             $table->longText('comments')->nullable();
             $table->longText('reply_comment')->nullable();

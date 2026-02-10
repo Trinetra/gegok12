@@ -22,7 +22,7 @@ class CreateNonScGradeTable extends Migration
             $table->string('grade_name');
             $table->longText('keys');
             $table->longText('grades_details');
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

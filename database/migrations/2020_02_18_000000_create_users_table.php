@@ -29,12 +29,12 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->enum('status',['active','inactive','exit'])->default('active');
             $table->string('email_verification_code')->nullable();
-            $table->boolean('email_verified')->default('0');
+            $table->boolean('email_verified')->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('mobile_verification_code')->nullable();
-            $table->boolean('mobile_verified')->default('0');
+            $table->boolean('mobile_verified')->default(false);
             $table->timestamp('mobile_verified_at')->nullable();
-            $table->boolean('is_reset')->default('0');
+            $table->boolean('is_reset')->default(false);
             $table->text('platform_token')->nullable();
             $table->text('device_id')->nullable();
             $table->rememberToken();

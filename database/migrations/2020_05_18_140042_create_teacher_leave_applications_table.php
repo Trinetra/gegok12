@@ -34,7 +34,7 @@ class CreateTeacherLeaveApplicationsTable extends Migration
             $table->foreign('approved_by')->references('id')->on('users');
             $table->date('approved_on')->nullable();
             $table->text('comments')->nullable();
-            $table->enum('session',['forenoon','afternoon ','day'])->nullable();
+            $table->enum('session',['forenoon','afternoon','day'])->nullable();
             $table->enum('status',['pending','approved','cancelled','completed']);
             $table->timestamps();
             $table->softDeletes();
@@ -48,6 +48,6 @@ class CreateTeacherLeaveApplicationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('teacher_attendances');
+        Schema::dropIfExists('teacher_leave_applications');
     }
 }

@@ -22,7 +22,6 @@ class CreatePostDetailsTable extends Migration
             $table->boolean('like')->nullable();
             $table->boolean('unlike')->nullable();
             $table->boolean('save')->nullable();
-            //$table->boolean('unsave')->nullable();
             $table->boolean('status');
             $table->timestamps();
             $table->softDeletes();

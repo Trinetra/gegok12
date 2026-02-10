@@ -19,7 +19,7 @@ class CreateCountriesTable extends Migration
             $table->string('short_name')->unique();
             $table->string('iso_code')->nullable();
             $table->string('tel_prefix')->nullable();
-            $table->boolean('status')->default('0');
+            $table->boolean('status')->default(false);
             $table->integer('order')->nullable();
             $table->timestamps();
             $table->softDeletes();

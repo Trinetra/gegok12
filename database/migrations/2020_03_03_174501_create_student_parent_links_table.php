@@ -21,7 +21,7 @@ class CreateStudentParentLinksTable extends Migration
             $table->foreign('parent_id')->references('id')->on('users');
             $table->integer('student_id')->unsigned();
             $table->foreign('student_id')->references('id')->on('users');
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

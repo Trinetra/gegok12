@@ -17,7 +17,7 @@ class CreateQualificationsTable extends Migration
             $table->increments('id');
             $table->string('display_name');
             $table->enum('type',['others','pg','teacher','ug'])->nullable();
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });
