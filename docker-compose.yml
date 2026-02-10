@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: school_app
     working_dir: /var/www
+    user: "0:0"   # run as root to avoid permission issues
     volumes:
       - ./:/var/www
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
@@ -28,12 +29,12 @@ services:
     image: node:24
     container_name: node_app
     working_dir: /var/www
+    user: "0:0"
     volumes:
       - ./:/var/www
-    command: bash -c "npm install && tail -f /dev/null"
+    command: tail -f /dev/null  
     networks:
       - laravel
-
 
   db:
     image: mysql:8.4
@@ -50,25 +51,19 @@ services:
       - dbdata:/var/lib/mysql
     networks:
       - laravel
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
     restart: unless-stopped
     ports:
-      - "8091:80"
+      - "8092:80"
     environment:
       PMA_HOST: db
       PMA_USER: root
       PMA_PASSWORD: root
     networks:
-      - laravel    
-
-  # redis:
-  #   image: redis:alpine
-  #   container_name: laravel_redis
-  #   ports:
-  #     - "6379:6379"
-  #   networks:
-  #     - laravel
+      - laravel
 
   nginx:
     image: nginx:latest

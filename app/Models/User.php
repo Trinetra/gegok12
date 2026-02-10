@@ -1475,7 +1475,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function isTeacher(): bool
     {
-        return $this->usergroup_id === self::TEACHER_USERGROUP_ID;
+        return (int) $this->usergroup_id === (int) self::TEACHER_USERGROUP_ID;
     }
 
     /**
@@ -1485,7 +1485,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function isStudent(): bool
     {
-        return $this->usergroup_id === self::STUDENT_USERGROUP_ID;
+        return (int) $this->usergroup_id === (int) self::STUDENT_USERGROUP_ID;
     }
 
     /**
@@ -1495,7 +1495,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function isParent(): bool
     {
-        return $this->usergroup_id === self::PARENT_USERGROUP_ID;
+        return (int) $this->usergroup_id === (int) self::PARENT_USERGROUP_ID;
     }
 
     /**
@@ -1505,7 +1505,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function isAlumni(): bool
     {
-        return $this->usergroup_id === self::ALUMNI_USERGROUP_ID;
+        return (int) $this->usergroup_id === (int) self::ALUMNI_USERGROUP_ID;
     }
 
     /**
@@ -1515,9 +1515,9 @@ class User extends Authenticatable implements HasMedia
      */
     public function isAdmin(): bool
     {
-        return in_array($this->usergroup_id, [
-            self::SCHOOLADMIN_USERGROUP_ID,
-            self::SCHOOLSUBADMIN_USERGROUP_ID
+        return in_array((int) $this->usergroup_id, [
+            (int) self::SCHOOLADMIN_USERGROUP_ID,
+            (int) self::SCHOOLSUBADMIN_USERGROUP_ID
         ]);
     }
 
@@ -1528,7 +1528,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function isLibrarian(): bool
     {
-        return $this->usergroup_id === self::LIBRARIAN_USERGROUP_ID;
+        return (int) $this->usergroup_id === (int) self::LIBRARIAN_USERGROUP_ID;
     }
 
     /**
@@ -1538,7 +1538,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function isAccountant(): bool
     {
-        return $this->usergroup_id === self::ACCOUNTANT_USERGROUP_ID;
+        return (int) $this->usergroup_id === (int) self::ACCOUNTANT_USERGROUP_ID;
     }
 
     /**
@@ -1548,7 +1548,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function isReceptionist(): bool
     {
-        return $this->usergroup_id === self::RECEPTIONIST_USERGROUP_ID;
+        return (int) $this->usergroup_id === (int) self::RECEPTIONIST_USERGROUP_ID;
     }
 
     /**
@@ -1558,7 +1558,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function isStockKeeper(): bool
     {
-        return $this->usergroup_id === self::STOCK_KEEPER_USERGROUP_ID;
+        return (int) $this->usergroup_id === (int) self::STOCK_KEEPER_USERGROUP_ID;
     }
 
     /**
@@ -1568,7 +1568,7 @@ class User extends Authenticatable implements HasMedia
      */
     public function isNonTeachingStaff(): bool
     {
-        return $this->usergroup_id === self::NON_TEACHING_USERGROUP_ID;
+        return (int) $this->usergroup_id === (int) self::NON_TEACHING_USERGROUP_ID;
     }
 
     /**
