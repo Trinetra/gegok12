@@ -32,7 +32,7 @@
                         <thead class="bg-grey-light">
                             <tr>
                                 <th>Name</th>
-                                <th>Condent</th>
+                                <th>Content</th>
                                 <th>Template</th>
                                 <th>Template Id</th>
                                 <th>Status</th>
