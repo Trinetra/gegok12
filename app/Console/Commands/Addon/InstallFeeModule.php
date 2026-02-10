@@ -125,7 +125,7 @@ class InstallFeeModule extends Command
             // Step 6: Add to app.js
             $appJsPath = resource_path('assets/js/app.js');
             if (!str_contains(file_get_contents($appJsPath), "require('./gfees')")) {
-                file_put_contents($appJsPath, file_get_contents($appJsPath) . "\nrequire('./gfee');\n");
+                file_put_contents($appJsPath, file_get_contents($appJsPath) . "\nrequire('./gfees');\n");
                 $this->info("Updated app.js");
             }
 
