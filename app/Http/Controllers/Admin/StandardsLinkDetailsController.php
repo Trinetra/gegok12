@@ -686,12 +686,15 @@ class StandardsLinkDetailsController extends Controller
         {
             $school_id = Auth::user()->school_id;
             $academic_year = SiteHelper::getAcademicYear($school_id);
-            
-            $conference = VideoConference::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['standard',$standardLink->id]])->orderBy('created_at','DESC')->paginate(10); 
+            if(class_exists('Gegok12\Videoroom\Models\VideoConference'))
+            {
+
+            $conference = \Gegok12\Videoroom\Models\VideoConference::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['standard',$standardLink->id]])->orderBy('created_at','DESC')->paginate(10); 
 
             $conference = ClassConferenceResource::collection($conference);
 
             return $conference;
+            }
         }
     }
 }

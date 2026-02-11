@@ -824,9 +824,8 @@ trait RegisterUser
         \DB::beginTransaction();
         try
         {   $user = User::where('email', $data->email)
-                ->orWhere('mobile_no', $data->mobile_no)
-                ->orWhere('name', $data->name)
-                ->orWhere('registration_number', $data->registration_number)
+                // ->orWhere('mobile_no', $data->mobile_no)
+                // ->orWhere('registration_number', $data->registration_number)
                 ->first(); 
 
             $path = '';
