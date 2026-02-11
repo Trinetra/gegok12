@@ -107,7 +107,7 @@ class InstallChatModule extends Command
             }
 
             // Step 6: Add to app.js
-            $appJsPath = resource_path('assets/js/app.js');
+            $appJsPath = resource_path('assets/js/custom_addon.js');
             if (!str_contains(file_get_contents($appJsPath), "require('./gchat')")) {
                 file_put_contents($appJsPath, file_get_contents($appJsPath) . "\nrequire('./gchat');\n");
                 $this->info("Updated app.js");
