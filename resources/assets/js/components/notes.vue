@@ -23,7 +23,7 @@
       </div>
       <div class="w-full lg:w-1/2 md:w-1/2 lg:mx-4 md:mx-4 my-3 lg:my-0 md:my-0">
         <div class="form-group">
-          <textarea rows="5" cols="50" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-model="notes" placeholder="Add a note">Enter your name</textarea>
+          <textarea rows="5" cols="50" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0" v-model="notes" placeholder="Add a note">Enter your name</textarea>
           <span v-if="errors.notes">
             <p class="text-danger text-xs my-1">{{errors.notes[0]}}</p>
           </span>

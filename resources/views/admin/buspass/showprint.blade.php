@@ -2,7 +2,7 @@
 <html>
 <head>
    <title>Buss Pass</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body class="font-sans">
     <div class="" style="">

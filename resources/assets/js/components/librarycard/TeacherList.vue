@@ -38,9 +38,9 @@
           <template class="" v-for="user in users">
             <div class="w-full lg:w-full md:w-full my-2 relative p-2">
               <div class="person-card  border rounded flex justify-between relative" v-bind:class="[user['status']=='active' ? 'bg-white': 'bg-red-300' ]">
-                <div class="flex-grow w-full flex p-2 cursor-pointer hover:shadow" :id="user['id']" @click="enableform(user['name'])">
+                <div class="grow w-full flex p-2 cursor-pointer hover:shadow" :id="user['id']" @click="enableform(user['name'])">
                   <img :src="user['avatar']" class="w-16 h-16">
-                  <div class="flex-grow px-2">
+                  <div class="grow px-2">
                     <h2 class="font-bold text-base text-gray-700">{{user['fullname']}}</h2>
                     <p class="text-sm">{{user['designation_name']}}</p>
                     <p class="text-xs">Card No :{{ user['librarycard_number'] }}</p>
