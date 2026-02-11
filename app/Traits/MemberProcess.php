@@ -12,6 +12,7 @@ use App\Http\Resources\Alumni as AlumniResource;
 use App\Http\Resources\User as UserResource;
 use App\Models\Users\TeacherUser;
 use App\Models\Users\StudentUser;
+use App\Models\Users\AlumniUser;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
@@ -385,7 +386,7 @@ trait MemberProcess
     public function AlumniFilter($request, $school_id, $usergroup_id)
     {
         try {
-            $users = User::where('school_id', $school_id)->ByRole($usergroup_id);
+            $users = AlumniUser::where('school_id', $school_id)->ByRole($usergroup_id);
 
             $alphabet = $request->alphabet ? $request->alphabet : '';
             if ($alphabet) {
@@ -425,7 +426,7 @@ trait MemberProcess
     public function AlumniProfileFilter($request, $school_id, $usergroup_id, $user_id)
     {
         try {
-            $users = User::where('school_id', $school_id)->ByRole($usergroup_id)->where('id', '!=', $user_id);
+            $users = AlumniUser::where('school_id', $school_id)->ByRole($usergroup_id)->where('id', '!=', $user_id);
 
             $alphabet = $request->alphabet ? $request->alphabet : '';
             if ($alphabet) {
