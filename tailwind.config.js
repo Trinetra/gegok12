@@ -1,21 +1,22 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-      purge: false,
-       content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
-         './app/Filament/**/*.php',
-        './resources/views/filament/**/*.blade.php',
-        './vendor/filament/**/*.blade.php',
+    content: [
+        "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
+        "./storage/framework/views/*.php",
+        "./resources/views/**/*.blade.php",
+        "./app/Filament/**/*.php",
+        "./resources/views/filament/**/*.blade.php",
+        "./vendor/filament/**/*.blade.php",
+        "./resources/assets/js/**/*.{js,vue}",
     ],
     theme: {
-        fontFamily: {
-            'primary': ['Nunito Sans', 'Roboto','sans-serif'],
-            'exo': ['Exo\\ 2', 'sans-serif'],
-            'plex': ['IBM\\ Plex\\ Sans', 'sans-serif']
+        extend: {
+            fontFamily: {
+                primary: ["Nunito Sans", "Roboto", "sans-serif"],
+                exo: ["Exo 2", "sans-serif"],
+                plex: ["IBM Plex Sans", "sans-serif"],
+            },
         },
-        extend: {}
-  },
-  variants: {},
-  plugins: []
-}
+    },
+    plugins: [],
+};

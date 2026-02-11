@@ -47,7 +47,7 @@
                 <div class="sidebar min-h-full">
                     @yield('base-sidebar')
                 </div>
-                <div class="bg-gray-200 flex-grow w-full px-4" style="width: calc(100vw - 195px);">
+                <div class="bg-gray-200 grow w-full px-4" style="width: calc(100vw - 195px);">
                     @yield('base-content')
                 </div>
             </main>
@@ -57,7 +57,9 @@
 
         <!-- Scripts -->
 
-        <script src="{{ asset('js/app.js') }}"></script>
+        <script src="{{ mix('js/manifest.js') }}"></script>
+        <script src="{{ mix('js/vendor.js') }}"></script>
+        <script src="{{ mix('js/app.js') }}"></script>
         <script src="{{ asset('js/custom.js') }}" ></script>
         @stack('scripts')
 

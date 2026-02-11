@@ -39,9 +39,9 @@
             <a :href="url+'/admin/staff/show/'+user['name']">
             <div class="w-full lg:w-full md:w-full my-2 relative p-2">
               <div class="person-card  border rounded flex justify-between relative" v-bind:class="[user['status']=='active' ? 'bg-white': 'bg-red-300' ]">
-                <div class="flex-grow w-full flex p-2 cursor-pointer hover:shadow" :id="user['id']" >
+                <div class="grow w-full flex p-2 cursor-pointer hover:shadow" :id="user['id']" >
                   <img :src="user['avatar']" class="w-16 h-16">
-                  <div class="flex-grow px-2">
+                  <div class="grow px-2">
                     <h2 class="font-bold text-base text-gray-700">{{user['fullname']}}</h2>
                     <p class="text-sm">{{user['designation_name']}}</p>
                     <p v-if="birthday == 'true'">{{ user['date_of_birth'] }}</p>

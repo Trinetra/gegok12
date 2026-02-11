@@ -3,7 +3,7 @@
     <div v-if="this.success!=null" class="alert alert-success mx-auto" id="success-alert">{{this.success}}</div>
     <div class="flex flex-col lg:flex-row md:flex-row my-6">
       <p class="w-full lg:w-64 md:w-64 py-2">Name </p>
-      <div class="flex-grow relative">
+      <div class="grow relative">
         <input type="text" name="fullname" v-model="fullname" class="w-full border border-gray-500 p-2 lg:mx-3 md:mx-3 focus:outline-none leading-none">
         <div class="absolute">
           <p class="text-xs text-red-500 text-left mx-3 mt-1" v-if="errors.fullname">{{errors.fullname[0]}}</p>
@@ -12,7 +12,7 @@
     </div>
     <div class="flex flex-col lg:flex-row md:flex-row my-6">
       <p class="w-full lg:w-64 md:w-64 py-2">School / Organization Name</p>
-      <div class="flex-grow relative">
+      <div class="grow relative">
         <input type="text" name="serve_at" v-model="serve_at" class="w-full  border border-gray-500 p-2 lg:mx-3 md:mx-3 focus:outline-none leading-none">
         <div class="absolute">
           <p class="text-xs text-red-500 text-left mx-3 mt-1" v-if="errors.serve_at">{{errors.serve_at[0]}}</p>
@@ -21,7 +21,7 @@
     </div>
     <div class="flex flex-col lg:flex-row md:flex-row my-6">
       <p class="w-full lg:w-64 md:w-64 py-2">Role / Designation </p>
-      <div class="flex-grow relative">
+      <div class="grow relative">
         <input type="text" name="role" v-model="role" class="w-full border border-gray-500 p-2 lg:mx-3 md:mx-3 focus:outline-none leading-none">
         <div class="absolute">
           <p class="text-red-500 text-xs text-left mx-3 mt-1" v-if="errors.role">{{errors.role[0]}}</p>
@@ -30,7 +30,7 @@
     </div>
     <div class="flex flex-col lg:flex-row md:flex-row my-6">
       <p class="w-full lg:w-64 md:w-64 py-2">Phone</p>
-      <div class="flex-grow relative">
+      <div class="grow relative">
         <input type="text" name="contact_no" v-model="contact_no" class="w-full border border-gray-500 p-2 lg:mx-3 md:mx-3 focus:outline-none leading-none">
         <div class="absolute">
           <p class="text-xs text-red-500 text-left mx-3 mt-1" v-if="errors.contact_no">{{errors.contact_no[0]}}</p>
@@ -39,7 +39,7 @@
     </div>
     <div class="flex flex-col lg:flex-row mf:flex-row my-6">
       <p class="w-64 py-2">Email</p>
-      <div class="flex-grow relative">
+      <div class="grow relative">
         <input type="text" name="emailid" v-model="emailid" class="w-full border border-gray-500 p-2 lg:mx-3 md:mx-3 focus:outline-none leading-none">
         <div class="absolute">
           <p class="text-xs text-red-500 text-left mx-3 mt-1" v-if="errors.emailid">{{errors.emailid[0]}}</p>
@@ -48,7 +48,7 @@
     </div>
     <div class="flex flex-col lg:flex-row md:flex-row my-6">
       <p class="w-full lg:w-64 md:flex-row py-2">Where did you hear about GegoK12 ?</p>
-      <div class="flex-grow relative">
+      <div class="grow relative">
         <select name="select" v-model="select" class="block w-full border border-gray-500 p-2 lg:mx-3 md:mx-3 focus:outline-none leading-none " id="grid-state">
           <option value="" disabled>Please select</option>
           <option v-for="selects in selectlist" v-bind:value="selects.id">{{ selects.name }}</option>
@@ -60,7 +60,7 @@
     </div>
     <div class="flex flex-col lg:flex-row md:flex-row my-6">
       <p class="w-full lg:w-64 md:w-64 py-2">Query</p>
-      <div class="flex-grow relative">
+      <div class="grow relative">
         <textarea name="message"  v-model="message" class="w-full border border-gray-500 p-2 lg:mx-3 md:mx-3 focus:outline-none leading-none"></textarea>
         <div class="absolute">
           <p class="text-xs text-red-500 text-left mx-3 mt-1" v-if="errors.message">{{errors.message[0]}}</p>
