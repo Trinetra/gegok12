@@ -77,12 +77,13 @@ class LibraryImportController extends Controller
     {
         $csv = Writer::createFromFileObject(new \SplTempFileObject());
 
-        $csv->insertOne(['card_number', 'book_limit', 'expiry_date', 'registration_number']);
+        $csv->insertOne(['card_number', 'book_limit', 'expiry_date', 'registration_number','employee_id']);
         $csv->insertOne([
             '23321211',
             '10',
             '31-05-2025',
             '5252525',
+            '10001'
         ]);
 
         $csv->output('School Plus Add Librarycard Format' . date('_d-m-Y_H:i') . '.csv');

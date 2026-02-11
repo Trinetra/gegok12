@@ -324,12 +324,16 @@
 
         created() 
         {
-            console.log(this.standard,this.searchquery,this.letter);
+            this.selectedLetter = this.letter || null;
             axios.get('/admin/students/find?'+this.searchquery).then(response => {
                 this.users = response.data.data;
             });
             this.getUrl();
-            this.getFeeDetails();
+            if(this.tab=='fees')
+            {
+                this.getFeeDetails();
+            }
+            
             this.getStandardsList();
 
 

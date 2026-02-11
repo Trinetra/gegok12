@@ -7,9 +7,8 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+window.Vue = require('vue').default;
 
-require('./custom_addon');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

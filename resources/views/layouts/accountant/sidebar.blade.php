@@ -1,4 +1,4 @@
-<div class="w-full lg:w-48 md:w-48 bg-blue-700 text-white h-full accountant-sidebar">
+<div class="w-full lg:w-48 md:w-48 bg-light-green-700 text-white h-full accountant-sidebar">
   <div class="min-h-full header-wrapper-b hidden lg:block md:block ">
    @include('layouts.accountant.menu')
   </div>
