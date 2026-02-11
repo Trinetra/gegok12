@@ -49,7 +49,10 @@ class AppServiceProvider extends ServiceProvider {
 
     public function boot() {
 
-
+ if(app()->environment('production')){
+            \URL::forceScheme('https');
+           
+        }
      Validator::extend('check_logoutdevice_id', function ($attribute, $value, $parameters, $validator)
         {
             $inputs = $validator->getData();
