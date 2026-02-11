@@ -1,7 +1,7 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/js/manifest.js": "/js/manifest.js",
-    "/css/app.css": "/css/app.css",
-    "/js/vendor.js": "/js/vendor.js",
-    "/images/vendor/vue-image-lightbox-carousel/src/loading.gif?640ba98c18515b2fa7e7a10a23ebf13d": "/images/vendor/vue-image-lightbox-carousel/src/loading.gif?640ba98c18515b2fa7e7a10a23ebf13d"
+    "/js/app.js": "/js/app.js?id=aa41c4e4711d359d75939a29ece22a17",
+    "/js/manifest.js": "/js/manifest.js?id=2de8c9abe84c22aca86bd0649af7afa7",
+    "/css/app.css": "/css/app.css?id=43b2c278fb4d12889d98f91525bcb752",
+    "/js/vendor.js": "/js/vendor.js?id=ae3b191ddc353d4482ab5d8dc91283be",
+    "/images/vendor/vue-image-lightbox-carousel/src/loading.gif?640ba98c18515b2fa7e7a10a23ebf13d": "/images/vendor/vue-image-lightbox-carousel/src/loading.gif?640ba98c18515b2fa7e7a10a23ebf13d?id=0b6bc70623ab2295830374e8a7c5bc4e"
 }
