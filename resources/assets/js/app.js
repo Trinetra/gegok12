@@ -9,6 +9,8 @@ require('./bootstrap');
 
 window.Vue = require('vue').default;
 
+import PortalVue from 'portal-vue';
+Vue.use(PortalVue);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

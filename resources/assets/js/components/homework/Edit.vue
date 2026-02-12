@@ -122,6 +122,7 @@
     import 'quill/dist/quill.core.css' // import styles
     import 'quill/dist/quill.snow.css' // for snow theme
     import 'quill/dist/quill.bubble.css' // for bubble theme
+    Vue.use(VueQuillEditor)
     export default {
         props:['url' , 'id' , 'mode'],
         data(){
@@ -137,6 +138,7 @@
                 attachment:'',
                 attachment_file:'',
                 date:'',
+                submission_date:'',
                 editorOption:{
                     theme: 'snow',
                     modules: {

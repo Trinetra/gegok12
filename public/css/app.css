@@ -560,7 +560,7 @@ ul.course_tabs li.current p {
 
 .custom-table thead{
   --tw-bg-opacity: 1;
-  background-color: rgb(107 114 128 / var(--tw-bg-opacity, 1));
+  background-color: rgb(160 174 192/ var(--tw-bg-opacity, 1));
 }
 
 .custom-table tbody td{
@@ -680,7 +680,7 @@ ul.course_tabs li.current p {
 }
 
 .blue-bg {
-  background-color: #3492e2;
+  background-color: #3492e2 !important;
 }
 
 .blue-text {
@@ -3819,7 +3819,7 @@ video {
 }
 .bg-gray-200{
   --tw-bg-opacity: 1;
-  background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
+  background-color: rgb(237 242 247 / var(--tw-bg-opacity, 1));
 }
 .bg-gray-300{
   --tw-bg-opacity: 1;
@@ -3908,10 +3908,6 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(126 34 206 / var(--tw-bg-opacity, 1));
 }
-.bg-purple-800{
-  --tw-bg-opacity: 1;
-  background-color: rgb(107 33 168 / var(--tw-bg-opacity, 1));
-}
 .bg-red-100{
   --tw-bg-opacity: 1;
   background-color: rgb(254 226 226 / var(--tw-bg-opacity, 1));
@@ -3942,7 +3938,7 @@ video {
 }
 .bg-red-800{
   --tw-bg-opacity: 1;
-  background-color: rgb(155 44 44 / var(--tw-bg-opacity, 1));
+  background-color: rgb(153 27 27 / var(--tw-bg-opacity, 1));
 }
 .bg-teal-300{
   --tw-bg-opacity: 1;
@@ -3985,16 +3981,9 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(234 179 8 / var(--tw-bg-opacity, 1));
 }
-.bg-purple-600{
+.bg-purple-800{
   --tw-bg-opacity: 1;
-  background-color: rgb(147 51 234 / var(--tw-bg-opacity, 1));
-}
-.bg-\[rgba\(109\2c 201\2c 250\2c 0\.25\)\]{
-  background-color: rgba(109,201,250,0.25);
-}
-.bg-\[\#3A6EA5\]{
-  --tw-bg-opacity: 1;
-  background-color: rgb(58 110 165 / var(--tw-bg-opacity, 1));
+  background-color: rgb(107 33 168 / var(--tw-bg-opacity, 1));
 }
 .bg-opacity-50{
   --tw-bg-opacity: 0.5;

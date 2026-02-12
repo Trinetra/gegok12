@@ -138,6 +138,7 @@
                 teacher_id:'',
                 description:'',
                 attachment:'',
+                submission_date:'',
                 editorOption:{
                     theme: 'snow',
                     modules: {

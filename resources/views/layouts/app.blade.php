@@ -47,7 +47,7 @@
                 <div class="sidebar min-h-full">
                     @yield('base-sidebar')
                 </div>
-                <div class="bg-gray-100 grow w-full px-4" style="width: calc(100vw - 195px);">
+                <div class="bg-gray-200 grow w-full px-4" style="width: calc(100vw - 195px);">
                     @yield('base-content')
                 </div>
             </main>
