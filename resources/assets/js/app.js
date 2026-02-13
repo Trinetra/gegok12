@@ -12,6 +12,8 @@ window.Vue = require('vue').default;
 import PortalVue from 'portal-vue';
 Vue.use(PortalVue);
 
+require('./custom_addon');
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

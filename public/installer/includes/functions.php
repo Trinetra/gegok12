@@ -612,7 +612,10 @@ function runInstallationStep($step) {
         case 'npm_build':
             if (commandExists('npm') && file_exists(BASE_PATH . '/node_modules')) {
                 // Use full path to cross-env to avoid PATH issues
-                $result = runCommand('node_modules/.bin/cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js 2>&1');
+                // $result = runCommand('node_modules/.bin/cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js 2>&1');
+                //new
+                $result = runCommand('node_modules/.bin/cross-env NODE_ENV=production npm run production 2>&1');
+                
                 $result['message'] = $result['success'] ? 'Assets compiled successfully' : 'Failed to compile assets';
             } else {
                 $result = ['success' => true, 'message' => 'NPM not available or node_modules missing, skipping...', 'output' => ''];
