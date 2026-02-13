@@ -39,6 +39,9 @@ return [
          'token' => env('TWILIO_TOKEN'),
          'key' => env('TWILIO_KEY'),
          'secret' => env('TWILIO_SECRET')
-      ]
+      ],
+      'google_maps' => [
+            'key' => env('GOOGLE_MAPS_API_KEY'),
+        ]
 
 ];
