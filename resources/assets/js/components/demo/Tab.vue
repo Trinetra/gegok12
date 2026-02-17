@@ -80,7 +80,7 @@
 </template>
 
 <script>
-    import PortalVue from "portal-vue";
+    
     import { bus } from "../../app";
     export default{
         props:['url'],

@@ -13,7 +13,7 @@
           <div v-if="this.avatar != ''">
             <img :src="avatar" style="width: 100px;height: 100px">
           </div>
-          <VueImageUploadCroppie :defaultImage.sync="avatar" :height="100" :width="100" :trans="trans"></VueImageUploadCroppie>
+          <VueImageUploadCroppie v-model:defaultImage="avatar" :height="100" :width="100" :trans="trans"></VueImageUploadCroppie>
           <span v-if="errors.avatar" class="text-red-500 text-xs font-semibold">{{errors.avatar}}</span>
         </div>
         <div class="flex">

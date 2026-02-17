@@ -33,12 +33,6 @@
  */
 
 /*!
- * Vue.js v2.7.16
- * (c) 2014-2023 Evan You
- * Released under the MIT License.
- */
-
-/*!
  * jQuery JavaScript Library v3.7.1
  * https://jquery.com/
  *
@@ -55,18 +49,6 @@
  * https://github.com/ssense/vue-carousel#readme
  */
 
-/*!
- * vue-swal v1.0.0
- * (c) 2018 Antério Vieira
- * Released under the MIT License.
- */
-
-/*!
-FullCalendar v5.11.5
-Docs & License: https://fullcalendar.io/
-(c) 2022 Adam Shaw
-*/
-
 /*! Axios v1.13.2 Copyright (c) 2025 Matt Zabriskie and contributors */
 
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
@@ -79,6 +61,36 @@ Docs & License: https://fullcalendar.io/
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  */
+
+/**
+* @vue/compiler-core v3.5.28
+* (c) 2018-present Yuxi (Evan) You and Vue contributors
+* @license MIT
+**/
+
+/**
+* @vue/compiler-dom v3.5.28
+* (c) 2018-present Yuxi (Evan) You and Vue contributors
+* @license MIT
+**/
+
+/**
+* @vue/runtime-core v3.5.28
+* (c) 2018-present Yuxi (Evan) You and Vue contributors
+* @license MIT
+**/
+
+/**
+* @vue/runtime-dom v3.5.28
+* (c) 2018-present Yuxi (Evan) You and Vue contributors
+* @license MIT
+**/
+
+/**
+* @vue/shared v3.5.28
+* (c) 2018-present Yuxi (Evan) You and Vue contributors
+* @license MIT
+**/
 
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.

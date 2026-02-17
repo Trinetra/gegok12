@@ -26,7 +26,7 @@
               <label for="date" class="tw-form-label">Date<span class="text-red-500">*</span></label>
             </div>
             <div class="mb-2 w-full lg:w-3/4  md:w-2/3">
-              <input type="date" name="date" v-model="date" class="tw-form-control w-full" id="date">
+              <input type="date" name="date" v-model="dateValue" class="tw-form-control w-full" id="date">
               <span v-if="errors.date" class="text-red-500 text-xs font-semibold">{{errors.date[0]}}</span>
             </div>
           </div>
@@ -150,9 +150,9 @@
         }],
         errors:[],
         success:null,
+        dateValue:'',
       }
     },
-        
     methods:
     {
       resetForm()
@@ -266,7 +266,7 @@
         let formData=new FormData();
 
         formData.append('standardLink_id',this.standardLink_id);   
-        formData.append('date',this.date);                 
+        formData.append('date',this.dateValue);                 
         formData.append('session',this.session); 
         
         formData.append('absentCount',this.absents.length);
@@ -345,6 +345,7 @@
     },
     created()
     {
+      this.dateValue = this.date || '';
       this.getData();
     }
   }

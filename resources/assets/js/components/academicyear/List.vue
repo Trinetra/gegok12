@@ -1,6 +1,6 @@
 <template>
     <div>
-        <portal to="add_academic_year">
+        <Teleport to="#add_academic_year">
             <div class="flex flex-wrap lg:flex-row justify-between">
             <div class="">
                 <h1 class="admin-h1 my-3">Academic Years</h1>
@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        </portal>
+        </Teleport>
         <div class="relative">
             <div v-if="this.success != null" class="w-full alert alert-success" id="success-alert">{{ this.success }}</div>
             <div class="overflow-x-auto flex flex-row justify-between custom-table">

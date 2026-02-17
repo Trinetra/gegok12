@@ -148,10 +148,6 @@
 
 <script>
     import datetime from 'vuejs-datetimepicker';
-    import Vue from 'vue'
-    import 'vue-flash-message/dist/vue-flash-message.min.css';
-    import VueFlashMessage from 'vue-flash-message';
-    Vue.use(VueFlashMessage);
 
 
     export default {
@@ -238,7 +234,6 @@
             this.getList();
         }
     }
-</script>
 </script>
 <style scoped>
   .myCustomClass {

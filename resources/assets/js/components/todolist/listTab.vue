@@ -14,14 +14,13 @@
             </li>
         </ul>
 
-        <portal to="list_task">
+        <Teleport to="#list_task">
             <ListTask :url="this.url" :mode="this.mode"></ListTask>
-        </portal>
+        </Teleport>
     </div>
 </template>
 
 <script>
-    import PortalVue from "portal-vue";
     import { bus } from "../../app";
     import ListTask from './ListTask';
 

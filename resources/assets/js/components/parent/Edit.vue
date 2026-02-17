@@ -153,15 +153,15 @@
         </div>
       </div>
 
-      <portal-target name="edit_official_address"></portal-target>
+      <div id="edit_official_address"></div>
 
-      <portal-target name="submit-btn"></portal-target>
-      <portal to="submit-btn">
+      <div id="submit-btn"></div>
+      <Teleport to="#submit-btn">
         <div class="my-6">
           <a href="#" dusk="submit-btn" class="btn btn-primary submit-btn" @click="submitForm()">Submit</a>
           <input type="submit" class="hidden" id="submit-btn">
         </div>
-      </portal>
+      </Teleport>
     </div>
   </div>
 </template>

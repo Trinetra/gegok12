@@ -42,7 +42,7 @@
                 <a href="#" class="text-gray-700 font-medium"  @click="setProfileTab('13')">Online Class</a>
             </li>
         </ul>
-        <portal to="class">
+        <Teleport to="#class">
             <div class="px-3 overflow-x-scroll lg:overflow-x-auto md:overflow-x-auto py-3" v-bind:class="[this.profile_tab==1?'block' :'hidden']">
                 <notice-board-list :url="this.url" :scope="this.id" :hidecolumns="true" :mode="this.mode"></notice-board-list>
             </div>
@@ -58,18 +58,18 @@
             <events :url="this.url" :id="this.id" :mode="this.mode"></events>
             <fees v-if="gfeeEnabled" :url="this.url" :id="this.id" :mode="this.mode"></fees>
             <wallBoard :url="this.url" :id="this.id" :mode="this.mode" :auth_id="this.auth_id"></wallBoard>
-        </portal>
-        <portal to="notes">
+        </Teleport>
+        <Teleport to="#notes">
             <div class="px-3 overflow-x-scroll lg:overflow-x-auto md:overflow-x-auto py-3" v-bind:class="[this.profile_tab==11?'block' :'hidden']">
                 <notes :url="this.url" :entity_id="this.id" entity_name="class" :school_id="this.school_id"></notes>
             </div>
-        </portal>
+        </Teleport>
         <conference v-if="gvideoroomEnabled" :url="this.url" :id="this.id" :mode="this.mode"></conference>
     </div>
 </template>
 
 <script>
-    import PortalVue from "portal-vue";
+    
     import { bus } from "../../../app";
     import NoticeList from '../../noticeboard/List';
     import timetable from './timetable';

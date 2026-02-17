@@ -19,14 +19,14 @@
       </li>
     </ul>
 
-    <portal to="list_lessonplan">
+    <Teleport to="#list_lessonplan">
       <List :url="this.url" :role="this.role"></List>
-    </portal>
+    </Teleport>
   </div>
 </template>
 
 <script>
-  import PortalVue from "portal-vue";
+  
   import { bus } from "../../app";
   import List from './List';
 

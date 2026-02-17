@@ -189,7 +189,7 @@
             <div class="" v-else>
               <img :src='url+"/uploads/user/avatar/default-user.jpg"' style="width: 100px;height: 100px;">
             </div>
-            <VueImageUploadCroppie :defaultImage.sync="avatar" :height="100" :width="100" :trans="trans"></VueImageUploadCroppie>
+            <VueImageUploadCroppie v-model:defaultImage="avatar" :height="100" :width="100" :trans="trans"></VueImageUploadCroppie>
           </div>
           <span v-if="errors.avatar" class="text-red-500 text-xs font-semibold">{{errors.avatar[0]}}</span>
         </div>
@@ -271,7 +271,6 @@
 
 <script> 
   import { bus } from "../../app";
-  import PortalVue from "portal-vue";
   import VueImageUploadCroppi from 'vue-image-upload-croppie'
   export default {
     components: 

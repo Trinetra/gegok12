@@ -89,9 +89,6 @@
         </table>
       </div>
     </div>
-   
-
-    </div>
 <!-- End modal -->
   </div>
 </template>

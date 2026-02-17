@@ -261,16 +261,16 @@
                 </div>
             </div>
 
-            <portal-target name="official_address"></portal-target>
+            <div id="official_address"></div>
 
-            <portal-target name="submit-btn"></portal-target>
-            <portal to="submit-btn">
+            <div id="submit-btn"></div>
+            <Teleport to="#submit-btn">
                 <div class="my-6">
                     <a href="#" dusk="submit-btn" class="btn btn-primary submit-btn" @click="submitForm()">Submit</a>
                     <a href="#" class="btn btn-reset reset-btn" @click="resetForm()">Reset</a>
                     <input type="submit" class="hidden" id="submit-btn">
                 </div>
-            </portal>
+            </Teleport>
         </div>
     </div>
 </template>

@@ -1,7 +1,7 @@
 <template>
     <div class="relative">
         <div v-if="this.success!=null" class="alert alert-success mt-2" id="success-alert">{{this.success}}</div>
-        <portal to="add_todolist">
+        <Teleport to="#add_todolist">
             <div class="flex flex-wrap lg:flex-row justify-between items-center">
                 <div class="flex items-center">
                     <h1 class="admin-h1">Tasks</h1>
@@ -48,7 +48,7 @@
                     </div>
                 </div>
             </div>
-        </portal>
+        </Teleport>
 
         <div class="bg-white shadow my-5" v-if="Object.keys(tasks).length > 0">
             <div class="flex mx-2 my-3 items-center" v-for="(tasklist,key) in tasks">

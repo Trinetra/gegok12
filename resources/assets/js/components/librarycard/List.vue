@@ -1,10 +1,10 @@
 <template>
     <div>
-        <portal to="student_count">
+        <Teleport to="#student_count">
             <div class="">
                 <h1 class="admin-h1 my-3">Students ( {{ Object.keys(this.users).length }} )</h1>
             </div>
-        </portal>
+        </Teleport>
         <div v-if="this.success!=null" class="alert alert-success" id="success-alert">{{this.success}}</div>
         <div class="my-4 filter-alphabet">
             <ul class="list-reset flex flex-wrap">
@@ -26,7 +26,7 @@
 
         <div>
             <!-- <memberdetails :url="this.url"></memberdetails> -->
-            <!-- <portal-target name="memberdetail"></portal-target> -->
+            <!-- <div id="memberdetail"></div> -->
             <div class="my-8">
                 <div class="w-full flex flex-wrap items-center justify-between mb-4">
                     <div class="flex items-center text-sm">
@@ -282,7 +282,7 @@
 
 <script>
     import { bus } from "../../app";
-    import PortalVue from "portal-vue";
+    
     // import memberdetails from './Detail';
     import datetime from 'vuejs-datetimepicker';
 

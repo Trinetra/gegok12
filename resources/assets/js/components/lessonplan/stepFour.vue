@@ -34,15 +34,15 @@
         </div>
         <!--end-->
 
-        <portal-target name="submit-btn"></portal-target>
-        <portal to="submit-btn">
+        <div id="submit-btn"></div>
+        <Teleport to="#submit-btn">
             <div class="my-6">
                 <a href="#" id="submit-btn" class="btn btn-reset bg-gray-100 text-gray-700 border rounded px-3 py-1 mr-3 text-sm font-medium" @click="setTab('3')">Back</a>
                 <a href="#" class="btn btn-submit blue-bg text-white rounded px-3 py-1 mr-3 text-sm font-medium" @click="submitForm()">Submit</a>
                 <a href="#" class="btn btn-reset bg-gray-100 text-gray-700 border rounded px-3 py-1 mr-3 text-sm font-medium" @click="resetForm()" v-if="this.type == 'add'">Reset</a>
                 <input type="submit" class="hidden" id="submit_btn" value="Submit"> 
             </div>
-        </portal>
+        </Teleport>
     </div>
 </template>
 

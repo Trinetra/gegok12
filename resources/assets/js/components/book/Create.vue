@@ -98,7 +98,7 @@
  <div  class="tw-form-group w-full lg:w-3/4 md:w-3/4">
           <div class="flex flex-col lg:flex-row md:flex-row">
             <div class="w-full lg:w-1/4">
-                <label for="cover_image" v-model="cover_image" class="tw-form-label">Upload Cover Image</label>
+                <label for="cover_image" class="tw-form-label">Upload Cover Image</label>
             </div>
             <div class="w-full lg:w-1/4 my-2">
               <input type="file" name="cover_image" @change="OnImageSelected" id="cover_image" class="tw-form-control w-full">

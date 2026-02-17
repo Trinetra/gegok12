@@ -236,7 +236,6 @@
 
 <script> 
   import { bus } from "../../app";
-  import PortalVue from "portal-vue";
   export default {
     props:['url','teacher_name','staff'],
     data(){

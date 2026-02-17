@@ -108,7 +108,7 @@
                 </div>
             </div>
 
-            <portal-target name="edit_school_address"></portal-target>
+            <div id="edit_school_address"></div>
 
             <div class="flex flex-col lg:flex-row">
                 <div class="tw-form-group w-full lg:w-1/2">
@@ -247,14 +247,14 @@
                 </div>
             </div>
 
-            <portal-target name="submit-btn"></portal-target>
-            <portal to="submit-btn">
+            <div id="submit-btn"></div>
+            <Teleport to="#submit-btn">
                 <div class="py-3">
                     <a href="#" dusk="submit-btn" class="btn btn-primary submit-btn" @click="updateDetails()">Submit</a>
                     <a href="#" class="btn btn-reset reset-btn" @click="resetForm()">Reset</a>
                     <input type="submit" class="hidden" id="submit-btn">
                 </div>
-            </portal>
+            </Teleport>
         </div>
     </div>
 </template>

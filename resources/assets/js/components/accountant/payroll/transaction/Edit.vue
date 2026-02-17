@@ -154,7 +154,7 @@
        <div class="flex flex-col lg:flex-row md:flex-row">
             <div class="tw-form-group w-full lg:w-1/2 md:w-1/2">
               <div class="lg:mr-6 md:mr-6">
-               <label for="attachment" v-model="attachment" class="tw-form-label">Attachment</label>
+               <label for="attachment" class="tw-form-label">Attachment</label>
               <div class="my-1">
                       <input type="file" name="attachment" @change="OnFileSelected" id="attachment" class="tw-form-control w-full">
                       <span v-if="errors.attachment" class="text-red-500 text-xs font-semibold">{{errors.attachment[0]}}</span>

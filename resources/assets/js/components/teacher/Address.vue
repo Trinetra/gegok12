@@ -1,10 +1,10 @@
 <template>
 	<div class=" overflow-x-scroll lg:overflow-x-auto md:overflow-x-auto py-3 bg-white shadow px-3" v-bind:class="[this.profile_tab==4?'block' :'hidden']">
     <div v-if="this.type == 'add'">
-      <portal-target name="address"></portal-target>
+      <div id="address"></div>
     </div>
     <div v-if="this.type == 'edit'">
-      <portal-target name="edit_address"></portal-target>
+      <div id="edit_address"></div>
     </div>
 
       <div class="tw-form-group">
@@ -59,21 +59,20 @@
         </div>
       </div>
 
-      <portal-target name="submit-btn"></portal-target>
-      <portal to="submit-btn">
+      <div id="submit-btn"></div>
+      <Teleport to="#submit-btn">
         <div class="my-6">
           <a href="#" dusk="submit-btn" class=" btn-primary submit-btn blue-bg text-sm text-white px-2 py-1 rounded mx-1" @click="previous(2)">Previous</a>
           <a href="#" dusk="submit-btn" class="btn-primary submit-btn blue-bg text-sm text-white px-2 py-1 rounded mx-1" @click="submitForm()">Submit</a>
           <a href="#" class="btn-reset reset-btn" @click="resetForm()">Reset</a>
           <input type="submit" class="hidden" id="submit-btn">
         </div>
-      </portal>
+      </Teleport>
 	</div>
 </template>
 
 <script> 
 	import { bus } from "../../app";
-	import PortalVue from "portal-vue";
 	export default {
     props:['type' , 'teacher_name'],
 	  	data(){

@@ -15,14 +15,14 @@
             </li>
         </ul>
 
-        <portal to="list_assignment">
+        <Teleport to="#list_assignment">
             <AssignmentList :url="this.url" :role="this.role" :type="this.type" :scope="this.scope" :hidecolumns="this.hidecolumns" :searchquery="this.searchquery"></AssignmentList>
-        </portal>
+        </Teleport>
     </div>
 </template>
 
 <script>
-    import PortalVue from "portal-vue";
+    
     import { bus } from "../../../app";
     import AssignmentList from './List';
 

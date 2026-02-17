@@ -1,11 +1,11 @@
 <script>
-    import FullCalendar from '@fullcalendar/vue'
+    import FullCalendar from '@fullcalendar/vue3'
     import dayGridPlugin from '@fullcalendar/daygrid'
     import interactionPlugin from '@fullcalendar/interaction'
     import timeGridPlugin from '@fullcalendar/timegrid'
     import { INITIAL_EVENTS, createEventId } from './event-utils'
     import { bus } from "../../app";
-    import PortalVue from "portal-vue";
+    
     export default {
         components: {
             FullCalendar // make the <FullCalendar> tag available

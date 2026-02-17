@@ -1,6 +1,6 @@
 <template>
     <div>
-        <portal to="parent_index">
+        <Teleport to="#parent_index">
             <div class="flex flex-wrap lg:flex-row justify-between my-3">
                 <div class="">
                     <h1 class="admin-h1 my-3">Parents</h1>
@@ -14,7 +14,7 @@
                     </div>
                 </div>
             </div>
-        </portal>
+        </Teleport>
         <vue-good-table  :columns="columns" :rows="rows" @on-column-filter="onColumnFilter" @on-page-change="onPageChange" :paginationOptions="{ enabled: true , perPageDropdownEnabled: false }" :totalRows="totalRecords" :isLoading="isLoading" mode="remote"> 
             <template slot="table-row" slot-scope="props">
                 <div v-if="props.column.field == 'action'" class="w-full flex justify-between">

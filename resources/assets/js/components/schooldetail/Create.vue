@@ -85,7 +85,7 @@
     	<div class="tw-form-group w-full lg:w-1/2">
       	<div class="lg:mr-8 md:mr-8">
         	<div class="mb-2">
-          	<label for="school_logo" v-model="school_logo" class="tw-form-label">School Logo<span class="text-red-500">*</span></label>
+          	<label for="school_logo" class="tw-form-label">School Logo<span class="text-red-500">*</span></label>
         	</div>
         	<div class="w-full lg:w-3/4 my-2">
       			<input type="file" name="school_logo" @change="OnImageSelected" id="school_logo" class="tw-form-control w-full">
@@ -107,7 +107,7 @@
       </div>
     </div>
 
-    <portal-target name="school_address"></portal-target>
+    <div id="school_address"></div>
 
     <div class="flex flex-col lg:flex-row">
       <div class="tw-form-group w-full lg:w-1/2">
@@ -184,14 +184,14 @@
       </div>
     </div>
 
-    <portal-target name="submit-btn"></portal-target>
-    <portal to="submit-btn">
+    <div id="submit-btn"></div>
+    <Teleport to="#submit-btn">
       <div class="my-6">
         <a href="#" dusk="submit-btn" class="btn btn-primary submit-btn" @click="submitForm()">Submit</a>
         <a href="#" class="btn btn-reset reset-btn" @click="resetForm()">Reset</a>
         <input type="submit" class="hidden" id="submit-btn">
       </div>
-    </portal>
+    </Teleport>
   </div>
 </template>
 

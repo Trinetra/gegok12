@@ -1,7 +1,7 @@
 <template>
     <div class="relative">
         <div v-if="this.success!=null" class="alert alert-success" id="success-alert">{{ this.success }}</div>
-        <portal to="student_homework_list">
+        <Teleport to="#student_homework_list">
             <div class="flex flex-wrap lg:flex-row items-center mb-5 justify-between">
                 <div class="">
                     <h1 class="admin-h1 my-3 flex items-center">
@@ -32,7 +32,7 @@
                     </div>
                 </div>
             </div>
-        </portal>
+        </Teleport>
         <div class="">
             <ul class="flex flex-col lg:flex-row md:flex-row list-reset leading-loose my-2 text-sm" v-if="Object.keys(this.homework).length > 0">
                 <li class="flex lg:px-4 md:px-2 py-1">
@@ -40,7 +40,7 @@
                         <span class="text-gray-700 font-medium mx-2">Description : </span>
                     </div>
                     <div>
-                        <p v-html="homework.description">{{ homework.description }}</p>
+                        <p v-html="homework.description"></p>
                     </div>
                 </li>
             </ul>

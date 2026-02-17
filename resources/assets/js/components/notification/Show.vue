@@ -45,7 +45,7 @@
 </template>
 
 <script>
-    import PortalVue from "portal-vue";
+    
     export default {
         props: [ 'url' , 'mode' ],
         data(){

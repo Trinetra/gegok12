@@ -27,18 +27,18 @@
             </li>
         </ul>
 
-        <portal to="add_admissionform">
+        <Teleport to="#add_admissionform">
             <select-standard :url="this.url" :slug="this.slug"></select-standard>
             <student-detail :url="this.url" :slug="this.slug"></student-detail>
             <academic-detail :url="this.url" :slug="this.slug"></academic-detail>
             <parent-detail :url="this.url" :slug="this.slug"></parent-detail>
             <personal-detail :url="this.url" :slug="this.slug"></personal-detail>
-        </portal>
+        </Teleport>
     </div>
 </template>
 
 <script>
-    import PortalVue from "portal-vue";
+    
     import { bus } from "../../app";
     import selectStandard from './SelectStandard';
     import studentDetail from './StudentDetail';

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <portal to="teacherdetail">
+    <Teleport to="#teacherdetail">
       <div class="hide-menu absolute top-0" id="show-detail">
         <div class="bg-white w-full lg:w-2/5 md:w-2/5 shadow-lg border border-r-0 member-detail z-40 top-0 right-0 fixed h-full overflow-y-auto">
           <a href="#" @click="disableform()" class="absolute right-0">
@@ -84,14 +84,13 @@
           </div>
         </div>
       </div>
-    </portal>
+    </Teleport>
   </div>
 </template>
 
 <script>
 
   import { bus } from "../../app";
-  import PortalVue from "portal-vue";
   export default {
     props:['url'],
     data(){

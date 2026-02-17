@@ -43,7 +43,7 @@
                     <div class="mb-2">
                         <select class="tw-form-control w-full" id="exam_id" v-model="exam_id" name="exam_id">
                             <option value="" disabled>Select Exam</option>
-                            <option v-for="exam in examlist[this.curr_standardlink_id]" v-bind:value="exam.id">{{ exam.name }} <span>{{ exam.subjects }}</span></option>
+                            <option v-for="exam in examlist[this.curr_standardlink_id]" v-bind:value="exam.id">{{ exam.name }} ({{ exam.subjects }})</option>
                         </select>
                     </div>
                     <span v-if="errors.exam_id" class="text-red-500 text-xs font-semibold">{{ errors.exam_id[0] }}</span>

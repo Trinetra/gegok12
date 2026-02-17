@@ -15,7 +15,7 @@
     </div>
     <div>
       <!-- <teacherdetails :url="this.url"></teacherdetails>
-      <portal-target name="teacherdetail" ></portal-target> -->
+      <div id="teacherdetail"></div> -->
       <div class="my-8">
         <!-- <div class="w-full flex flex-wrap items-center justify-between mb-4">
           <div class="flex flex-wrap items-center text-sm">
@@ -58,7 +58,6 @@
                 </div>
               </div>
             </div>
-            </a>
           </template>
         </div>
       </div>
@@ -131,7 +130,7 @@
 <script>
 
   import { bus } from "../../app";
-  import PortalVue from "portal-vue";
+  
   //import teacherdetails from './Detail';
   import datetime from 'vuejs-datetimepicker';
   export default {

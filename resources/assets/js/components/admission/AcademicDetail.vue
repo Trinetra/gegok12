@@ -105,7 +105,7 @@
 
 <script>
     import { bus } from "../../app";
-    import PortalVue from "portal-vue";
+    
     export default {
         props:['url','slug'],
         data(){

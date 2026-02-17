@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <portal-target name="address"></portal-target>
+    <div id="address"></div>
 
     <div class="tw-form-group">
       <div class="flex flex-col lg:flex-row">
@@ -501,19 +501,18 @@
       </div>   
     </div>   
 
-    <portal-target name="submit-btn"></portal-target>
-    <portal to="submit-btn">
+    <div id="submit-btn"></div>
+    <Teleport to="#submit-btn">
       <div class="my-6">
         <a href="#" dusk="submit-btn" class="btn btn-primary submit-btn" @click="submitForm()">Submit</a>
         <a href="#" class="btn btn-reset reset-btn" @click="resetForm()">Reset</a>
         <input type="submit" class="hidden" id="submit-btn">
       </div>
-    </portal>
+    </Teleport>
   </div>
 </template>
 
 <script> 
-import PortalVue from "portal-vue";
 export default {
   props:['url'],
 
