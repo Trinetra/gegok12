@@ -15,6 +15,7 @@ use App\Http\Resources\API\City as CityResource;
 use App\Models\TeacherLeaveApplication;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Users\TeacherUser;
+use App\Models\Users\StudentUser;
 use App\Models\TeacherProfile;
 use App\Models\Qualification;
 use App\Models\NonScholastic;
@@ -401,7 +402,7 @@ class SiteHelper
     {
         $key = "class_student_count" . $standardLink_id;
         return Cache::remember($key, env('CACHE_TIME'), function () use ($school_id, $academic_year_id, $standardLink_id) {
-            return User::where([['status', 'active']])->ByRole(6)->whereHas('studentAcademic', function ($query) use ($school_id, $academic_year_id, $standardLink_id) {
+            return StudentUser::where([['status', 'active']])->ByRole(6)->whereHas('studentAcademic', function ($query) use ($school_id, $academic_year_id, $standardLink_id) {
                 $query->where([
                     ['school_id', $school_id],
                     ['academic_year_id', $academic_year_id],
@@ -485,7 +486,7 @@ class SiteHelper
     {
         $key = "teaching_staff_lists_" . $school_id . '_' . $academic_year_id;
         return Cache::remember($key, env('CACHE_TIME'), function () use ($school_id, $academic_year_id) {
-            return User::where('usergroup_id', 5)->where('status', 'active')->whereHas('teacherprofile', function ($query) use ($school_id, $academic_year_id) {
+            return TeacherUser::where('usergroup_id', 5)->where('status', 'active')->whereHas('teacherprofile', function ($query) use ($school_id, $academic_year_id) {
                 $query->where([
                     ['school_id', $school_id],
                     ['academic_year_id', $academic_year_id]
@@ -596,7 +597,7 @@ class SiteHelper
 
         $key = "class_students_" . $standardLink_id;
         return Cache::remember($key, env('CACHE_TIME'), function () use ($school_id, $academic_year_id, $standardLink_id) {
-            return User::ByRole(6)->where('status', 'active')->whereHas('studentAcademic', function ($query) use ($school_id, $academic_year_id, $standardLink_id) {
+            return StudentUser::ByRole(6)->where('status', 'active')->whereHas('studentAcademic', function ($query) use ($school_id, $academic_year_id, $standardLink_id) {
                 $query->where([
                     ['school_id', $school_id],
                     ['academic_year_id', $academic_year_id],

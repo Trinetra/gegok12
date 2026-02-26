@@ -82,17 +82,27 @@ class TaskController extends Controller
 
         $standardlink_subject_list = SiteHelper::getStandardSubjectList(Auth::user()->school_id,Auth::id());
         $array['standardlinks'] = $standardlink_subject_list['standardLinklist'];
+
         if($request->standardlink_id != null)
         {
-            $students = SiteHelper::getClassStudents(Auth::user()->school_id,$academic_year->id,$request->standardlink_id);
+            $students = SiteHelper::getClassStudents(
+                Auth::user()->school_id,
+                $academic_year->id,
+                $request->standardlink_id
+            );
+
             $array['students'] = StudentlistResource::collection($students);
         }
+        else
+        {
+            $array['students'] = [];
+        }
+
         $array['teachers']  = TeacherResource::collection($teachers);
         $array['task_date'] = date('Y-m-d');
-        
-        return $array;
+
+        return response()->json($array);
     }
-    
     /**
      * Mark selected tasks as completed.
      *
