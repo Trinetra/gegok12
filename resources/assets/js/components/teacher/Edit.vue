@@ -75,7 +75,12 @@
           </div>
           <div class="mb-2">
             <select class="tw-form-control w-full" id="designation" v-model="designation" name="designation">
-              <option value="" v-for="designation in designationlist" v-bind:value="designation.id">{{ designation.name }}</option>
+              <option
+                v-for="designation in designationlist"
+                :key="designation.id"
+                :value="designation.id">
+                {{ designation.name }}
+              </option>
             </select>
           </div>
           <span v-if="errors.designation" class="text-red-500 text-xs font-semibold">{{errors.designation[0]}}</span>
@@ -264,6 +269,7 @@
         designationlist:[],
         HODList:[],
         principalList:[],
+        address:'',
       }
     },
     methods:
@@ -352,14 +358,14 @@
       setProfileTab(val)
       {
         this.profile_tab=val;
-        bus.$emit("dataProfileTab", this.profile_tab);
+        bus.emit("dataProfileTab", this.profile_tab);
       },
     },
     
     created()
     {
       this.getData(); 
-      bus.$on("dataProfileTab", data => {
+      bus.on("dataProfileTab", data => {
         if(data!='')
         {
           this.profile_tab=data;                   

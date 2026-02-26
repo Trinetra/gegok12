@@ -39,7 +39,7 @@
                                     @elseif($feed->tag=='Workanniversary')
                                         <img src="{{ $anniversary }}" class="w-full rounded h-64">
                                     @else
-                                        @if(count($feed->attachment_file)>0)
+                                        @if(count($feed->attachment_file ?? []) > 0)
                                             <slider-image url="{{ url('/') }}" id="{{ $feed->id }}" mode="student" left="{{ $leftarrow }}" right="{{ $rightarrow }}"></slider-image>
                                         @else
                                             <img src="{{ $feed->CoverPath }}" class="w-full rounded h-64">

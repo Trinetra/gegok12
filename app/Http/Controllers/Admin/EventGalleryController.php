@@ -75,23 +75,17 @@ class EventGalleryController extends Controller
   public function store(EventGalleryRequest $request, $event_id)
   {
     try {
-      if (count($request->data) != null) {
 
-        for ($i = 0; $i < count($request->data); $i++) {
-
-          $image_parts    = explode(";base64,", $request->data[$i]['path']);
-          $image_type_aux = explode("image/", $image_parts[0]);
-          $image_type     = $image_type_aux[1] ?? 'png';
-          $image_base64   = base64_decode($image_parts[1]);
+        foreach ($request->file('photos') as $uploadedFile) {
 
           $school_id = Auth::user()->school_id;
           $location  = Auth::user()->school->slug . '/photos/events/';
-          $file      = uniqid() . '.png';
-
-          $db_path = $location . $file;
+          $fileName  = uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+          $db_path   = $location . $fileName;
+          $fileContent = file_get_contents($uploadedFile->getRealPath());
 
           // Save image using common storage helper
-          $this->putContents($db_path, $image_base64);
+          $this->putContents($db_path, $fileContent);
 
           $photo = EventGallery::create([
             'event_id'   => $event_id,
@@ -128,7 +122,6 @@ class EventGalleryController extends Controller
         );
 
         return ['message' => 'Uploaded Successfully'];
-      }
 
       return ['count' => 'Select Atleast One'];
     } catch (Exception $e) {

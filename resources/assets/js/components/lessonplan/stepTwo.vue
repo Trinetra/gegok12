@@ -26,7 +26,12 @@
                         <label for="materials_required" class="tw-form-label">Materials Required<span class="text-red-500">*</span></label>
                     </div>
                     <div class="mb-2">
-                        <quill-editor ref="myQuillEditor" v-model="materials_required" :options="option"/>
+                        <QuillEditor
+                          v-model:content="materials_required"
+                          contentType="html"
+                          theme="snow"
+                          :modules="editorModules"
+                        />
                     </div>
                     <span v-if="errors.materials_required" class="text-red-500 text-xs font-semibold">{{ errors.materials_required[0] }}</span>
                 </div>
@@ -66,12 +71,13 @@
 
 <script>
     import { bus } from "../../app";
-    import VueQuillEditor from 'vue-quill-editor'
-    import 'quill/dist/quill.core.css' // import styles
-    import 'quill/dist/quill.snow.css' // for snow theme
-    import 'quill/dist/quill.bubble.css' // for bubble theme
+    import { QuillEditor } from '@vueup/vue-quill'
+    import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
     export default {
+        components:{ 
+          QuillEditor,
+        },
         props:['url' , 'type' , 'id'],
         data(){
             return{
@@ -81,15 +87,14 @@
                 objective:'',
                 materials_required:'',
                 assessment:'',
-                option:{
-                    theme: 'snow',
-                    modules: {
-                        toolbar: [
-                            ['bold', 'italic', 'underline'],
-                            [{ 'list': 'ordered' }, { 'list': 'bullet' }]
-                        ]
-                    },
-                    placeholder: '', 
+                editorModules: {
+                  toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ color: [] }, { background: [] }],
+                    [{ script: 'sub' }, { script: 'super' }],
+                    [{ align: [] }],
+                    ['image']
+                  ]
                 },
                 errors:[],
                 success:null,
@@ -123,15 +128,15 @@
             setProfileTab(val,response)
             {
                 this.profile_tab=val;
-                bus.$emit("dataProfileTab", this.profile_tab);
-                bus.$emit("lessonId", response.data.id);
-                bus.$emit("message", response.data.message);
+                bus.emit("dataProfileTab", this.profile_tab);
+                bus.emit("lessonId", response.data.id);
+                bus.emit("message", response.data.message);
             },
 
             setTab(val)
             {
                 this.profile_tab=val;
-                bus.$emit("dataProfileTab", this.profile_tab);
+                bus.emit("dataProfileTab", this.profile_tab);
             },
 
             resetForm()
@@ -175,19 +180,19 @@
         created()
         {
             this.getData(); 
-            bus.$on("dataProfileTab", data => {
+            bus.on("dataProfileTab", data => {
                 if(data!='')
                 {
                     this.profile_tab=data;                   
                 }
             });
-            bus.$on("lessonId", data => {
+            bus.on("lessonId", data => {
                 if(data!='')
                 {
                     this.lesson_id=data;                   
                 }
             });
-            bus.$on("message", data => {
+            bus.on("message", data => {
                 if(data!='')
                 {
                     this.success=data;                   

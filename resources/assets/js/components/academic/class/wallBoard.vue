@@ -211,13 +211,13 @@
     
 	    created()
 	    {   
-	      bus.$on("dataProfileTab", data => {
+	      bus.on("dataProfileTab", data => {
 	        if(data!='')
 	        {
 	          this.profile_tab=data;                   
 	        }
 	      });
-          bus.$on("successMsg", data => {
+          bus.on("successMsg", data => {
             if(data!='')
             {
               this.success=data;                     

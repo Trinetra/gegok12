@@ -74,11 +74,12 @@
 </template>
 
 <script>
-import datetime from 'vuejs-datetimepicker';
+import { VueDatePicker } from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 
 export default {
   components: {
-    datetime,
+    VueDatePicker,
   },
 
   props : ['url','id' , 'status'],

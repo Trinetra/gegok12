@@ -1,6 +1,6 @@
 @extends('layouts.student.layout')
 
 @section('content')
-   	<portal-target name="add_homework"></portal-target>
+   	<div id="add_homework"></div>
    	<homework-list url="{{ url('/') }}" scope="" hidecolumns="true" searchquery="{{ $query }}" mode="student"></homework-list>
 @endsection

@@ -54,8 +54,8 @@
   </div>
   
   <div class="w-full lg:w-1/4 px-2 my-2 lg:my-0 dashboard-filter">
-      <portal-target name="search" ></portal-target>
-      <portal-target name="memberfilter" ></portal-target>
+      <div id="search" ></div>
+      <div id="memberfilter" ></div>
       <search-filter url="{{url('/')}}" searchquery="{{$query}}"></search-filter>
   </div>
 <!--end-->

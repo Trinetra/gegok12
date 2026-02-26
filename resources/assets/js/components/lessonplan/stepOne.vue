@@ -117,10 +117,6 @@
 
 <script>
     import { bus } from "../../app";
-    import VueQuillEditor from 'vue-quill-editor'
-    import 'quill/dist/quill.core.css' // import styles
-    import 'quill/dist/quill.snow.css' // for snow theme
-    import 'quill/dist/quill.bubble.css' // for bubble theme
 
     export default {
         props:['url' , 'type' , 'id'],
@@ -137,16 +133,6 @@
                 description:'',
                 title:'',
                 duration:'',
-                option:{
-                  theme: 'snow',
-                  modules: {
-                    toolbar: [
-                      ['bold', 'italic', 'underline'],
-                      [{ 'list': 'ordered' }, { 'list': 'bullet' }]
-                    ]
-                  },
-                  placeholder: '', 
-                },
                 errors:[],
                 success:null,
             }
@@ -189,15 +175,15 @@
             setProfileTab(val,response)
             {
                 this.profile_tab=val;
-                bus.$emit("dataProfileTab", this.profile_tab);
-                bus.$emit("lessonId", response.data.id);
-                bus.$emit("message", response.data.message);
+                bus.emit("dataProfileTab", this.profile_tab);
+                bus.emit("lessonId", response.data.id);
+                bus.emit("message", response.data.message);
             },
 
             setTab(val)
             {
                 this.profile_tab=val;
-                bus.$emit("dataProfileTab", this.profile_tab);
+                bus.emit("dataProfileTab", this.profile_tab);
             },
 
             resetForm()
@@ -250,7 +236,7 @@
         created()
         {
             this.getData(); 
-            bus.$on("dataProfileTab", data => {
+            bus.on("dataProfileTab", data => {
                 if(data!='')
                 {
                     this.profile_tab=data;                   

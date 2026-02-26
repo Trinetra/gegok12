@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="relative">
+   <div id="teacherdetail"></div>
 
 <div class="flex flex-wrap lg:flex-row justify-between my-3">
 <div class="">
@@ -9,8 +10,8 @@
 </div>
 
    <div class="pl-5" style="width: 42%;margin-right: auto;">
-   	 <portal-target name="search" ></portal-target>
-   	 <portal-target name="teacherfilter" ></portal-target>
+   	 <div id="search"></div>
+      <div id="teacherfilter"></div>
    </div>
 
 

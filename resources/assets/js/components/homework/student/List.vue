@@ -298,14 +298,9 @@
 </template>
 
 <script>
-    import vue2Dropzone from 'vue2-dropzone'
-    import 'vue2-dropzone/dist/vue2Dropzone.min.css'
     import { bus } from "../../../app";
     export default {
         props:['url' , 'scope' , 'hidecolumns', 'searchquery' , 'mode'],
-        components:{ 
-            vueDropzone: vue2Dropzone,
-        },
         data () {
             return {
                 homeworks:[],
@@ -448,7 +443,7 @@
         {   
             this.getData();
 
-            bus.$on('success',data =>{
+            bus.on('success',data =>{
                 if(data != null)
                 {
                     this.closeModal();

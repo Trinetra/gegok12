@@ -5,6 +5,31 @@
   */
 
 /*!
+  * vue-good-table-next v0.2.2
+  * (c) 2021-present Boris Flesch <boris@singlequote.net>
+  * (c) 2017-2021 xaksis <shay@crayonbits.com>
+  * @license MIT
+  */
+
+/*!
+  Copyright (c) 2018 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+
+/*!
+ * FilePond 4.32.11
+ * Licensed under MIT, https://opensource.org/licenses/MIT/
+ * Please visit https://pqina.nl/filepond/ for details.
+ */
+
+/*!
+ * FilePondPluginImagePreview 4.6.12
+ * Licensed under MIT, https://opensource.org/licenses/MIT/
+ * Please visit https://pqina.nl/filepond/ for details.
+ */
+
+/*!
  * Pusher JavaScript Library v6.0.3
  * https://pusher.com/
  *
@@ -27,9 +52,15 @@
  */
 
 /*!
- * Vue-Lazyload.js v1.3.5
- * (c) 2023 Awe <hilongjw@gmail.com>
- * Released under the MIT License.
+ * VueQuill @vueup/vue-quill v1.2.0
+ * https://vueup.github.io/vue-quill/
+ * 
+ * Includes quill v1.3.7
+ * https://quilljs.com/
+ * 
+ * Copyright (c) 2023 Ahmad Luthfi Masruri
+ * Released under the MIT license
+ * Date: 2023-05-12T08:44:03.742Z
  */
 
 /*!
@@ -44,12 +75,31 @@
  */
 
 /*!
- * vue-carousel v0.18.0-alpha
- * (c) 2019 todd.beauchamp@ssense.com
- * https://github.com/ssense/vue-carousel#readme
+ * vue-filepond v7.0.4
+ * A handy FilePond adapter component for Vue
+ * 
+ * Copyright (c) 2023 PQINA
+ * https://pqina.nl/filepond
+ * 
+ * Licensed under the MIT license.
  */
 
-/*! Axios v1.13.2 Copyright (c) 2025 Matt Zabriskie and contributors */
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+/*! Axios v1.13.5 Copyright (c) 2026 Matt Zabriskie and contributors */
 
 /*! ieee754. BSD-3-Clause License. Feross Aboukhadijeh <https://feross.org/opensource> */
 

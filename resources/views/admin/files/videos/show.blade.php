@@ -14,6 +14,6 @@
         </div>
         @include('partials.message')
         <file-list-tab url="{{ url('/') }}"></file-list-tab>
-        <portal-target name="filedetail"></portal-target>
+        <div id="filedetail"></div>
     </div>
 @endsection

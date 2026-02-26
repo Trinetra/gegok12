@@ -1,7 +1,7 @@
 @extends('layouts.reception.layout')
 
 @section('content')
-    <portal-target name="add_todolist"></portal-target>
+    <div id="add_todolist"></div>
     <list-todo url="{{ url('/') }}" mode="receptionist" hidecolumns="true"></list-todo>
     <!-- <portal-target name="list_todolist"></portal-target> -->
 @endsection

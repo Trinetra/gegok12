@@ -28,7 +28,23 @@
         <tbody>
           <tr v-for="(input, index) in inputs">
             <td class="py-3 px-2" style="border-style: none; text-align: center;">
-              <datetime format="YYYY-MM-DD" name="date" v-model="input.date" id="date"></datetime>
+              
+            <VueDatePicker
+                v-model="input.date"
+                :enable-time-picker="false"
+                :auto-apply="true"
+                model-type="string"
+                format="yyyy-MM-dd"
+                :clearable="true"
+                :action-row="{
+                  showSelect: true,
+                  showCancel: true
+                }"
+                :month-change-on-scroll="false"
+                :year-change-on-scroll="false"
+                placeholder="Select Date"
+                class="w-full custom-datepicker"
+            />
               <span v-if="errors['date'+index]" class="text-red-500 text-xs font-semibold">{{errors['date'+index][0]}}</span>
             </td>
             <td class="" style="border-style: none;">
@@ -56,10 +72,11 @@
 </template>
 
 <script> 
-import datetime from 'vuejs-datetimepicker';
+  import { VueDatePicker } from '@vuepic/vue-datepicker'
+  import '@vuepic/vue-datepicker/dist/main.css'
   export default {
     props:['url'],
-    components: { datetime},
+    components: { VueDatePicker},
     data(){
       return {
         start_date:'',
@@ -159,3 +176,43 @@ import datetime from 'vuejs-datetimepicker';
   }
 
 </script>
+<style>
+   /* Header background (orange like screenshot) */
+.custom-datepicker .dp__header {
+    background-color: #f25c05 !important;
+    color: white !important;
+}
+
+/* Month + Year text color */
+.custom-datepicker .dp__month_year_wrap {
+    color: white !important;
+}
+
+/* Navigation arrows */
+.custom-datepicker .dp__arrow_btn {
+    color: white !important;
+}
+
+/* Selected date */
+.custom-datepicker .dp__cell_selected {
+    background-color: #f25c05 !important;
+    color: white !important;
+}
+
+/* Hover date */
+.custom-datepicker .dp__cell:hover {
+    background-color: #ffe5d6 !important;
+}
+
+/* OK Button */
+.custom-datepicker .dp__action_select {
+    background-color: #f25c05 !important;
+    color: white !important;
+    border: none !important;
+}
+
+/* Clear Button */
+.custom-datepicker .dp__action_cancel {
+    color: #f25c05 !important;
+}
+</style>

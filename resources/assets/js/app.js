@@ -7,7 +7,7 @@
 
 require('./bootstrap');
 
-import { createApp } from 'vue';
+import { createApp, defineAsyncComponent } from 'vue'
 import mitt from 'mitt';
 
 export const bus = mitt();
@@ -23,6 +23,16 @@ require('./custom_addon');
 const appContainer = document.getElementById('app');
 const rootTemplate = appContainer ? appContainer.innerHTML : '<div></div>';
 const app = createApp({ template: rootTemplate });
+
+const originalComponent = app.component.bind(app);
+
+app.component = (name, component) => {
+    if (typeof component === 'function') {
+        component = defineAsyncComponent(component);
+    }
+    return originalComponent(name, component);
+};
+
 
 app.component('example-component', () => import('./components/ExampleComponent.vue').then(m => m.default));
 
@@ -362,18 +372,18 @@ app.component('librarystaff-filter', () => import('./components/librarycard/Staf
 
 
 
-import Paginate from 'vuejs-paginate';
-app.component('paginate', Paginate);
+import Paginate from 'vuejs-paginate-next'
+app.component('paginate', Paginate)
 
-// Plugins used by leave and noticeboard components (registered globally for Vue 3)
-import 'vue-flash-message/dist/vue-flash-message.min.css';
-import VueFlashMessage from 'vue-flash-message';
-app.use(VueFlashMessage);
+// // Plugins used by leave and noticeboard components (registered globally for Vue 3)
+// import 'vue-flash-message/dist/vue-flash-message.min.css';
+// import VueFlashMessage from 'vue-flash-message';
+// app.use(VueFlashMessage);
 
-import VueQuillEditor from 'vue-quill-editor';
-import 'quill/dist/quill.core.css';
-import 'quill/dist/quill.snow.css';
-import 'quill/dist/quill.bubble.css';
-app.use(VueQuillEditor);
+// import VueQuillEditor from 'vue-quill-editor';
+// import 'quill/dist/quill.core.css';
+// import 'quill/dist/quill.snow.css';
+// import 'quill/dist/quill.bubble.css';
+// app.use(VueQuillEditor);
 
 app.mount('#app');

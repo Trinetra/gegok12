@@ -78,14 +78,14 @@
         created() 
         {
             //
-            bus.$on("dataEventDetail", data => {
+            bus.on("dataEventDetail", data => {
                 if(data!='')
                 {
                     this.eventid=data; 
                     this.getData();
                 }
             });
-            bus.$on("dataEventFilter", data => {
+            bus.on("dataEventFilter", data => {
                 if(data!='')
                 {
                     this.disableform();

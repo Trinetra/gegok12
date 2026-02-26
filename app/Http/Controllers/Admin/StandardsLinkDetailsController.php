@@ -349,12 +349,24 @@ class StandardsLinkDetailsController extends Controller
             $start = strtotime('last month', strtotime($academic_year->start_date));
             $now = strtotime($academic_year->end_date);
             $i = 0;
-            while(($start = strtotime('next month', $start)) <= $now) 
+            // while(($start = strtotime('next month', $start)) <= $now) 
+            // {
+            //     $array['months']->$i->id = date('m-Y', $start);
+            //     $array['months']->$i->name = date('M Y', $start);
+            //     $i++;
+            // }
+            
+            // new
+            while (($start = strtotime('next month', $start)) <= $now) 
             {
-                $array['months']->$i->id = date('m-Y', $start);
-                $array['months']->$i->name = date('M Y', $start);
-                $i++;
+                $months[] = [
+                    'id' => date('m-Y', $start),
+                    'name' => date('M Y', $start),
+                ];
             }
+
+            $array['months'] = $months;
+
             $startDate      = Carbon::parse($date)->firstOfMonth()->format('Y-m-d');  
             $endDate        = Carbon::parse($date)->lastOfMonth()->format('Y-m-d'); 
             

@@ -217,7 +217,7 @@
                 <div class="bg-white shadow my-5">
                     <profile-tab-teacher url="{{url('/')}}"  entity_id="{{ $user->id }}" school_id="{{ $user->school_id }}" name="{{$user->name}}" mode="staff"></profile-tab-teacher>
                    
-                    <portal-target name="teacherprofile"></portal-target>
+                    <div id="teacherprofile"></div>
                 </div>
             </div>
         </div>

@@ -68,8 +68,8 @@
             setProfileTab(val)
             {
                 this.profile_tab=val;
-                bus.$emit("dataAdmissionTab", this.profile_tab);
-                bus.$emit("standardVal", this.standard_id);
+                bus.emit("dataAdmissionTab", this.profile_tab);
+                bus.emit("standardVal", this.standard_id);
             },
         },
 
@@ -79,7 +79,7 @@
                 this.standardlist=response.data.standardlist;    
             });
 
-            bus.$on("dataAdmissionTab", data => {
+            bus.on("dataAdmissionTab", data => {
                 if(data!='')
                 {
                     this.profile_tab=data;                   

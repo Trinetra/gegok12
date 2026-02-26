@@ -234,7 +234,6 @@
 </template>
 
 <script>
-    import datetime from 'vuejs-datetimepicker';
     import { bus } from "../../../app";
     export default {
         props:['url','name','mode'],
@@ -395,7 +394,7 @@
         {   
             this.getData();
 
-            bus.$on("dataProfileTab", data => {
+            bus.on("dataProfileTab", data => {
                 if(data!='')
                 {
                     this.profile_tab=data;                    

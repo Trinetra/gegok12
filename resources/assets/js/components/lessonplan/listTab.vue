@@ -46,15 +46,15 @@
       setProfileTab(val)
       {
         this.status=val;
-        bus.$emit("statusTab", this.status);
+        bus.emit("statusTab", this.status);
       }
     },
 
     created()
     {
-      bus.$emit("statusTab", this.status);
+      bus.emit("statusTab", this.status);
        
-      bus.$on("statusTab", data => {
+      bus.on("statusTab", data => {
         if(data!='')
         {
           this.status=data;                   

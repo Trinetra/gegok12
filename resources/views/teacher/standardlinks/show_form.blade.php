@@ -55,7 +55,7 @@
   </div>
   <div class="bg-white shadow border my-3">
     <class-tab url="{{url('/')}}" id="{{ $standardLink->id }}" school_id="{{ $standardLink->school_id }}" mode="teacher" auth_id="{{ \Auth::id() }}"></class-tab>
-    <portal-target name="class"></portal-target>
+    <div id="class"></div>
   </div>
 </div>
 

@@ -109,14 +109,14 @@
         created()
         {   
             this.getData(); 
-            bus.$on("task_flagTab", data => {
+            bus.on("task_flagTab", data => {
                 if(data!='')
                 {
                     this.task_flag=data;      
                     this.getData();             
                 }
             });
-            bus.$on("search_query", data => {
+            bus.on("search_query", data => {
                 if(data!='')
                 {
                     this.search_query=data;      

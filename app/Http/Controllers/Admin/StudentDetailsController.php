@@ -222,6 +222,7 @@ class StudentDetailsController extends Controller
     public function showFees($name)
     {
         //
+        $feepayments=[];
         $student = User::where('name', $name)->first();
 
         $school_id = Auth::user()->school_id;
@@ -233,17 +234,10 @@ class StudentDetailsController extends Controller
 
             $fees = \Gegok12\Fee\Models\Fee::where([['school_id',$school_id],['academic_year_id',$academic_year->id]])->where('standardLink_id',$student->studentAcademicLatest->standardLink_id)->orWhere('standardLink_id',null)->orderBy('start_date','DESC')->paginate(5);
         }
-        else{
-            $fees = Fee::where([['school_id',$school_id],['academic_year_id',$academic_year->id]])->where('standardLink_id',$student->studentAcademicLatest->standardLink_id)->orWhere('standardLink_id',null)->orderBy('start_date','DESC')->paginate(5);
-        }
         
         if(class_exists('Gegok12\Fee\Http\Resources\UserFees'))
         {
             $feepayments = \Gegok12\Fee\Http\Resources\UserFees::collection($fees);
-        }
-        else
-        {
-            $feepayments = UserFeesResource::collection($fees);
         }
 
          
@@ -448,6 +442,7 @@ class StudentDetailsController extends Controller
      */
     public function marksGraph($name)
     {
+
         $school_id      =   Auth::user()->school_id;
         $academic_year  =   SiteHelper::getAcademicYear($school_id);
         $users=User::with('studentAcademic')->where('name',$name)->get();
@@ -462,10 +457,8 @@ class StudentDetailsController extends Controller
             $examss=\Gegok12\Exam\Models\Exam::where('standard_id',$standardId)->get();
 
         }
-        else
-        {
-            $examss=Exam::where('standard_id',$standardId)->get();
-
+        else{
+            return back();
         }
          
           //dd($subjects);
@@ -478,9 +471,6 @@ class StudentDetailsController extends Controller
             {
                 $exam_result=\Gegok12\Exam\Models\Mark::where('user_id',$studentId)->where('exam_id',$exam->id);
             }
-            else{
-                $exam_result=Mark::where('user_id',$studentId)->where('exam_id',$exam->id);
-            }
            
            $exam_marks=$exam_result->pluck('obtained_marks')->toArray();
            $exam_avg=$exam_result->avg('obtained_marks');
@@ -492,10 +482,6 @@ class StudentDetailsController extends Controller
             if(class_exists('Gegok12\Exam\Models\Mark'))
             {
                 $markings=\Gegok12\Exam\Models\Mark::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['standard_id',$standardId],['exam_id',$exam->id],['subject_id',$seller->subject_id]])->first();
-            }
-            else
-            {
-                $markings=Mark::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['standard_id',$standardId],['exam_id',$exam->id],['subject_id',$seller->subject_id]])->first();
             }
             
 

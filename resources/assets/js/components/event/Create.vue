@@ -205,7 +205,15 @@
                                                     <label class="input-group-addon tw-form-label">Start Date<span class="text-red-500">*</span></label>
                                                 </div>
                                                 <div class="w-full lg:w-3/4 md:w-3/4 text-sm">
-                                                    <datetime format="DD-MM-YYYY h:i:s" name="start_date" v-model="start_date" class="rounded w-full" id="start_date"></datetime>
+                                                    <VueDatePicker
+                                                      v-model="start_date"
+                                                      format="dd-MM-yyyy HH:mm:ss"
+                                                      model-type="format"
+                                                      :enable-time-picker="true"
+                                                      :is-24="true"
+                                                      :auto-apply="true"
+                                                      input-class-name="rounded w-full"
+                                                    />
                                                     <span v-if="errors.start_date" class="text-red-500 text-xs font-semibold">{{ errors.start_date[0] }}</span>
                                                 </div>
                                             </div>
@@ -217,7 +225,15 @@
                                                     <label class="input-group-addon tw-form-label">End Date<span class="text-red-500">*</span></label>
                                                 </div>
                                                 <div class="w-full lg:w-3/4 md:w-3/4 text-sm">
-                                                    <datetime format="DD-MM-YYYY h:i:s" v-model="end_date" class="w-full rounded" id="end_date"></datetime>
+                                                    <VueDatePicker
+                                                      v-model="end_date"
+                                                      format="dd-MM-yyyy HH:mm:ss"
+                                                      model-type="format"
+                                                      :enable-time-picker="true"
+                                                      :is-24="true"
+                                                      :auto-apply="true"
+                                                      input-class-name="w-full rounded"
+                                                    />
                                                     <span v-if="errors.end_date" class="text-red-500 text-xs font-semibold">{{ errors.end_date[0] }}</span>
                                                 </div>
                                             </div>
@@ -246,10 +262,11 @@
 </template>
 
 <script>
-    import datetime from 'vuejs-datetimepicker';
+    import { VueDatePicker } from '@vuepic/vue-datepicker'
+    import '@vuepic/vue-datepicker/dist/main.css'
     export default {
         props:['url','count','no_of_events','standard'],
-        components: { datetime },
+        components: { VueDatePicker },
         data() {
             return {
                 event:[],

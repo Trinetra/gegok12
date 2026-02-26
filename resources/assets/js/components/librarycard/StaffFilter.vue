@@ -395,7 +395,7 @@ import { bus } from "../../app";
         {   
           this.show_filter =1;  
           $('#show-filter').removeClass('hide-menu').addClass('block');
-          bus.$emit("datashowFilter", '1');
+          bus.emit("datashowFilter", '1');
         },
 
         disablefilter()
@@ -428,7 +428,7 @@ import { bus } from "../../app";
 
       created()
       {
-        bus.$on("dataMemberName", data => {
+        bus.on("dataMemberName", data => {
           if(data!='')
             {
                  this.disablefilter();

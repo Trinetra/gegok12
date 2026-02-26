@@ -104,8 +104,15 @@
                   <label for="executed_at" class="tw-form-label">Date Time</label>
               </div>
               <div class="w-full lg:w-3/4">
-                <datetime format="DD-MM-YYYY h:i:s" name="executed_at" v-model="executed_at" class="w-full rounded" id="executed_at">
-                </datetime>
+                <VueDatePicker
+                  v-model="executed_at"
+                  format="dd-MM-yyyy HH:mm:ss"
+                  model-type="format"
+                  :enable-time-picker="true"
+                  :is-24="true"
+                  :auto-apply="true"
+                  input-class-name="w-full rounded"
+                />
                 <span v-if="errors.executed_at" class="text-red-500 text-xs font-semibold">{{errors.executed_at[0]}}</span>
               </div>
             </div>
@@ -124,7 +131,8 @@
   import { bus } from "../../app";
   
   //import teacherdetails from './Detail';
-  import datetime from 'vuejs-datetimepicker';
+  import { VueDatePicker } from '@vuepic/vue-datepicker'
+  import '@vuepic/vue-datepicker/dist/main.css'
   export default {
     props:['url','searchquery','letter','birthday'],
       data(){
@@ -182,7 +190,7 @@
     components:
     {
       //teacherdetails,
-      datetime,
+      VueDatePicker,
     },
 
     methods:
@@ -196,7 +204,7 @@
       {
         this.success=null;
         $('#show-detail').removeClass('hide-menu').addClass('block');
-        bus.$emit("dataMemberName", val);
+        bus.emit("dataMemberName", val);
       },
         
       sortMembers(name)

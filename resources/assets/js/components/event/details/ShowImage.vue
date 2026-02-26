@@ -1,126 +1,127 @@
 <template>
-<div>
-<div v-if="this.success!=null" class="alert alert-success" id="success-alert">{{this.success}}</div>
+  <div class="max-w-3xl mx-auto px-4 py-6">
 
+    <!-- Title -->
+    <h2 class="text-lg font-semibold text-gray-700 mb-4 italic">
+      Upload Event Photos
+    </h2>
 
-  <div>
-   <VueUploadMultipleImage
-          @upload-success="uploadImageSuccess"
-          @before-remove="beforeRemove"
-          @edit-image="editImage"
-          @data-change="dataChange"
-          @limit-exceeded="limitExceeded"
-          ></VueUploadMultipleImage>   
-  <div class="my-2">
-          <input type="submit" id="submit" class="btn btn-primary submit-btn cursor-pointer w-full" name="submit" value="Submit" @click="saveImage()">
-        </div>
-  </div>
-  <div v-bind:class="[isphotos==1?'block':'hidden']">
-  <PhotosSlider  :url="this.url" :event_id="this.event_id"></PhotosSlider>
-  </div>
+    <!-- Upload Area -->
+    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 transition hover:border-blue-500">
+
+      <file-pond
+        name="photos"
+        ref="pond"
+        allow-multiple
+        :max-files="10"
+        :instant-upload="false"
+        accepted-file-types="image/*"
+        label-idle="
+          <div class='text-center'>
+            <p class='text-gray-600 text-base'>
+              Drag images here
+            </p>
+            <p class='text-sm text-blue-600 underline cursor-pointer'>
+              Select Files
+            </p>
+          </div>
+        "
+        @updatefiles="handleFiles"
+      />
+
+    </div>
+
+    <!-- Submit Button -->
+    <button
+      class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition disabled:opacity-50"
+      :disabled="!files.length || isUploading"
+      @click="saveImage"
+    >
+      {{ isUploading ? "Uploading..." : "Submit" }}
+    </button>
+
+    <!-- Slider -->
+    <div class="mt-8">
+      <PhotosSlider
+        :event_id="event_id"
+      />
+    </div>
+
   </div>
 </template>
+
 <script>
-   import { bus } from "../../../app";
-   import PhotosSlider from './PhotosSlider'
-   import  VueUploadMultipleImage from '../../VueUploadMultipleImage'
-import Loading from 'vue-loading-overlay';
-/*  import 'vue-loading-overlay/dist/vue-loading.css';*/
-   export default {
-     props:['url','event_id'],
-   data () {
-         return {
-               isphotos:0,
+import vueFilePond from "vue-filepond";
+import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 
-               image:[],
-              success:null,
-              errors:[],
-              isLoading: false,
-              fullPage: true,
-              amount:null,
-              count:null,
-             }
-           },
-    components: {
-       PhotosSlider,
-       VueUploadMultipleImage,
-      Loading,
-    },
-    methods: {
-    uploadImageSuccess(formData, index, fileList) {
-     this.image = fileList;
-    },
-    saveImage(val)
-    {
-      this.isLoading = true;
-      let formData = new FormData();
-      axios.post('/admin/upload/photos/'+this.event_id,{ data: this.image }).then(response => {
-        this.success = response.data.message;
-         bus.$emit("photoadded","photouploaded");
-       if(this.success=="Photo added successfully"){
-          //window.setTimeout(window.location.href = "/manager/show/projectview/"+this.project_id,1000000);
-           this.isLoading=false;
-         }
-        else
-        {
-          this.success = response.data.message;
-          this.isLoading=false;
-        }
-      });
-    },
+import "filepond/dist/filepond.min.css";
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
-    beforeRemove (index, done, fileList) {
-      console.log('index', index, fileList)
-      var r = confirm("remove image")
-      if (r == true) {
-        done()
-      } else {
-      }
-    },
-    editImage (formData, index, fileList) {
-      console.log('edit data', formData, index, fileList)
-    },
-    dataChange (data) {
-      console.log(data)
-    },
-    limitExceeded(amount){
-      console.log(amount)
-      
-    },
-    onCancel() 
-    {
-      console.log('User cancelled the loader.')
-    },
+import axios from "axios";
+import PhotosSlider from "./PhotosSlider";
 
- 
+const FilePond = vueFilePond(FilePondPluginImagePreview);
 
+export default {
+  props: ["event_id"],
+
+  components: {
+    FilePond,
+    PhotosSlider,
   },
 
-  created()
-  {
+  data() {
+    return {
+      files: [],
+      isUploading: false,
+    };
+  },
 
-   // alert('hffhj');
-    bus.$on("imageCount",data => {
-      //alert(data);
-      if(data>0)
-      {
-        this.isphotos=1;
+  methods: {
+    handleFiles(fileItems) {
+      this.files = fileItems.map(item => item.file);
+    },
 
+    async saveImage() {
+      if (!this.files.length) return;
+
+      this.isUploading = true;
+
+      const formData = new FormData();
+      this.files.forEach(file => {
+        formData.append("photos[]", file);
+      });
+
+      try {
+        await axios.post(
+          "/admin/upload/photos/" + this.event_id,
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+
+        this.$refs.pond.removeFiles();
+        this.files = [];
+
+      } catch (error) {
+        console.error(error);
       }
-      
-    });
 
-    bus.$on('limit-exceeded',data => {
-      //alert(data);
-    
-      this.errors['count']='Count Exceeded';
-      console.log(this.errors['count']);
-
-      //this.count='';
-      //console.log(this.count);
-   
-    });
-  }
-
-   }
+      this.isUploading = false;
+    },
+  },
+};
 </script>
+
+<style>
+.filepond--panel-root {
+  border-radius: 8px;
+}
+
+.filepond--item-panel {
+  background-color: #f9fafb;
+}
+
+.filepond--action-remove-item {
+  color: #ef4444;
+}
+</style>

@@ -579,7 +579,7 @@
 
             sendData(msg)
             {
-                bus.$emit("successMsg", msg);
+                bus.emit("successMsg", msg);
             },
 
             edit(id,type = null)

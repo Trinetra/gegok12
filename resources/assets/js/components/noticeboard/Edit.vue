@@ -58,7 +58,15 @@
               <label class="tw-form-label">Publish Date</label>
             </div>
             <div class="mb-2 w-full lg:w-1/2 md:w-1/2">
-              <datetime format="DD-MM-YYYY h:i:s" name="publish_date" v-model="publish_date" class="rounded w-full" id="publish_date"></datetime>
+              <VueDatePicker
+                v-model="publish_date"
+                format="dd-MM-yyyy HH:mm:ss"
+                model-type="format"
+                :enable-time-picker="true"
+                :is-24="true"
+                :auto-apply="true"
+                input-class-name="rounded w-full"
+              />
               <span v-if="errors.publish_date" class="text-red-500 text-xs font-semibold">{{errors.publish_date[0]}}</span>
             </div>
             <div class="mb-2 mx-2">
@@ -75,7 +83,15 @@
               <label class="input-group-addon tw-form-label">Expire Date</label>
             </div>
             <div class="mb-2 w-full lg:w-1/2 md:w-1/2">
-              <datetime format="DD-MM-YYYY h:i:s"  v-model="expire_date" class="w-full rounded" id="expire_date"></datetime>
+              <VueDatePicker
+                v-model="expire_date"
+                format="dd-MM-yyyy HH:mm:ss"
+                model-type="format"
+                :enable-time-picker="true"
+                :is-24="true"
+                :auto-apply="true"
+                input-class-name="w-full rounded"
+              />
               <span v-if="errors.expire_date" class="text-red-500 text-xs font-semibold">{{errors.expire_date[0]}}</span> 
             </div>
             <div class="mb-2 mx-2">
@@ -249,12 +265,13 @@
 
 <script>
 
-import datetime from 'vuejs-datetimepicker';
+import { VueDatePicker } from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 export default {
 
   props:['id','url'],
 
-  components: { datetime },
+  components: { VueDatePicker },
 
   data(){
     return{

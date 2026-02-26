@@ -49,16 +49,16 @@
             setTab(val)
             {
                 this.task_flag=val;
-                bus.$emit("task_flagTab", this.task_flag);
+                bus.emit("task_flagTab", this.task_flag);
             }
         },
 
         created()
         { 
             this.getData();
-            bus.$emit("task_flagTab", this.task_flag);
+            bus.emit("task_flagTab", this.task_flag);
        
-            bus.$on("task_flagTab", data => {
+            bus.on("task_flagTab", data => {
                 if(data!='')
                 {
                     this.task_flag=data;                   

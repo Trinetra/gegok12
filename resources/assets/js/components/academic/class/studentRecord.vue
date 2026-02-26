@@ -60,7 +60,7 @@
         created()
         {   
             this.getStudent();
-            bus.$on("type", data => {
+            bus.on("type", data => {
                 if(data!='')
                 {
                     this.type=data;                   

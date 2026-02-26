@@ -266,7 +266,7 @@
         this.status = 'draft';
       }   
       this.getData('/teacher/lessonplan/list/'+this.status); 
-      bus.$on("statusTab", data => {
+      bus.on("statusTab", data => {
         if(data!='')
         {
           this.status=data;      

@@ -99,14 +99,22 @@ class StudentAssignment extends Model
      * @return array
      */
     public function getAssignmentFilePathAttribute()
-    {
-        $count = count($this->assignment_file);
-        for($i=1 ; $i <= $count ; $i++)
-        {
-            $attachment[$i]['original_path']    = $this->assignment_file[$i];
-            $attachment[$i]['path']             = $this->getFilePath($this->assignment_file[$i]);
-            $attachment[$i]['id']               = $i;
-        }
-        return $attachment;
+{
+    if (!$this->assignment_file || !is_array($this->assignment_file)) {
+        return [];
     }
+
+    $attachment = [];
+
+    foreach ($this->assignment_file as $index => $file) {
+
+        $attachment[] = [
+            'id' => $index,
+            'original_path' => $file,
+            'path' => $this->getFilePath($file),
+        ];
+    }
+
+    return $attachment;
+}
 }

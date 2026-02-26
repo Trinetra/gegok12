@@ -19,7 +19,7 @@
             <form method="POST" action="" enctype="multipart/form-data" id="msform" class="w-full lg:w-1/2 mx-auto">
                 @csrf
                 <add-admission url="{{ url('/') }}" slug="{{ $slug }}"></add-admission>
-                <portal-target name="add_admissionform"></portal-target>
+                <div id="add_admissionform"></div>
             </form>
 
         @elseif($admission_open['meta_value']=="0")

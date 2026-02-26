@@ -33,7 +33,12 @@
             <label for="description" class="tw-form-label">Description</label>
           </div>
           <div class="mb-1">
-            <quill-editor ref="myQuillEditor" v-model="description" name="description" :options="option"/>
+            <QuillEditor
+                v-model:content="description"
+                contentType="html"
+                theme="snow"
+                :modules="editorModules"
+              />
             <!-- <div class="text-gray-700 text-xs my-1" v-text="(500 - description.length)+'/'+500" style="text-align: right"></div>  -->              
           </div>
           <span v-if="errors.description" class="text-red-500 text-xs font-semibold">{{errors.description[0]}}</span>
@@ -49,7 +54,7 @@
             <label for="attachment" class="tw-form-label">Attachment</label>
           </div>
           <div class="mb-1">
-            <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions" v-on:vdropzone-sending="sendingEvent"></vue-dropzone>
+            <div id="dropzone" class="dropzone border border-dashed p-6 rounded"></div>
             <a href="#" class="btn btn-reset reset-btn" @click="removeAllFiles()">Remove All Files</a> 
           </div>
           <span v-if="errors.attachment" class="text-red-500 text-xs font-semibold">{{errors.attachment[0]}}</span>
@@ -121,7 +126,15 @@
             <label for="posted_at" class="tw-form-label">Schedule Date<span class="text-red-500">*</span></label>
           </div>
           <div class="mb-2">
-            <datetime format="DD-MM-YYYY h:i:s" name="posted_at" v-model="posted_at" class="w-full rounded" id="posted_at"></datetime>
+            <VueDatePicker
+              v-model="posted_at"
+              format="dd-MM-yyyy HH:mm:ss"
+              model-type="format"
+              :enable-time-picker="true"
+              :is-24="true"
+              :auto-apply="true"
+              input-class-name="w-full rounded"
+            />
           </div>
           <span v-if="errors.posted_at" class="text-red-500 text-xs font-semibold">{{errors.posted_at[0]}}</span>
         </div> 
@@ -143,160 +156,156 @@
   
 </template>
 
-<script> 
-  import datetime from 'vuejs-datetimepicker';
-  import vue2Dropzone from 'vue2-dropzone'
-  import 'vue2-dropzone/dist/vue2Dropzone.min.css'
-  import VueQuillEditor from 'vue-quill-editor'
-  import 'quill/dist/quill.core.css' // import styles
-  import 'quill/dist/quill.snow.css' // for snow theme
-  import 'quill/dist/quill.bubble.css' // for bubble theme
-  export default {
-    components:{ 
-      datetime ,
-      vueDropzone: vue2Dropzone,
-    },
-    props:['url' , 'entity_id' , 'entity_name' , 'mode'],
-    data(){
-      return {
-        standardLinkList:[],
-        post_id:'',
-        description:'',
-        visibility:'',
-        visible_for:'',
-        posted_at:'',
-        tag:'',
-        post_later:'',
-         show:0,
-        option:{
-          theme: 'snow',
-          modules: {
+<script>
+    import Dropzone from "dropzone";
+    import "dropzone/dist/dropzone.css";
+    import { VueDatePicker } from "@vuepic/vue-datepicker";
+    import "@vuepic/vue-datepicker/dist/main.css";
+    import { QuillEditor } from "@vueup/vue-quill";
+    import "@vueup/vue-quill/dist/vue-quill.snow.css";
+
+    Dropzone.autoDiscover = false;
+
+    export default {
+      components: {
+        VueDatePicker,
+        QuillEditor,
+      },
+
+      props: ["url", "entity_id", "entity_name", "mode"],
+
+      data() {
+        return {
+          standardLinkList: [],
+          post_id: "",
+          description: "",
+          visibility: "",
+          visible_for: "",
+          posted_at: "",
+          tag: "",
+          post_later: false,
+          show: 0,
+          myDropzone: null,
+          errors: {},
+          success: null,
+
+          editorModules: {
             toolbar: [
-              ['bold', 'italic', 'underline'],
-              [{ 'list': 'ordered' }, { 'list': 'bullet' }]
-            ]
+              ["bold", "italic", "underline"],
+              [{ list: "ordered" }, { list: "bullet" }],
+            ],
           },
-          placeholder: '', 
+
+          visiblelist: [
+            { id: "all_class", name: "All Classes" },
+            { id: "select_class", name: "Class" },
+          ],
+        };
+      },
+
+      mounted() {
+        this.initDropzone();
+      },
+
+      beforeUnmount() {
+        if (this.myDropzone) {
+          this.myDropzone.destroy();
+        }
+      },
+
+      methods: {
+        getData() {
+          axios
+            .get(`${this.url}/${this.mode}/classwall/post/add/list`)
+            .then((response) => {
+              this.standardLinkList = response.data.data;
+            });
         },
-        dropzoneOptions: {
-          url: this.url+'/'+this.mode+'/classwall/post/add/attachment',
-          method:'post',
-          headers: {
-            "X-CSRF-TOKEN": document.head.querySelector("[name=csrf-token]").content
-          },
-          addRemoveLinks:"true",
-          maxFilesize: 0.5,
-          paramName: "file", // The name that will be used to transfer the file
-          parallelUploads: 6,
-          maxFiles:6,
-          uploadMultiple: true,
-          acceptedFiles: ".jpg,.jpeg,.png",
-          autoProcessQueue: false,
-          maxThumbnailFilesize:2,
+
+        initDropzone() {
+          this.myDropzone = new Dropzone("#dropzone", {
+            url: `${this.url}/${this.mode}/classwall/post/add/attachment`,
+            method: "post",
+            headers: {
+              "X-CSRF-TOKEN":
+                document.head.querySelector("[name=csrf-token]").content,
+            },
+            paramName: "file",
+            maxFilesize: 0.5,
+            maxFiles: 6,
+            parallelUploads: 6,
+            acceptedFiles: ".jpg,.jpeg,.png",
+            autoProcessQueue: false,
+            addRemoveLinks: true,
+          });
+
+          this.myDropzone.on("sending", (file, xhr, formData) => {
+            formData.append("post_id", this.post_id);
+          });
+
+          this.myDropzone.on("queuecomplete", () => {
+            this.myDropzone.removeAllFiles();
+          });
         },
-        //visiblelist:[{id:'all_class', name:'All Classes'},{id:'select_class', name:'Select Class'}, {id:'select_page', name:'Select Page'}],
-        visiblelist:[{id:'all_class', name:'All Classes'},{id:'select_class', name:'Class'}],
-        errors:[],
-        success:null,
-      }
-    },
-    methods:
-    {
-      getData()
-      {
-        axios.get(this.url+'/'+this.mode+'/classwall/post/add/list').then(response => {
-          this.standardLinkList = response.data.data;
-         
-        });
+
+        showModal() {
+          this.show = 1;
+        },
+
+        closeModal() {
+          this.show = 0;
+        },
+
+        removeAllFiles() {
+          this.myDropzone.removeAllFiles(true);
+        },
+
+        submitForm() {
+          this.errors = {};
+          this.success = null;
+
+          let formData = new FormData();
+
+          formData.append("entity_id", this.entity_id);
+          formData.append("entity_name", this.entity_name);
+          formData.append("description", this.description);
+          formData.append("visibility", this.visibility);
+          formData.append("visible_for", this.visible_for);
+          formData.append("posted_at", this.posted_at);
+          formData.append("post_later", this.post_later);
+          formData.append("tag", this.tag);
+
+          axios
+            .post(
+              `${this.url}/${this.mode}/classwall/post/add`,
+              formData
+            )
+            .then((response) => {
+              this.post_id = response.data.id;
+
+              // After post created → upload attachments
+              if (this.myDropzone.getAcceptedFiles().length > 0) {
+                this.myDropzone.processQueue();
+              }
+
+              this.success = response.data.success;
+
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+            })
+            .catch((error) => {
+              if (error.response && error.response.data.errors) {
+                this.errors = error.response.data.errors;
+              }
+            });
+        },
       },
 
-      showModal()
-    {
-      this.show = 1;
-      //this.reset();
-    },
-    
-    closeModal()
-    {
-      this.show = 0;
-     
-    },
-
-      init() 
-      {
-        this.$refs.myVueDropzone.processQueue();
+      created() {
+        this.getData();
       },
-
-      sendingEvent (file, xhr, formData) 
-      {
-        formData.append('post_id', this.post_id);
-      },
-
-      removeAllFiles() 
-      {
-        this.$refs.myVueDropzone.removeAllFiles();
-      },
-
-      showTag(e)
-      {
-        if(e.target.checked)
-        {
-          this.attach_tag=1;
-        }
-        else
-        {
-           this.attach_tag=0;
-        }
-      },
-
-      submitForm()
-      {
-        this.errors=[];
-        this.success=null;
-
-        let formData=new FormData(); 
-
-                
-        formData.append('entity_id',this.entity_id);          
-        formData.append('entity_name',this.entity_name);        
-        formData.append('description',this.description);
-        formData.append('visibility',this.visibility);          
-        formData.append('visible_for',this.visible_for);          
-        formData.append('posted_at',this.posted_at);           
-        formData.append('post_later',this.post_later);
-        formData.append('tag',this.tag);
-
-        axios.post(this.url+'/'+this.mode+'/classwall/post/add',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => { 
-          this.post_id = response.data.id;    
-          this.init();
-          this.success = response.data.success;
-          console.log(response);
-          window.location.reload();
-        }).catch(error => {
-          this.errors = error.response.data.errors;
-        });
-      },
-
-      showDate(e)
-      {
-        if(e.target.checked)
-        {
-          $('#date').addClass('block').removeClass('hidden');
-        }
-        else
-        {
-          $('#date').addClass('hidden').removeClass('block');
-        }
-      },
-
-
-    },
-    
-    created()
-    {
-      this.getData();
-    }
-  }
+    };
 </script>
 <style scoped>
 .modal-mask {

@@ -65,7 +65,7 @@
             {
                 this.success=null;
                 $('#show-detail').removeClass('hide-menu').addClass('block');
-                bus.$emit("dataEventDetail", clickInfo.event.id);
+                bus.emit("dataEventDetail", clickInfo.event.id);
             },
 
             handleEvents(events) 

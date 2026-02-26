@@ -479,7 +479,7 @@
                 });
 
             this.getData(this.status);
-            bus.$on("statusTab", data => {
+            bus.on("statusTab", data => {
                 if(data!='')
                 {
                     this.status=data;

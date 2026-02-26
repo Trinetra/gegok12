@@ -34,15 +34,15 @@
       setProfileTab(val)
       {
         this.profile_tab=val;
-        bus.$emit("dataProfileTab", this.profile_tab);
+        bus.emit("dataProfileTab", this.profile_tab);
       }
     },
 
     created()
     {
-      bus.$emit("dataProfileTab", this.profile_tab);
+      bus.emit("dataProfileTab", this.profile_tab);
        
-      bus.$on("dataProfileTab", data => {
+      bus.on("dataProfileTab", data => {
         if(data!='')
         {
           this.profile_tab=data;                     

@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="relative">
-        <portal-target name="add_academic_year"></portal-target>
+        <div id="add_academic_year"></div>
         @include('partials.message')
         <list-academic-year url="{{ url('/') }}"></list-academic-year>
     </div>

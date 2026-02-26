@@ -114,7 +114,7 @@
 
             setTab(val)
             {
-                bus.$emit('demoTab',val);
+                bus.emit('demoTab',val);
                 this.getList(val);
             },
         },
@@ -123,9 +123,9 @@
         {
             this.getData();
             this.getList(this.demoTab);
-            bus.$emit('demoTab',this.demoTab);
+            bus.emit('demoTab',this.demoTab);
 
-            bus.$on('demoTab',data => {
+            bus.on('demoTab',data => {
                 if(data != '')
                 {
                     this.demoTab = data;

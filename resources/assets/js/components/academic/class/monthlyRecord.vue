@@ -4,12 +4,21 @@
     <div class="flex lg:justify-end w-full px-3"> 
         <div class="flex flex-row lg:flex-col md:flex-col">
           <select name="select_month" v-model="select_month" id="select_month" class="tw-form-control w-full" v-on:change="submitMonth()">
-            <option v-for="month in months" v-bind:value="month.id">{{ month.name }}</option>
+            <option
+              v-for="month in months"
+              :key="month.id"
+              :value="month.id"
+            >
+              {{ month.name }}
+            </option>
           </select>
         </div>   
       </div>
       <div class="">
-        <highcharts :options="chartOptions"></highcharts>
+        <highcharts
+          :key="chartKey"
+          :options="chartOptions"
+        ></highcharts>
       </div>
       
       <div class="custom-table">
@@ -23,7 +32,7 @@
               <th class="text-left text-sm px-2 py-2 text-grey-darker"> Recorded On </th>
             </tr>
           </thead>   
-          <tbody v-for="attendance in attendances">
+          <tbody v-for="(attendance, i) in attendances" :key="i">
             <tr class="border-b" v-for="(student,index) in attendance">
               <td class="py-3 px-2">
                 <p class="font-semibold text-xs">{{ student[0]['date'] }}</p>
@@ -131,6 +140,7 @@
         months:[],
         errors:[],
         success:null,
+        chartKey: 0,
       }
     },
 
@@ -222,6 +232,7 @@
             "stack": 'Afternoon',
           }]
         };
+         this.chartKey++;
       },
 
       showAbsentees(id)
@@ -234,20 +245,16 @@
         this.show = 0 ;
       },
 
-      submitMonth()
-      {
-        this.errors=[];
-        this.success=null;
-
-        let formData=new FormData(); 
-
-        formData.append('select_month',this.select_month);
-
-        axios.post('/'+this.mode+'/standardLink/show/attendances/'+this.id,formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {
-          this.success = response.data.success;
-          this.setData(response.data); 
-        }).catch(error => {
-          this.errors = error.response.data.errors;
+      submitMonth() {
+        axios.post(
+          '/' + this.mode + '/standardLink/show/attendances/' + this.id,
+          { select_month: this.select_month }
+        )
+        .then(response => {
+          this.setData(response.data);
+        })
+        .catch(error => {
+          console.log(error);
         });
       },
     },
@@ -255,7 +262,7 @@
     created()
     {   
       this.getData();
-      bus.$on("type", data => {
+      bus.on("type", data => {
         if(data!='')
         {
           this.type=data;                

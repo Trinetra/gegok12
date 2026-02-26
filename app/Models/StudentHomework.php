@@ -106,13 +106,21 @@ class StudentHomework extends Model
      */
     public function getAttachmentPathAttribute()
     {
-        $count = count($this->attachment);
-        for($i=1 ; $i <= $count ; $i++)
-        {
-            $attachment[$i]['original_path']    = $this->attachment[$i];
-            $attachment[$i]['path']             = $this->getFilePath($this->attachment[$i]);
-            $attachment[$i]['id']               = $i;
+        if (!$this->attachment || !is_array($this->attachment)) {
+            return [];
         }
+
+        $attachment = [];
+
+        foreach ($this->attachment as $index => $file) {
+
+            $attachment[] = [
+                'id' => $index,
+                'original_path' => $file,
+                'path' => $this->getFilePath($file),
+            ];
+        }
+
         return $attachment;
     }
 }

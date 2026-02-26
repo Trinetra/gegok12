@@ -102,7 +102,7 @@
               <span v-if="errors.section_id" class="text-red-500 text-xs font-semibold">{{errors.section_id[0]}}</span>
             </div> 
             <div class="w-full lg:w-4/12 md:w-4/12">
-              <div class="lg:mx-3 md:mx-3">
+              <div class="lg:mx-3 md:mx-3 w-40" >
                 <a href="#" class="bg-blue-500 rounded text-sm text-white px-2 py-1 whitespace-no-wrap" @click="showModal('section')">Add New Section</a>
               </div> 
             </div>
@@ -336,7 +336,7 @@
             </div>
           </div>
           <div class="w-4/12 lg:mx-1 md:m-1">
-            <div class="lg:mx-3 md:mx-0">
+            <div class="lg:mx-3 md:mx-0 w-40">
               <a href="#" class="bg-blue-500 rounded text-sm text-white px-2 py-1 whitespace-no-wrap" @click="showModal('subject')">Add New Subject</a>
             </div>
           </div> 

@@ -74,14 +74,18 @@ class Post extends Model implements HasMedia
      *
      * @var array
      */
-    protected $casts=[ 'attachment_file' => 'array' ];
+    protected $casts = [
+        'attachment_file' => 'array',
+        'post_created_at' => 'datetime',
+    ];
 
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $dates = ['post_created_at','posted_at','deleted_at'];
+    protected $dates = ['posted_at','deleted_at'];
+
 
     /**
      * Get the school for this post.
@@ -140,13 +144,23 @@ class Post extends Model implements HasMedia
      */
     public function getAttachmentPathAttribute()
     {
-        $count = count($this->attachment_file);
-        for($i=0 ; $i < $count ; $i++)
-        {
-            $attachment[$i]['original_path']    = $this->attachment_file[$i];
-            $attachment[$i]['path']             = $this->getFilePath($this->attachment_file[$i]);
-            $attachment[$i]['id']               = $i;
+        $files = $this->attachment_file ?? [];
+
+        if (!is_array($files)) {
+            $files = [];
         }
+
+        $attachment = [];
+
+        foreach ($files as $index => $file) {
+
+            $attachment[] = [
+                'original_path' => $file,
+                'path'          => $this->getFilePath($file),
+                'id'            => $index,
+            ];
+        }
+
         return $attachment;
     }
 

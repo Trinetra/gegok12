@@ -39,8 +39,11 @@
                         <label for="incident_date" class="tw-form-label">Incident Date<span class="text-red-500">*</span></label>
                     </div>
                     <div class="mb-2 flex items-center">
-                        <datetime format="DD-MM-YYYY h:i:s" name="incident_date" v-model="incident_date" class="w-full rounded" id="incident_date"></datetime>
-                        <svg id="Capa_1" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current text-gray-500 mx-2"><g><path d="m144 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m467 65h-36v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-36c-24.813 0-45 20.187-45 45v332c0 24.813 20.187 45 45 45h422c24.813 0 45-20.187 45-45 0-9.682 0-323.575 0-332 0-24.813-20.187-45-45-45zm-437 45c0-8.271 6.729-15 15-15h36v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h36c8.271 0 15 6.729 15 15v59h-452zm437 347h-422c-8.271 0-15-6.729-15-15v-243h452v243c0 8.271-6.729 15-15 15z"></path></g></svg>
+                        <VueDatePicker 
+                            v-model="incident_date"
+                            :enable-time-picker="true"
+                            format="yyyy-MM-dd HH:mm:ss"
+                        />
                     </div>
                     <span v-if="errors.incident_date" class="text-red-500 text-xs font-semibold">{{errors.incident_date[0]}}</span>
                 </div> 
@@ -136,15 +139,14 @@
 </template>
 
 <script> 
-    import datetime from 'vuejs-datetimepicker';
+    import { VueDatePicker } from '@vuepic/vue-datepicker'
+    import '@vuepic/vue-datepicker/dist/main.css'
     import Multiselect from 'vue-multiselect'
-    // register globally
-    Vue.component('multiselect', Multiselect)
     export default {
         props:['url' , 'ref_name'],
         components: {
             Multiselect,
-            datetime,
+            VueDatePicker ,
         },
         data(){
             return {
@@ -209,13 +211,15 @@
             {
                 this.errors=[];
                 this.success=null; 
+                console.log(this.incident_date);
 
                 let formData=new FormData(); 
+                const formattedDate = this.formatDate(this.incident_date);
 
                 formData.append('ref_name',this.ref_name);
                 //formData.append('standardlink_id',this.standardlink_id);
                 //formData.append('student_id',this.student_id);
-                formData.append('incident_date',this.incident_date);
+                formData.append('incident_date', formattedDate);
                 formData.append('teacher_id',this.teacher_id);
                 formData.append('incident_detail',this.incident_detail);
                 formData.append('response',this.response);
@@ -231,6 +235,18 @@
                 }).catch(error => {
                     this.errors = error.response.data.errors;
                 });
+            },
+            formatDate(date) {
+                const d = new Date(date);
+
+                const year  = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day   = String(d.getDate()).padStart(2, '0');
+                const hour  = String(d.getHours()).padStart(2, '0');
+                const min   = String(d.getMinutes()).padStart(2, '0');
+                const sec   = String(d.getSeconds()).padStart(2, '0');
+
+                return `${year}-${month}-${day} ${hour}:${min}:${sec}`;
             },
         },
     

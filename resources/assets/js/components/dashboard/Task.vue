@@ -58,7 +58,7 @@
         {
             searchTask()
             {
-                bus.$emit('search_query',this.search);
+                bus.emit('search_query',this.search);
             },
 
             clearAll()

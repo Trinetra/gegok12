@@ -658,7 +658,7 @@ ul.course_tabs li.current p {
 }*/
 .member-list .active{
   --tw-bg-opacity: 1;
-  background-color: rgb(219 234 254 / var(--tw-bg-opacity, 1));
+  background-color: rgb(235 248 255 / var(--tw-bg-opacity, 1));
 }
 
 .member-list p{
@@ -3938,7 +3938,7 @@ video {
 }
 .bg-red-800{
   --tw-bg-opacity: 1;
-  background-color: rgb(153 27 27 / var(--tw-bg-opacity, 1));
+  background-color: rgb(155 44 44 / var(--tw-bg-opacity, 1));
 }
 .bg-teal-300{
   --tw-bg-opacity: 1;
@@ -6614,3 +6614,4 @@ input:focus-visible+.\[input\:focus-visible\+\&\]\:ring-gray-950\/10{
     --tw-ring-color: rgb(255 255 255 / 0.2);
   }
 }
+

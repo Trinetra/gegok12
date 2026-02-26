@@ -3,7 +3,7 @@
 @section('content')
     <div class="relative">
         <div class="flex flex-wrap lg:flex-row justify-between my-3">
-            <portal-target name="student_count"></portal-target>
+            <div id="student_count"></div>
             <!-- <div class="">
                 <h1 class="admin-h1 my-3">Students ( {{ $count }} )</h1>
             </div> -->

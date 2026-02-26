@@ -39,7 +39,7 @@ import { bus } from "../../../app";
       {    
       //alert(this.id);  
       this.getData();  
-          bus.$on("dataEventTab", data => {
+          bus.on("dataEventTab", data => {
           if(data!='')
             {
               this.event_tab=data;                   

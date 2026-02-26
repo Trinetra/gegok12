@@ -112,7 +112,7 @@
     created() 
     {
       //
-      bus.$on("dataMemberName", data => {
+      bus.on("dataMemberName", data => {
         if(data!='')
         {
           this.membername=data;  
@@ -122,7 +122,7 @@
         }
       });
 
-      bus.$on("datashowFilter", data => {
+      bus.on("datashowFilter", data => {
         if(data!='')
         {
           this.disableform();

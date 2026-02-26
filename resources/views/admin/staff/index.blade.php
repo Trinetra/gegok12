@@ -9,8 +9,8 @@
 </div>
 
    <div class="w-full lg:w-2/4">
-   	 <portal-target name="search" ></portal-target>
-   	 <portal-target name="teacherfilter" ></portal-target>
+   	 <div id="search" ></div>
+   	 <div id="teacherfilter" ></div>
    </div>
 
 

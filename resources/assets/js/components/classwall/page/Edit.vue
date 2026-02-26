@@ -53,7 +53,13 @@
                         <label for="description" class="tw-form-label">Description<span class="text-red-500">*</span></label>
                     </div>
                     <div class="mb-2">
-                        <quill-editor ref="myQuillEditor" v-model="description" name="description" :options="option"/>
+                        <QuillEditor
+                              v-model:content="description"
+                              contentType="html"
+                              theme="snow"
+                              :modules="editorModules"
+                            />
+
                         <div class="text-gray-700 text-xs my-1" v-text="(500 - description.length)+'/'+500" style="text-align: right"></div>
                     </div>
                     <span v-if="errors.description" class="text-red-500 text-xs font-semibold">{{errors.description[0]}}</span>
@@ -70,12 +76,13 @@
 </template>
 
 <script>
-    import VueQuillEditor from 'vue-quill-editor'
-    import 'quill/dist/quill.core.css' // import styles
-    import 'quill/dist/quill.snow.css' // for snow theme
-    import 'quill/dist/quill.bubble.css' // for bubble theme 
+    import { QuillEditor } from '@vueup/vue-quill'
+    import '@vueup/vue-quill/dist/vue-quill.snow.css'
     export default {
         props:['url' , 'id' , 'mode'],
+        components: {
+            QuillEditor
+          },
         data(){
             return {
                 page:[],
@@ -84,15 +91,11 @@
                 category:'',
                 cover_image:'',
                 cover_image_display:'',
-                option:{
-                    theme: 'snow',
-                    modules: {
-                        toolbar: [
-                            ['bold', 'italic', 'underline'],
-                            [{ 'list': 'ordered' }, { 'list': 'bullet' }]
-                        ]
-                    },
-                    placeholder: '', 
+                editorModules: {
+                  toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    [{ list: 'ordered' }, { list: 'bullet' }]
+                  ]
                 },
                 categorylist:[],
                 errors:[],

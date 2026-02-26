@@ -236,8 +236,8 @@
                 <div class="bg-white shadow my-5">
                     <profile-tab url="{{url('/')}}" entity_id="{{ $user->id }}" school_id="{{ $user->school_id }}" name="{{ $user->name }}" mode="admin"></profile-tab>
                    
-                    <portal-target name="profile"></portal-target>
-                    <portal-target name="notes"></portal-target>
+                    <div id="profile"></div>
+                    <div id="notes"></div>
                 </div>
             </div>
         </div>

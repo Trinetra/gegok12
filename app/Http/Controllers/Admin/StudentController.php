@@ -256,7 +256,13 @@ class StudentController extends Controller
       {
         $array['sibling_details'][$i]['sibling_relation']       = $studentAcademic->sibling_details[$i]['sibling_relation'];
         $array['sibling_details'][$i]['sibling_name']           = $studentAcademic->sibling_details[$i]['sibling_name'];
-        $array['sibling_details'][$i]['sibling_date_of_birth']  = date('Y-m-d',strtotime($studentAcademic->sibling_details[$i]['sibling_date_of_birth']));
+        // $array['sibling_details'][$i]['sibling_date_of_birth']  = date('Y-m-d',strtotime($studentAcademic->sibling_details[$i]['sibling_date_of_birth']));
+        $dateValue = $studentAcademic->sibling_details[$i]['sibling_date_of_birth'];
+
+        $array['sibling_details'][$i]['sibling_date_of_birth'] =
+            \Carbon\Carbon::parse(is_array($dateValue) ? $dateValue['date'] : $dateValue)
+                ->format('Y-m-d');
+        
         $array['sibling_details'][$i]['sibling_standard']       = $studentAcademic->sibling_details[$i]['sibling_standard'];
       }
 

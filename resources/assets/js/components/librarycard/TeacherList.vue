@@ -130,7 +130,6 @@
   import { bus } from "../../app";
   
 //   import teacherdetails from './Detail';
-  import datetime from 'vuejs-datetimepicker';
   export default {
     props:['url','searchquery','letter','birthday'],
       data(){
@@ -186,7 +185,6 @@
     components:
     {
     //   teacherdetails,
-      datetime,
     },
 
     methods:
@@ -200,7 +198,7 @@
       {
         this.success=null;
         $('#show-detail').removeClass('hide-menu').addClass('block');
-        bus.$emit("dataMemberName", val);
+        bus.emit("dataMemberName", val);
       },
         
       sortMembers(name)

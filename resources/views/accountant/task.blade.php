@@ -46,7 +46,7 @@
  
 <!-- list tab -->
 <list-task-tab url="{{ url('/') }}" mode="accountant"></list-task-tab>
-<portal-target name="list_task"></portal-target>
+<div id="list_task"></div>
             <!-- ***** -->
             <!-- ***** -->
 

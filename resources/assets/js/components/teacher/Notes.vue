@@ -60,12 +60,12 @@
 
       setProfileTab(val) {
         this.profile_tab = val;
-        bus.$emit("dataProfileTab", this.profile_tab);
+        bus.emit("dataProfileTab", this.profile_tab);
       },
 
       previous(tab) {
         //this.profile_tab=val;
-        bus.$emit("dataProfileTab", tab);
+        bus.emit("dataProfileTab", tab);
 
       },
 
@@ -113,7 +113,7 @@
         this.getData('/admin/teacher/editTeacher/' + this.teacher_name);
       }
 
-      bus.$on("dataProfileTab", data => {
+      bus.on("dataProfileTab", data => {
         if (data != '') {
           this.profile_tab = data;
         }

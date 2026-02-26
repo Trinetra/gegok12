@@ -52,15 +52,15 @@
       setEventTab(val)
       {
           this.event_tab=val;
-          bus.$emit("dataEventTab", this.event_tab);
+          bus.emit("dataEventTab", this.event_tab);
       }
   },
       created()
       {
         //alert(this.id);
-          bus.$emit("dataEventTab", this.event_tab);
+          bus.emit("dataEventTab", this.event_tab);
        
-          bus.$on("dataEventTab", data => {
+          bus.on("dataEventTab", data => {
           if(data!='')
             {
               this.event_tab=data;                   

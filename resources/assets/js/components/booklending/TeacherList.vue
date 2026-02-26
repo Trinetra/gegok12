@@ -1,81 +1,94 @@
 <template>
-<div>
- <vue-good-table
-  :columns="columns"
-  :rows="rows"
-  :search-options="{
-    enabled: true,
-    skipDiacritics: true,
-    placeholder: 'Search this table'
-  }">
-</vue-good-table> 
-         
-</div>
+  <div>
+    <vue-good-table
+      :columns="columns"
+      :rows="rows"
+      :search-options="{
+        enabled: true,
+        skipDiacritics: true,
+        placeholder: 'Search this table'
+      }"
+      :sort-options="{ enabled: true }"
+      :pagination-options="{ enabled: true, perPage: 10 }"
+    />
+  </div>
 </template>
-<script>
-import 'vue-good-table/dist/vue-good-table.css'
-import { VueGoodTable } from 'vue-good-table';
-export default {
 
- components: {
-  VueGoodTable,
-},
+<script>
+import { VueGoodTable } from "vue-good-table-next";
+import "vue-good-table-next/dist/vue-good-table-next.css";
+import axios from "axios";
+
+export default {
+  components: { VueGoodTable },
+
   data() {
-    return{
+    return {
       columns: [
         {
-          label: 'Book Code',
-          field: 'book_code_no',
-         
-          
+          label: "Book Code",
+          field: "book_code_no",
+          filterOptions: {
+            enabled: true,
+            placeholder: "Filter Book Code",
+          },
         },
         {
-          label: 'Book Name',
-          field: 'title',
-         
+          label: "Book Name",
+          field: "title",
+          filterOptions: {
+            enabled: true,
+            placeholder: "Filter Book Name",
+          },
         },
         {
-          label: 'ISBN',
-          field: 'isbn_number',
-         
+          label: "ISBN",
+          field: "isbn_number",
+          filterOptions: {
+            enabled: true,
+            placeholder: "Filter ISBN",
+          },
         },
         {
-          label: 'Lent Date',
-          field: 'issue_date',
+          label: "Lent Date",
+          field: "issue_date",
+          type: "date",
+          dateInputFormat: "yyyy-MM-dd",
+          dateOutputFormat: "yyyy-MM-dd",
+          filterOptions: {
+            enabled: true,
+          },
         },
-
-         {
-          label: 'Return Date',
-          field: 'return_date',
+        {
+          label: "Return Date",
+          field: "return_date",
+          type: "date",
+          dateInputFormat: "yyyy-MM-dd",
+          dateOutputFormat: "yyyy-MM-dd",
+          filterOptions: {
+            enabled: true,
+          },
         },
-      
       ],
-      rows: [
-     
-       
-      ],
+      rows: [],
     };
   },
 
-  created()
-  {
-    //alert('sfdfsd');
+  mounted() {
     this.getData();
   },
+
   methods: {
-
-    getData()
-    {
-      axios.get("/teacher/libraryactivity/show").then(response => {
-
+    async getData() {
+      try {
+        const response = await axios.get(
+          "/teacher/libraryactivity/show"
+        );
         this.rows = response.data.data;
-          
-      });
+      } catch (error) {
+        console.error(error);
+      }
     },
-
-
   },
-
-
 };
 </script>

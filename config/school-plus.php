@@ -360,6 +360,7 @@ defined('LOGNAME_UNLIKE_PAGE') or define('LOGNAME_UNLIKE_PAGE','unlikepage');
 
 //post
 defined('LOGNAME_ADD_POST') or define('LOGNAME_ADD_POST','addpost');
+defined('LOGNAME_EDIT_POST') or define('LOGNAME_EDIT_POST','editpost');
 defined('LOGNAME_DELETE_POST') or define('LOGNAME_DELETE_POST','deletepost');
 defined('LOGNAME_LIKE_POST') or define('LOGNAME_LIKE_POST','likepost');
 defined('LOGNAME_UNLIKE_POST') or define('LOGNAME_UNLIKE_POST','unlikepost');

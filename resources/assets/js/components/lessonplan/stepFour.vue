@@ -48,10 +48,6 @@
 
 <script>
     import { bus } from "../../app";
-    import VueQuillEditor from 'vue-quill-editor'
-    import 'quill/dist/quill.core.css' // import styles
-    import 'quill/dist/quill.snow.css' // for snow theme
-    import 'quill/dist/quill.bubble.css' // for bubble theme
 
     export default {
         props:['url' , 'type' , 'id'],
@@ -62,16 +58,6 @@
                 profile_tab:'',
                 modification:'',
                 notes:'',
-                option:{
-                  theme: 'snow',
-                  modules: {
-                    toolbar: [
-                      ['bold', 'italic', 'underline'],
-                      [{ 'list': 'ordered' }, { 'list': 'bullet' }]
-                    ]
-                  },
-                  placeholder: '', 
-                },
                 errors:[],
                 success:null,
             }
@@ -103,7 +89,7 @@
             setTab(val)
             {
                 this.profile_tab=val;
-                bus.$emit("dataProfileTab", this.profile_tab);
+                bus.emit("dataProfileTab", this.profile_tab);
             },
 
             resetForm()
@@ -145,19 +131,19 @@
         created()
         {
             this.getData();
-            bus.$on("dataProfileTab", data => {
+            bus.on("dataProfileTab", data => {
                 if(data!='')
                 {
                     this.profile_tab=data;                   
                 }
             });
-            bus.$on("lessonId", data => {
+            bus.on("lessonId", data => {
                 if(data!='')
                 {
                     this.lesson_id=data;                   
                 }
             });
-            bus.$on("message", data => {
+            bus.on("message", data => {
                 if(data!='')
                 {
                     this.success=data;                   
