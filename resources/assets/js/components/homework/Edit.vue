@@ -60,7 +60,11 @@
                         </div>
                         <div class="mb-2 w-full lg:w-3/4 md:w-2/3">
                             <!-- <textarea type="text" name="description" id="description" v-model="description" class="tw-form-control w-full" rows="3"></textarea> -->
-                            <quill-editor ref="myQuillEditor" v-model="description" :options="editorOption"/>
+                            <QuillEditor
+                              v-model:content="description"
+                              contentType="html"
+                              theme="snow"
+                            />
                             <span v-if="errors.description" class="text-red-500 text-xs font-semibold">{{errors.description[0]}}</span>
                         </div>
                     </div>
@@ -71,7 +75,7 @@
                 <div class="tw-form-group w-full lg:w-3/5 md:w-3/4">
                     <div class="lg:mr-8 md:mr-8 flex flex-col lg:flex-row md:flex-row lg:items-center md:items-center w-full">
                         <div class="w-full w-full lg:w-1/4 md:w-1/4">
-                            <label for="attachment" v-model="attachment" class="tw-form-label">Attachment</label>
+                            <label for="attachment" class="tw-form-label">Attachment</label>
                         </div>
                         <div class="mb-2 w-full lg:w-3/4 md:w-2/3">
                             <input type="file" name="attachment" @change="OnFileSelected" id="attachment" class="tw-form-control w-full">
@@ -118,11 +122,12 @@
 </template>
 
 <script>
-    import VueQuillEditor from 'vue-quill-editor'
-    import 'quill/dist/quill.core.css' // import styles
-    import 'quill/dist/quill.snow.css' // for snow theme
-    import 'quill/dist/quill.bubble.css' // for bubble theme
+    import { QuillEditor } from '@vueup/vue-quill'
+    import '@vueup/vue-quill/dist/vue-quill.snow.css'
     export default {
+        components:{ 
+          QuillEditor,
+        },
         props:['url' , 'id' , 'mode'],
         data(){
             return{
@@ -137,6 +142,7 @@
                 attachment:'',
                 attachment_file:'',
                 date:'',
+                submission_date:'',
                 editorOption:{
                     theme: 'snow',
                     modules: {

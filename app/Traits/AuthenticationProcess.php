@@ -1,4 +1,7 @@
 <?php
+/**
+ * Manages OTP-based authentication creation and validation for users.
+ */
 
 namespace App\Traits;
 
@@ -13,6 +16,15 @@ use Log;
 trait AuthenticationProcess
 {
     use MSG91;
+
+    /**
+     * Create an OTP authentication record for a user and send the OTP.
+     *
+     * @param \App\Models\User $user Target user
+     * @param \Illuminate\Http\Request|string $request Request object or empty string when unavailable
+     * @param string $type Authentication type (e.g., register, login)
+     * @return void
+     */
     public function createAuthentication($user,$request,$type)
     {
         try
@@ -52,6 +64,12 @@ trait AuthenticationProcess
         }
     }
 
+    /**
+     * Check whether a registration OTP for the user has been verified.
+     *
+     * @param int $user_id User identifier
+     * @return int Status flag from authentication record (0 or 1)
+     */
     public  function checkAuthentication($user_id)
     {
         $authentication = Authentication::where([['user_id',$user_id],['type','register']])->orderBy('id','DESC')->get();

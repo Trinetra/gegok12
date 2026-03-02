@@ -60,11 +60,16 @@
             </div>
             <div class="flex items-center w-full lg:w-1/2 md:w-1/2">
             <div class="mb-2 w-full">
-              <datetime format="DD-MM-YYYY h:i:s" name="publish_date" v-model="publish_date" class="rounded w-full" id="publish_date"></datetime>
+              <VueDatePicker
+                v-model="publish_date"
+                format="dd-MM-yyyy HH:mm:ss"
+                model-type="format"
+                :enable-time-picker="true"
+                :is-24="true"
+                :auto-apply="true"
+                input-class-name="rounded w-full"
+              />
               <span v-if="errors.publish_date" class="text-red-500 text-xs font-semibold">{{errors.publish_date[0]}}</span>
-            </div>
-            <div class="mb-2 mx-2">
-              <svg id="Capa_1" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current text-gray-600"><g><path d="m144 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m467 65h-36v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-36c-24.813 0-45 20.187-45 45v332c0 24.813 20.187 45 45 45h422c24.813 0 45-20.187 45-45 0-9.682 0-323.575 0-332 0-24.813-20.187-45-45-45zm-437 45c0-8.271 6.729-15 15-15h36v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h36c8.271 0 15 6.729 15 15v59h-452zm437 347h-422c-8.271 0-15-6.729-15-15v-243h452v243c0 8.271-6.729 15-15 15z"></path></g></svg>
             </div>
             </div>
           </div>
@@ -79,11 +84,16 @@
             </div>
               <div class="flex items-center w-full lg:w-1/2 md:w-1/2">
             <div class="mb-2 w-full">
-              <datetime format="DD-MM-YYYY h:i:s"  v-model="expire_date" class="w-full rounded" id="expire_date"></datetime>
+              <VueDatePicker
+                v-model="expire_date"
+                format="dd-MM-yyyy HH:mm:ss"
+                model-type="format"
+                :enable-time-picker="true"
+                :is-24="true"
+                :auto-apply="true"
+                input-class-name="w-full rounded"
+              />
               <span v-if="errors.expire_date" class="text-red-500 text-xs font-semibold">{{errors.expire_date[0]}}</span> 
-            </div>
-            <div class="mb-2 mx-2">
-              <svg id="Capa_1" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current text-gray-600"><g><path d="m144 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m467 65h-36v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-36c-24.813 0-45 20.187-45 45v332c0 24.813 20.187 45 45 45h422c24.813 0 45-20.187 45-45 0-9.682 0-323.575 0-332 0-24.813-20.187-45-45-45zm-437 45c0-8.271 6.729-15 15-15h36v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h36c8.271 0 15 6.729 15 15v59h-452zm437 347h-422c-8.271 0-15-6.729-15-15v-243h452v243c0 8.271-6.729 15-15 15z"></path></g></svg>
             </div>
             </div>
           </div>
@@ -98,8 +108,14 @@
             </div>
             <div class="mb-2 w-full lg:w-1/2 md:w-1/2">
               <!-- <textarea type="text" name="description" id="description" v-model="description" class="tw-form-control w-full" rows="3" placeholder="Enter Description" @keyup='remaincharCount(255)' maxlength="255"></textarea> -->
-              <quill-editor ref="myQuillEditor" v-model="description" :options="editorOption"/>
-              <span v-if="errors.description" class="text-red-500 text-xs font-semibold">{{errors.description[0]}}</span>
+              <QuillEditor
+                  v-model:content="description"
+                  contentType="html"
+                  theme="snow"
+                  :modules="editorModules"
+                />
+              <span v-if="errors.description" class="text-red-500 text-xs font-semibold">
+              {{errors.description[0]}}</span>
             </div>
           </div>
         </div>
@@ -135,7 +151,7 @@
         <div class="tw-form-group w-full">
           <div class="lg:mr-8 md:mr-8 flex flex-col lg:flex-row md:flex-row lg:items-center md:items-center w-full">
             <div class="w-full lw-full lg:w-1/4 md:w-1/4">
-              <label for="attachment_file" v-model="attachment_file" class="tw-form-label">Attachment</label>
+              <label for="attachment_file" class="tw-form-label">Attachment</label>
               <span class="font-semibold text-xs text-gray-700">(PDF only)</span>
             </div>
             <div class="mb-2 w-full lg:w-1/2 md:w-1/2">
@@ -198,7 +214,7 @@
         <div class="tw-form-group">
           <div class="lg:mr-8 md:mr-8 flex flex-col w-full">
             <div class="w-full">
-              <label for="bg_image" v-model="bg_image" class="tw-form-label">Background Image</label>
+              <label for="bg_image" class="tw-form-label">Background Image</label>
             </div>
             <div class="mb-2 w-full">
               <input type="file" name="bg_image" @change="OnFileSelectedImg" id="bg_image" class="tw-form-control w-full">
@@ -244,26 +260,21 @@
           </div>
         </div>
       </div>
-    </div>
 <!-- End modal -->
   </div>
 </template>
 
 <script>
 
-import datetime from 'vuejs-datetimepicker';
-  import Vue from 'vue'
-  import VueQuillEditor from 'vue-quill-editor'
-  import 'quill/dist/quill.core.css' // import styles
-  import 'quill/dist/quill.snow.css' // for snow theme
-  import 'quill/dist/quill.bubble.css' // for bubble theme
-  Vue.use(VueQuillEditor)
-
+import { VueDatePicker } from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 export default {
 
   props:['url' , 'p_date' , 'e_date'],
 
-  components: { datetime },
+  components: { VueDatePicker,QuillEditor },
 
   data(){
     return{

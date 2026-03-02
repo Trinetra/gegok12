@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.admin.layout')
 
 @section('content')
@@ -99,7 +98,7 @@
                 <div class="bg-white shadow my-5">
                     <profile-tab-parent url="{{ url('/') }}" entity_id="{{ $user->id }}" school_id="{{ $user->school_id }}" name="{{ $user->name }}"></profile-tab-parent>
                    
-                    <portal-target name="parent-profile"></portal-target>
+                    <div id="parent-profile"></div>
                 </div>
             </div>
         </div>

@@ -9,7 +9,11 @@
                         <label for="description" class="tw-form-label">Description</label>
                     </div>
                     <div class="mb-2">
-                        <quill-editor ref="myQuillEditor" v-model="description" name="description" :options="option"/>
+                        <QuillEditor
+                              v-model:content="description"
+                              contentType="html"
+                              theme="snow"
+                            />
                         <div class="text-gray-700 text-xs my-1" v-text="(500 - description.length)+'/'+500" style="text-align: right"></div>               
                     </div>
                     <span v-if="errors.description" class="text-red-500 text-xs font-semibold">{{errors.description[0]}}</span>
@@ -25,7 +29,7 @@
                         <label for="attachment" class="tw-form-label">Attachment</label>
                     </div>
                     <div class="mb-2">
-                        <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions" v-on:vdropzone-sending="sendingEvent"></vue-dropzone>
+                        <div ref="dropzone" class="dropzone border rounded p-4 bg-gray-50"></div>
                         <a href="#" class="btn btn-reset reset-btn" @click="removeAllFiles()">Remove All Files</a> 
                     </div>
                     <span v-if="errors.attachment" class="text-red-500 text-xs font-semibold">{{errors.attachment[0]}}</span>
@@ -97,7 +101,15 @@
                         <label for="posted_at" class="tw-form-label">Date Time<span class="text-red-500">*</span></label>
                     </div>
                     <div class="mb-2">
-                        <datetime format="DD-MM-YYYY h:i:s" name="posted_at" v-model="posted_at" class="w-full rounded" id="posted_at"></datetime>
+                        <VueDatePicker
+                          v-model="posted_at"
+                          format="dd-MM-yyyy HH:mm:ss"
+                          model-type="format"
+                          :enable-time-picker="true"
+                          :is-24="true"
+                          :auto-apply="true"
+                          input-class-name="w-full rounded"
+                        />
                     </div>
                     <span v-if="errors.posted_at" class="text-red-500 text-xs font-semibold">{{errors.posted_at[0]}}</span>
                 </div> 
@@ -112,17 +124,19 @@
 </template>
 
 <script> 
-    import datetime from 'vuejs-datetimepicker';
-    import vue2Dropzone from 'vue2-dropzone'
-    import 'vue2-dropzone/dist/vue2Dropzone.min.css'
-    import VueQuillEditor from 'vue-quill-editor'
-    import 'quill/dist/quill.core.css' // import styles
-    import 'quill/dist/quill.snow.css' // for snow theme
-    import 'quill/dist/quill.bubble.css' // for bubble theme
+    import { VueDatePicker } from '@vuepic/vue-datepicker'
+    import '@vuepic/vue-datepicker/dist/main.css'
+
+    import Dropzone from "dropzone"
+    import "dropzone/dist/dropzone.css"
+    Dropzone.autoDiscover = false
+
+    import { QuillEditor } from '@vueup/vue-quill'
+    import '@vueup/vue-quill/dist/vue-quill.snow.css'
     export default {
         components:{ 
-            datetime ,
-            vueDropzone: vue2Dropzone,
+            VueDatePicker ,
+            QuillEditor,
         },
         props:['url' , 'entity_id' , 'entity_name' , 'mode'],
         data(){
@@ -135,37 +149,29 @@
                 posted_at:'',
                 tag:'',
                 post_later:'',
-                option:{
+                editorOption:{
                     theme: 'snow',
                     modules: {
-                        toolbar: [
-                            ['bold', 'italic', 'underline'],
-                            [{ 'list': 'ordered' }, { 'list': 'bullet' }]
-                        ]
-                    },
-                    placeholder: '', 
-                },
-                dropzoneOptions: {
-                    url: this.url+'/'+this.mode+'/classwall/post/add/attachment',
-                    method:'post',
-                    headers: {
-                        "X-CSRF-TOKEN": document.head.querySelector("[name=csrf-token]").content
-                    },
-                    addRemoveLinks:"true",
-                    maxFilesize: 0.5,
-                    paramName: "file", // The name that will be used to transfer the file
-                    parallelUploads: 6,
-                    maxFiles:6,
-                    uploadMultiple: true,
-                    acceptedFiles: ".jpg,.jpeg,.png",
-                    autoProcessQueue: false,
-                    maxThumbnailFilesize:2,
+                        toolbar: {
+                            container: [
+                                ['bold', 'italic', 'underline', 'strike'],       
+                                [{ 'color': [] }, { 'background': [] }],
+                                [{ 'script': 'sub' }, { 'script': 'super' }],        
+                                [{ 'align': [] }],
+                                ['image'],
+                            ],      
+                        }
+                    } 
                 },
                 //visiblelist:[{id:'all_class', name:'All Classes'},{id:'select_class', name:'Select Class'}, {id:'select_page', name:'Select Page'}],
                 visiblelist:[{id:'all_class', name:'All Classes'},{id:'select_class', name:'Class'}],
                 errors:[],
                 success:null,
+                dropzoneInstance: null,
             }
+        },
+        mounted() {
+          this.initDropzone()
         },
 
         methods:
@@ -177,19 +183,43 @@
                 });
             },
 
-            init() 
-            { 
-                this.$refs.myVueDropzone.processQueue();
+            initDropzone() {
+                  this.dropzoneInstance = new Dropzone(this.$refs.dropzone, {
+                    url: this.url + '/' + this.mode + '/classwall/post/add/attachment',
+                    method: 'post',
+                    headers: {
+                      "X-CSRF-TOKEN": document.head.querySelector("[name=csrf-token]").content
+                    },
+
+                    paramName: "file",        
+                    uploadMultiple: true,     
+                    parallelUploads: 6,       
+                    maxFiles: 6,
+                    maxFilesize: 0.5,
+                    acceptedFiles: ".jpg,.jpeg,.png",
+                    autoProcessQueue: false,
+                    addRemoveLinks: true,
+                  })
+
+                  this.dropzoneInstance.on("sendingmultiple", (files, xhr, formData) => {
+                    formData.append("post_id", this.post_id)
+                  })
+
+                  this.dropzoneInstance.on("queuecomplete", () => {
+                    window.location.reload()
+                  })
+                },
+
+            processQueue() {
+              if (this.dropzoneInstance) {
+                this.dropzoneInstance.processQueue()
+              }
             },
 
-            sendingEvent (file, xhr, formData) 
-            {
-                formData.append('post_id', this.post_id);
-            },
-
-            removeAllFiles() 
-            {
-                this.$refs.myVueDropzone.removeAllFiles();
+            removeAllFiles() {
+              if (this.dropzoneInstance) {
+                this.dropzoneInstance.removeAllFiles(true)
+              }
             },
 
             showTag(e)
@@ -221,10 +251,14 @@
                 formData.append('tag',this.tag);
 
                 axios.post(this.url+'/'+this.mode+'/classwall/post/add',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => { 
-                    this.post_id = response.data.id;    
-                    this.init();
+                    this.post_id = response.data.id
+                    this.processQueue()
                     this.success = response.data.success;
-                    window.location.reload();
+                    if (this.dropzoneInstance.getQueuedFiles().length > 0) {
+                        this.processQueue()
+                      } else {
+                        window.location.reload()
+                      }
                 }).catch(error => {
                     this.errors = error.response.data.errors;
                 });

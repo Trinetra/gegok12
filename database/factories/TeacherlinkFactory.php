@@ -1,15 +1,18 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
 namespace Database\Factories;
 
-use Faker\Generator as Faker;
 use App\Models\Teacherlink;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Teacherlink::class, function (Faker $faker) {
+class TeacherlinkFactory extends Factory
+{
+    protected $model = Teacherlink::class;
 
-    return [
-        //
-        'status'        =>  '1',
-    ];
-});
+    public function definition()
+    {
+        return [
+            'status' => 1,
+        ];
+    }
+}

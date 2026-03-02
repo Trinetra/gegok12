@@ -5,71 +5,73 @@
 
             <div class="flex">
                 <table class="w-3/4">
-                    <tr class="border-b">
-                        <td class="py-3 px-2">
-                            <p class="font-semibold text-xs">Teacher Name</p>
-                        </td>
-                        <td class="py-3 px-10">
-                            <p class="text-xs">{{ leaves.teacher_name }}</p>
-                        </td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="py-3 px-2">
-                            <p class="font-semibold text-xs">From Date</p>
-                        </td>
-                        <td class="py-3 px-10">
-                            <p class="text-xs">{{ leaves.from_date }}</p>
-                        </td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="py-3 px-2">
-                            <p class="font-semibold text-xs">To Date</p>
-                        </td>
-                        <td class="py-3 px-10">
-                            <p class="text-xs">{{ leaves.to_date }}</p>
-                        </td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="py-3 px-2">
-                            <p class="font-semibold text-xs">Reason</p>
-                        </td>
-                        <td class="py-3 px-10">
-                            <p class="text-xs">{{ leaves.reason_id }}</p>
-                        </td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="py-3 px-2">
-                            <p class="font-semibold text-xs">Remarks</p>
-                        </td>
-                        <td class="py-3 px-10">
-                            <p class="text-xs" v-if="leaves.remarks != null">{{ leaves.remarks }}</p>
-                            <p class="text-xs" v-else>--</p>
-                        </td>
-                    </tr>
-                   <!--  <tr class="border-b">
-                        <td class="py-3 px-2">
-                            <p class="font-semibold text-xs">Leave Days</p>
-                        </td>
-                        <td class="py-3 px-10">
-                            <p class="text-xs">{{ leaves.leave_days }}</p>
-                        </td>
-                    </tr> -->
-                    <tr class="border-b">
-                        <td class="py-3 px-2">
-                            <p class="font-semibold text-xs">Session</p>
-                        </td>
-                        <td class="py-3 px-10">
-                            <p class="text-xs">{{ leaves.session }}</p>
-                        </td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="py-3 px-2">
-                            <p class="font-semibold text-xs">Leave Type</p>
-                        </td>
-                        <td class="py-3 px-10">
-                            <p class="text-xs">{{ leaves.leave_type_id }}</p>
-                        </td>
-                    </tr>
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="py-3 px-2">
+                                <p class="font-semibold text-xs">Teacher Name</p>
+                            </td>
+                            <td class="py-3 px-10">
+                                <p class="text-xs">{{ leaves.teacher_name }}</p>
+                            </td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-3 px-2">
+                                <p class="font-semibold text-xs">From Date</p>
+                            </td>
+                            <td class="py-3 px-10">
+                                <p class="text-xs">{{ leaves.from_date }}</p>
+                            </td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-3 px-2">
+                                <p class="font-semibold text-xs">To Date</p>
+                            </td>
+                            <td class="py-3 px-10">
+                                <p class="text-xs">{{ leaves.to_date }}</p>
+                            </td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-3 px-2">
+                                <p class="font-semibold text-xs">Reason</p>
+                            </td>
+                            <td class="py-3 px-10">
+                                <p class="text-xs">{{ leaves.reason_id }}</p>
+                            </td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-3 px-2">
+                                <p class="font-semibold text-xs">Remarks</p>
+                            </td>
+                            <td class="py-3 px-10">
+                                <p class="text-xs" v-if="leaves.remarks != null">{{ leaves.remarks }}</p>
+                                <p class="text-xs" v-else>--</p>
+                            </td>
+                        </tr>
+                       <!--  <tr class="border-b">
+                            <td class="py-3 px-2">
+                                <p class="font-semibold text-xs">Leave Days</p>
+                            </td>
+                            <td class="py-3 px-10">
+                                <p class="text-xs">{{ leaves.leave_days }}</p>
+                            </td>
+                        </tr> -->
+                        <tr class="border-b">
+                            <td class="py-3 px-2">
+                                <p class="font-semibold text-xs">Session</p>
+                            </td>
+                            <td class="py-3 px-10">
+                                <p class="text-xs">{{ leaves.session }}</p>
+                            </td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-3 px-2">
+                                <p class="font-semibold text-xs">Leave Type</p>
+                            </td>
+                            <td class="py-3 px-10">
+                                <p class="text-xs">{{ leaves.leave_type_id }}</p>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
 
@@ -97,11 +99,7 @@
 </template>
 
 <script>
-    import datetime from 'vuejs-datetimepicker';
     export default {
-        components: {
-            datetime,
-        },
         props : ['url' , 'id' , 'status'],
 
         data(){

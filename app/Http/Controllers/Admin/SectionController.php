@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\SectionRequest;
@@ -15,6 +16,14 @@ use App\Models\Section;
 use App\Traits\Common;
 use Exception;
 
+/**
+ * Class SectionController
+ *
+ * Handles creation and management of academic sections
+ * for the authenticated school under admin module.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class SectionController extends Controller
 {
     use AcademicProcess;
@@ -22,10 +31,13 @@ class SectionController extends Controller
     use Common;
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created section in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Creates a new section for the authenticated user's school
+     * using academic process trait and logs the activity.
+     *
+     * @param SectionRequest $request
+     * @return array
      */
     public function store(SectionRequest $request)
     {

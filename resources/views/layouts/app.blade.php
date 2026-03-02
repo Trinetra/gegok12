@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -11,19 +10,19 @@
         <title>{{ config('app.name', 'GegoK12') }}</title>
         <!-- Styles -->
 
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        <!-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> -->
+        <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500&family=IBM+Plex+Sans:wght@500;600;700&family=Nunito+Sans:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
          <script>
         window.User = {!! json_encode(optional(auth()->user())->only('id')) !!}
     </script>
-
+   
     <!-- <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script> -->
     
     <!-- new -->
     <script>
        window.AppConfig = {
-          gtimetable_enabled: @json(config('gtimetable.enabled')),
           gquiz_enabled: @json(config('gquiz.enabled')),
           gexam_enabled: @json(config('gexam.enabled')),
           ginventory_enabled: @json(config('ginventory.enabled')),
@@ -40,6 +39,7 @@
     <!-- end -->
 
  <livewire:styles>
+
     </head>
     <body class="font-primary antialiased min-h-screen overflow-x-hidden">
         <div id="app">
@@ -48,7 +48,7 @@
                 <div class="sidebar min-h-full">
                     @yield('base-sidebar')
                 </div>
-                <div class="bg-gray-200 flex-grow w-full px-4" style="width: calc(100vw - 195px);">
+                <div class="bg-gray-200 grow w-full px-4" style="width: calc(100vw - 195px);">
                     @yield('base-content')
                 </div>
             </main>
@@ -58,11 +58,16 @@
 
         <!-- Scripts -->
 
-        <script src="{{ asset('js/app.js') }}"></script>
+        <script src="{{ mix('js/manifest.js') }}"></script>
+        <script src="{{ mix('js/vendor.js') }}"></script>
+        <script src="{{ mix('js/app.js') }}"></script>
         <script src="{{ asset('js/custom.js') }}" ></script>
         @stack('scripts')
 
         <livewire:scripts>
+            <!-- <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+            <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="{{ asset('vendor/livewire-alert/livewire-alert.js') }}"></script> 
 
         <script>
    window.addEventListener('alert', event => {
@@ -87,6 +92,11 @@
 </script>
 
     </body>
+    <style>
+    .hide-menu {
+    display: none;
+}
+</style>
     <style>
     .page-loading .loading {
   margin: auto;

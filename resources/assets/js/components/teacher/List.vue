@@ -15,7 +15,6 @@
     </div>
     <div>
       <teacherdetails :url="this.url"></teacherdetails>
-      <portal-target name="teacherdetail" ></portal-target>
       <div class="my-8">
         <div class="w-full flex flex-wrap items-center justify-between mb-4">
           <div class="flex flex-wrap items-center text-sm">
@@ -38,9 +37,9 @@
           <template class="" v-for="user in users">
             <div class="w-full lg:w-full md:w-full my-2 relative p-2">
               <div class="person-card  border rounded flex justify-between relative" v-bind:class="[user['status']=='active' ? 'bg-white': 'bg-red-300' ]">
-                <div class="flex-grow w-full flex p-2 cursor-pointer hover:shadow" :id="user['id']" @click="enableform(user['name'])">
+                <div class="grow w-full flex p-2 cursor-pointer hover:shadow" :id="user['id']" @click="enableform(user['name'])">
                   <img :src="user['avatar']" class="w-16 h-16">
-                  <div class="flex-grow px-2">
+                  <div class="grow px-2">
                     <h2 class="font-bold text-base text-gray-700">{{user['fullname']}}</h2>
                     <p class="text-sm">{{user['designation_name']}}</p>
                     <p v-if="birthday == 'true'">{{ user['date_of_birth'] }}</p>
@@ -106,8 +105,8 @@
                   <label for="executed_at" class="tw-form-label">Date Time</label>
               </div>
               <div class="w-full lg:w-3/4">
-                <datetime format="DD-MM-YYYY h:i:s" name="executed_at" v-model="executed_at" class="w-full rounded" id="executed_at">
-                </datetime>
+                <VueDatePicker format="DD-MM-YYYY h:i:s" name="executed_at" v-model="executed_at" class="w-full rounded" id="executed_at">
+                </VueDatePicker>
                 <span v-if="errors.executed_at" class="text-red-500 text-xs font-semibold">{{errors.executed_at[0]}}</span>
               </div>
             </div>
@@ -124,9 +123,9 @@
 <script>
 
   import { bus } from "../../app";
-  import PortalVue from "portal-vue";
   import teacherdetails from './Detail';
-  import datetime from 'vuejs-datetimepicker';
+  import { VueDatePicker } from '@vuepic/vue-datepicker'
+  import '@vuepic/vue-datepicker/dist/main.css'
   export default {
     props:['url','searchquery','letter','birthday'],
       data(){
@@ -159,7 +158,6 @@
           this.users = response.data.data;
         });
         this.getUrl();
-        console.log(this.searchquery);
       },
 
       computed: 
@@ -182,7 +180,7 @@
     components:
     {
       teacherdetails,
-      datetime,
+      VueDatePicker,
     },
 
     methods:
@@ -196,7 +194,7 @@
       {
         this.success=null;
         $('#show-detail').removeClass('hide-menu').addClass('block');
-        bus.$emit("dataMemberName", val);
+        bus.emit("dataMemberName", val);
       },
         
       sortMembers(name)
@@ -343,14 +341,18 @@
       { 
         if (e.target.checked) 
         {
-          this.selectedUsersCount++;
+          if (!this.selected.includes(id)) {
+            this.selected.push(id);
+          }
           $('#'+id).addClass('student_selected');
         }
         else
         {
-          this.selectedUsersCount--;
+          this.selected = this.selected.filter(item => item !== id);
           $('#'+id).removeClass('student_selected');
         }
+
+        this.selectedUsersCount = this.selected.length;
       },
     }
   }

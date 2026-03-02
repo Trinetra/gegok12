@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 Route::get( '/dashboard', 'DashboardController@index' );
 Route::get( '/dashboard/structuralList', 'DashboardController@structuralList' );
 Route::post( '/dashboard/structuralList', 'DashboardController@showStructuralList' );

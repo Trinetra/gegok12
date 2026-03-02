@@ -126,7 +126,8 @@ class CheckBirthday extends Command
 
                     $school_id=$birthday->userprofile->school_id;
 
-                    $image = $this->getFilePath('uploads/images/birthday.jpg');
+                    // $image = $this->getFilePath('uploads/images/birthday.jpg');
+                    $image = 'uploads/images/birthday.jpg';
 
                     //dump($image);
 

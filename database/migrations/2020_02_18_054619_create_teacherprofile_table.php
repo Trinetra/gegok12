@@ -36,7 +36,7 @@ class CreateTeacherprofileTable extends Migration
             $table->string('employee_id')->nullable();
             $table->integer('reporting_to')->unsigned()->nullable();
             $table->foreign('reporting_to')->references('id')->on('users');
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

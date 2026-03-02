@@ -3,6 +3,7 @@
 namespace App\Http\Resources\API;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Carbon\Carbon;
 
 class SendMail extends JsonResource
 {
@@ -18,7 +19,7 @@ class SendMail extends JsonResource
             //
             'subject'   =>  $this->subject,
             'message'   =>  $this->message,
-            'sentAt'    =>  $this->fired_at->diffForHumans(),
+            'sentAt'    =>  Carbon::parse($this->fired_at)->diffForHumans(),//$this->fired_at->diffForHumans(),
         ];
     }
 }

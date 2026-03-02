@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.accountant.layout')
 
 @section('content')
@@ -110,7 +109,7 @@
    			<div class="flex flex-wrap border-b">
    				<div class="w-full lg:w-1/2 md:w-1/2 border-r px-5 py-5">
    					<p class="text-sm">{{$payroll->user->userprofile->firstname}} {{$payroll->user->userprofile->lastname}}</p>
-   					<p class="text-sm">{{ucfirst($payroll->user->teacherprofile[0][designation])}} </p>
+   					<p class="text-sm">{{ucfirst($payroll->user->teacherprofile[0]->designation)}} </p>
                   <span> {{ucfirst($payroll->user->getTeacherDetails()['sub_designation'])}}</span>
          
         </td>

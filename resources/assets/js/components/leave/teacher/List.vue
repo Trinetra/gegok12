@@ -1,7 +1,7 @@
 <template>
     <div class="relative">
         <div v-if="this.success!=null" class="alert alert-success" id="success-alert">{{this.success}}</div>
-        <portal to="approve_leave">
+        <Teleport to="#approve_leave">
             <div class="flex flex-wrap lg:flex-row justify-between items-center">
                 <div class="">
                     <h1 class="admin-h1 my-3" v-if="this.type == 'check'">Pending Leave Applications</h1>
@@ -26,7 +26,7 @@
                     </div>
                 </div>
             </div>
-        </portal>
+        </Teleport>
         <div class="">
             <div class="flex flex-wrap custom-table my-3 overflow-auto">
                 <table class="w-full">

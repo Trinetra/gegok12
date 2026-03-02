@@ -105,7 +105,7 @@
 
 <script>
     import { bus } from "../../app";
-    import PortalVue from "portal-vue";
+    
     export default {
         props:['url','slug'],
         data(){
@@ -171,8 +171,8 @@
             setProfileTab(val)
             {
                 this.profile_tab=val;
-                bus.$emit("dataAdmissionTab", this.profile_tab);
-                bus.$emit("standardVal", this.standard_id);
+                bus.emit("dataAdmissionTab", this.profile_tab);
+                bus.emit("standardVal", this.standard_id);
             },
 
             selectGroup(val)
@@ -190,13 +190,13 @@
 
         created()
         {
-            bus.$on("dataAdmissionTab", data => {
+            bus.on("dataAdmissionTab", data => {
                 if(data!='')
                 {
                     this.profile_tab=data;                   
                 }
             });   
-            bus.$on("standardVal", data => {
+            bus.on("standardVal", data => {
                 if(data!='')
                 {
                     this.standard_id=data;                   

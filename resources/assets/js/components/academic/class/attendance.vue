@@ -39,14 +39,14 @@
       setType(val)
       {
         this.type = val;
-        bus.$emit("type", this.type);
+        bus.emit("type", this.type);
       },
     },
     
     created()
     {   
-      bus.$emit("type", this.type);
-      bus.$on("dataProfileTab", data => {
+      bus.emit("type", this.type);
+      bus.on("dataProfileTab", data => {
         if(data!='')
         {
           this.profile_tab=data;                   

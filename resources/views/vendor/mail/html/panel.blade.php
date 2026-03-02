@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <table class="panel" width="100%" cellpadding="0" cellspacing="0">
     <tr>
         <td class="panel-content">

@@ -9,29 +9,53 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\MailTemplate;
 use App\Models\Contact;
 use Illuminate\Support\Facades\Auth;
+
+/**
+ * RoomInvitationMail
+ *
+ * Mailable class for sending video conference room invitations.
+ * Contains conference details and a join link for participants.
+ *
+ * @package App\Mail
+ */
 class RoomInvitationMail extends Mailable implements ShouldQueue
 {
    use Queueable, SerializesModels;
 
    /**
-    * The contact instance.
+    * The recipient user
     *
-    * @var Contact
+    * @var mixed
     */
-   protected $content,$info,$user;
+   protected $user;
+   
+   /**
+    * The conference room information
+    *
+    * @var mixed
+    */
+   protected $info;
 
    /**
-    * Create a new content instance.
+    * Create a new message instance.
     *
+    * @param mixed $user The recipient user
+    * @param mixed $info The conference room information
     * @return void
     */
    public function __construct($user, $info)
    {
+       $this->queue='emails';
        $this->user = $user;
        $this->info = $info;
    }
+   
    /**
     * Build the message.
+    *
+    * Generates a conference room URL based on user role,
+    * retrieves the room invitation template, and replaces placeholders
+    * with user details and conference information.
     *
     * @return $this
     */

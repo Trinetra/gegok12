@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.admission')
 @section('content')
     <div class="w-full lg:mx-2">
@@ -20,13 +19,17 @@
             <form method="POST" action="" enctype="multipart/form-data" id="msform" class="w-full lg:w-1/2 mx-auto">
                 @csrf
                 <add-admission url="{{ url('/') }}" slug="{{ $slug }}"></add-admission>
-                <portal-target name="add_admissionform"></portal-target>
+                <div id="add_admissionform"></div>
             </form>
 
         @elseif($admission_open['meta_value']=="0")
             <h1 class="admin-h1 my-3 flex items-center">       
                 <span class="mx-3">{{ $closedetails['meta_value'] }}</span>
             </h1>
+        @else
+        <h1 class="admin-h1 my-3 flex items-center">       
+                <span class="mx-3">Admission Not Opened</span>
+            </h1>    
         @endif
     </div>
 @endsection

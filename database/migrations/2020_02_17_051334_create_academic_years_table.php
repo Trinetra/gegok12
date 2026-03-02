@@ -21,7 +21,7 @@ class CreateAcademicYearsTable extends Migration
             $table->text('description')->nullable();
             $table->dateTime('start_date');
             $table->dateTime('end_date');
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
            /* $table->integer('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('id')->on('users');
             $table->integer('updated_by')->unsigned()->nullable();

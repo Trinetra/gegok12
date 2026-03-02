@@ -1,7 +1,7 @@
 <template>
     <div class="relative">
         <div v-if="this.success!=null" class="alert alert-success" id="success-alert">{{ this.success }}</div>
-        <portal to="add_homework">
+        <Teleport to="#add_homework">
             <div class="flex flex-wrap lg:flex-row justify-between">
                 <div class="">
                     <h1 class="admin-h1 my-3">Home Work</h1>
@@ -34,7 +34,7 @@
                     </div>
                 </div>
             </div>
-        </portal>
+        </Teleport>
         <div class="">
           <div class="flex" v-show="this.status=='pending' && this.approvallist.length>0">
              <a @click="updateAll('approve')" class="no-underline text-white px-4 my-3 mx-1 flex items-center custom-green py-1 justify-center cursor-pointer">
@@ -479,7 +479,7 @@
                 });
 
             this.getData(this.status);
-            bus.$on("statusTab", data => {
+            bus.on("statusTab", data => {
                 if(data!='')
                 {
                     this.status=data;

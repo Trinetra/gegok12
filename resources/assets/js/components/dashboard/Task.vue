@@ -34,7 +34,7 @@
                     </div>
                     <!-- list tab -->
                         <list-task-tab :url="this.url" :mode="this.mode"></list-task-tab>
-                        <portal-target name="list_task"></portal-target>
+                        <div id="list_task"></div>
                     <!-- list tab -->
                 </div>
             </div>
@@ -58,7 +58,7 @@
         {
             searchTask()
             {
-                bus.$emit('search_query',this.search);
+                bus.emit('search_query',this.search);
             },
 
             clearAll()

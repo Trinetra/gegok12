@@ -58,7 +58,15 @@
               <label class="tw-form-label">Publish Date</label>
             </div>
             <div class="mb-2 w-full lg:w-1/2 md:w-1/2">
-              <datetime format="DD-MM-YYYY h:i:s" name="publish_date" v-model="publish_date" class="rounded w-full" id="publish_date"></datetime>
+              <VueDatePicker
+                v-model="publish_date"
+                format="dd-MM-yyyy HH:mm:ss"
+                model-type="format"
+                :enable-time-picker="true"
+                :is-24="true"
+                :auto-apply="true"
+                input-class-name="rounded w-full"
+              />
               <span v-if="errors.publish_date" class="text-red-500 text-xs font-semibold">{{errors.publish_date[0]}}</span>
             </div>
             <div class="mb-2 mx-2">
@@ -75,7 +83,15 @@
               <label class="input-group-addon tw-form-label">Expire Date</label>
             </div>
             <div class="mb-2 w-full lg:w-1/2 md:w-1/2">
-              <datetime format="DD-MM-YYYY h:i:s"  v-model="expire_date" class="w-full rounded" id="expire_date"></datetime>
+              <VueDatePicker
+                v-model="expire_date"
+                format="dd-MM-yyyy HH:mm:ss"
+                model-type="format"
+                :enable-time-picker="true"
+                :is-24="true"
+                :auto-apply="true"
+                input-class-name="w-full rounded"
+              />
               <span v-if="errors.expire_date" class="text-red-500 text-xs font-semibold">{{errors.expire_date[0]}}</span> 
             </div>
             <div class="mb-2 mx-2">
@@ -131,7 +147,7 @@
         <div class="tw-form-group w-full">
           <div class="lg:mr-8 md:mr-8 flex flex-col lg:flex-row md:flex-row lg:items-center md:flex-row w-full">
             <div class="w-full w-full lg:w-1/4 md:w-1/4">
-              <label for="attachment_file" v-model="attachment_file" class="tw-form-label">Attachment</label>
+              <label for="attachment_file" class="tw-form-label">Attachment</label>
               <span class="font-semibold text-xs text-gray-700">(PDF only)</span>
             </div>
             <div class="mb-2 w-full lg:w-1/2 md:w-1/2">
@@ -197,7 +213,7 @@
         <div class="tw-form-group w-full lg:w-3/4 md:w-3/4">
           <div class="lg:mr-8 md:mr-8 flex flex-col lg:flex-row md:flex-row lg:items-center md:items-center w-full">
             <div class="w-full lw-full lg:w-1/4 md:w-1/4">
-              <label for="bg_image" v-model="bg_image" class="tw-form-label">Background Image</label>
+              <label for="bg_image" class="tw-form-label">Background Image</label>
             </div>
             <div class="mb-2 w-full lg:w-1/2 md:w-1/2">
               <input type="file" name="bg_image" @change="OnFileSelectedImg" id="bg_image" class="tw-form-control w-full">
@@ -242,29 +258,20 @@
           </div>
         </div>
       </div>
-    </div>
 <!-- End modal -->
-
-
   </div>
 </template>
 
 
 <script>
 
-import datetime from 'vuejs-datetimepicker';
-  import Vue from 'vue'
-  import VueQuillEditor from 'vue-quill-editor'
-  import 'quill/dist/quill.core.css' // import styles
-  import 'quill/dist/quill.snow.css' // for snow theme
-  import 'quill/dist/quill.bubble.css' // for bubble theme
-  Vue.use(VueQuillEditor)
-
+import { VueDatePicker } from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 export default {
 
   props:['id','url'],
 
-  components: { datetime },
+  components: { VueDatePicker },
 
   data(){
     return{

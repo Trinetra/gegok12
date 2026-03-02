@@ -1,14 +1,14 @@
 <template>
     <div class="relative">
         <div v-if="this.success!=null" class="alert alert-success" id="success-alert">{{this.success}}</div>
-        <portal to="add_notice">
+        <Teleport to="#add_notice">
             <div class="flex flex-wrap lg:flex-row justify-between items-center">
                 <div class="">
                     <h1 class="admin-h1 my-3">Notice Board</h1>
                 </div>
                 <div class="relative flex items-center w-full lg:w-1/2 md:w-1/4 justify-end">
                     <div class="flex items-center w-full justify-end">
-                        <select name="standardLink_id" v-model="standardLink_id" class="tw-form-control mx-2" v-on:change="selectClass()">
+                        <select v-if="mode !== 'student'" name="standardLink_id" v-model="standardLink_id" class="tw-form-control mx-2" v-on:change="selectClass()">
                             <option value="">Select Class</option>
                             <option v-for="list in standardLinklist" v-bind:value="list.id">{{ list.standard_section }}</option>
                         </select>
@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </div>
-        </portal>
+        </Teleport>
         <div class="">
             <div class="flex flex-wrap custom-table my-3 overflow-auto">
                 <table class="w-full">
@@ -108,6 +108,9 @@
                         </tr>
                     </tbody>
                 </table>
+                <div v-if="this.page_count>1">
+                    <paginate v-model="page" :page-count="this.page_count" :page-range="3" :margin-pages="1" :click-handler="getData" :prev-text="'<'" :next-text="'>'" :container-class="'pagination'" :page-class="'page-item'" :prev-link-class="'prev'" :next-link-class="'next'"></paginate>
+                </div>
             </div>
         </div>
     </div>
@@ -127,6 +130,9 @@
                 params:{},
                 errors:[],
                 success:null,
+                currentScope: this.scope,
+                page_count: 0,
+                page: 1, 
             }
         },
 
@@ -134,8 +140,10 @@
         {
             getData()
             {
-                axios.get('/'+this.mode+'/notice/show/list/?standardLink_id='+this.scope+'&search='+this.search).then(response => {
+                axios.get('/'+this.mode+'/notice/show/list/?standardLink_id='+this.currentScope+'&search='+this.search+'&page='+this.page).then(response => {
                     this.notices    = response.data.data;
+                    this.page_count     = response.data.meta.last_page;
+                    this.total          = response.data.meta.total;
                     //console.log(this.notices);    
                     //console.log(this.hidecolumns);    
                 });
@@ -157,13 +165,13 @@
             resetForm()
             {
                 this.search = '';
-                this.scope = '';
+                this.currentScope = '';
                 this.getData();
             },
 
             selectClass()
             {
-                this.scope = this.standardLink_id;
+                this.currentScope = this.standardLink_id;
                 this.getData();
             },
 

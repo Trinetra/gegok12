@@ -9,26 +9,42 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\MailTemplate;
 use App\Models\User;
 
+/**
+ * EmailVerification
+ *
+ * Mailable class for sending email verification messages.
+ * Contains a verification link that users must click to verify their email address.
+ *
+ * @package App\Mail
+ */
 class EmailVerification extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
-     * Create a new message instance.
+     * The user instance
      *
-     * @return void
+     * @var User
      */
     protected $user;
 
-
+    /**
+     * Create a new message instance.
+     *
+     * @param User $user The user to verify email for
+     * @return void
+     */
     public function __construct(User $user)
     {
-        //
+        $this->queue='emails';
         $this->user = $user;
     }
 
     /**
      * Build the message.
+     *
+     * Generates a verification URL from the user's verification code
+     * and replaces template placeholders with the URL and user name.
      *
      * @return $this
      */

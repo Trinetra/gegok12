@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.teacher.layout')
 
 @section('content')
@@ -9,5 +8,5 @@
     </div>
     @include('partials.message')
     <student-leave-tab url="{{ url('/') }}"></student-leave-tab>
-    <portal-target name="student_leave_list"></portal-target>
+    <div id="student_leave_list"></div>
 @endsection

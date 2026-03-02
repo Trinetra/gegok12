@@ -9,24 +9,42 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\MailTemplate;
 use App\Models\Subscription;
 
+/**
+ * SubscriptionExpiredMail
+ *
+ * Mailable class for sending subscription expiration alerts.
+ * Notifies administrators when a school's subscription is expiring and needs renewal.
+ *
+ * @package App\Mail
+ */
 class SubscriptionExpiredMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+    /**
+     * The subscription instance
+     *
+     * @var Subscription
+     */
     public $subscription;
+    
     /**
      * Create a new message instance.
      *
+     * @param Subscription $subscription The expiring subscription
      * @return void
      */
     public function __construct(Subscription $subscription)
     {
-        //
+        $this->queue='emails';
         $this->subscription = $subscription;
     }
 
     /**
      * Build the message.
+     *
+     * Retrieves the expiration alert template and replaces placeholders
+     * with school name, user name, expiration date, and renewal URL.
      *
      * @return $this
      */

@@ -31,12 +31,16 @@ class AttendanceController extends Controller
 
         $total              =   $attendances->count();
         $present            =   $attendances->where('status',1)->count();
-        $array = $present=='' ? 0:number_format((float)( $present / $total )*100);
+        if ($total > 0) {
+            $percentage = number_format(($present / $total) * 100, 2);
+        } else {
+            $percentage = 0;
+        }
         
         return response()->json([
             'success'               =>  true,
             'message'               =>  'Attendance',
-            'attendancePercentage'  =>  $array.'%',
+            'attendancePercentage'  =>  $percentage.'%',
             'data'                  =>  $attendance
         ],200);
     }

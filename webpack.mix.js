@@ -1,25 +1,46 @@
 const mix = require("laravel-mix");
-
-require("laravel-mix-tailwind");
-require("laravel-mix-purgecss");
+const path = require("path");
 
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
  |--------------------------------------------------------------------------
- |
- | Mix provides a clean, fluent API for defining some Webpack build steps
- | for your Laravel application. By default, we are compiling the Sass
- | file for the application as well as bundling up all the JS files.
- |
+ | Tailwind 3 runs via PostCSS (postcss.config.js); no Mix Tailwind/PurgeCSS.
  */
 
+// Resolve 'vue' to a default-export shim for Vue 2 packages that use "import Vue from 'vue'"
+mix.webpackConfig({
+    plugins: [
+        new (class VueCompatPlugin {
+            apply(compiler) {
+                compiler.hooks.normalModuleFactory.tap("VueCompatPlugin", (nmf) => {
+                    nmf.hooks.beforeResolve.tap("VueCompatPlugin", (resolveData) => {
+                        if (
+                            resolveData.request === "vue" &&
+                            resolveData.contextInfo.issuer &&
+                            (resolveData.contextInfo.issuer.includes("vue-image-lightbox-carousel") ||
+                                (resolveData.contextInfo.issuer.includes("@fullcalendar/vue") &&
+                                    !resolveData.contextInfo.issuer.includes("@fullcalendar/vue3")))
+                        ) {
+                            resolveData.request = path.resolve(
+                                __dirname,
+                                "resources/assets/js/vue-default-shim.js"
+                            );
+                        }
+                    });
+                });
+            }
+        })(),
+    ],
+});
+
 mix.js("resources/assets/js/app.js", "public/js")
-    .sass("resources/assets/sass/app.scss", "public/css")
-    .tailwind("./tailwind.config.js")
-    .sourceMaps()
-    .purgeCss();
+    .vue({ version: 3 })
+    .extract()
+    .sass("resources/assets/sass/app.scss", "public/css");
 
 if (mix.inProduction()) {
     mix.version();
+} else {
+    mix.sourceMaps();
 }

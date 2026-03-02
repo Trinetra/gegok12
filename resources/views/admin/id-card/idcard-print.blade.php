@@ -1,9 +1,8 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <!DOCTYPE html>
 <html>
 <head>
    <title>ID CARD</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body class="font-sans">
     <div class="" style="">

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.admin.layout')
 @section('content')
 <div style="display: flex;flex-wrap: wrap;width: 32%;margin-top: 30px;margin-left: 10px;">

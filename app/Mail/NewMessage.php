@@ -9,30 +9,60 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\MailTemplate;
 use App\Models\Contact;
 
+/**
+ * NewMessage
+ *
+ * Mailable class for sending new message notifications.
+ * Delivers custom messages and notifications to users with custom subject lines.
+ *
+ * @package App\Mail
+ */
 class NewMessage extends Mailable implements ShouldQueue
 {
    use Queueable, SerializesModels;
 
    /**
-    * The contact instance.
+    * The message content
     *
-    * @var Contact
+    * @var string
     */
-   protected $content,$sub,$user;
+   protected $content;
+   
+   /**
+    * The message subject
+    *
+    * @var string
+    */
+   protected $sub;
+   
+   /**
+    * The recipient user
+    *
+    * @var mixed
+    */
+   protected $user;
 
    /**
-    * Create a new content instance.
+    * Create a new message instance.
     *
+    * @param string $subject The email subject
+    * @param string $content The email body content
+    * @param mixed $user The recipient user
     * @return void
     */
    public function __construct($subject,$content,$user)
    {
+       $this->queue='emails';
        $this->content = $content;
        $this->sub = $subject;
        $this->user = $user;
    }
+   
    /**
     * Build the message.
+    *
+    * Builds the email message from the new_message template,
+    * replaces content placeholders, and adds custom headers.
     *
     * @return $this
     */
@@ -51,6 +81,6 @@ class NewMessage extends Mailable implements ShouldQueue
                   ->withSwiftMessage(function ($message) use($email) {
                              $message->getHeaders()
                   ->addTextHeader('user_email', $email);
-   });;
+   });
    }
 }

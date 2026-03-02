@@ -115,7 +115,7 @@ class LeaveController extends Controller
         $academic_year = SiteHelper::getAcademicYear($school_id);
         $array['leavelist']       = LeaveType::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['status',1]])->get();
         $array['reasonlist']  = AbsentReason::where('status',1)->get();
-        $type=array(['id' =>'fullday','name' =>'FullDay'],['id' =>'forenoon','name' =>'Forenoon'],['id' =>'afternoon','name' =>'Afternoon']);
+        $type=array(['id' =>'day','name' =>'FullDay'],['id' =>'forenoon','name' =>'Forenoon'],['id' =>'afternoon','name' =>'Afternoon']);
         $array['session']=$type;
        
         return $array;

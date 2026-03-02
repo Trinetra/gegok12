@@ -1,150 +1,146 @@
 <?php
+
 /**
  * SPDX-License-Identifier: MIT
+ *
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\EventGalleryRequest;
 use App\Http\Resources\ShowEventGallery as ShowEventGalleryResource;
 use App\Events\Notification\SchoolNotificationEvent;
-use App\Http\Requests\EventGalleryRequest;
-use Illuminate\Support\Facades\Redirect;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use App\Models\EventGallery;
-use App\Traits\LogActivity;
 use App\Events\PushEvent;
+use App\Models\EventGallery;
 use App\Traits\Common;
+use App\Traits\LogActivity;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Carbon\Carbon;
 use Exception;
-use Carbon;
 use File;
 
+/**
+ * Class EventGalleryController
+ *
+ * Handles event gallery photo management for admin panel.
+ * Includes photo upload, retrieval, notifications, and activity logging.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class EventGalleryController extends Controller
 {
-    use LogActivity;
-    use Common;
+  use LogActivity, Common;
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-       // return view('admin.albums.create');
-    }
+  /**
+   * Display a listing of the resource.
+   *
+   * Currently unused.
+   *
+   * @return \Illuminate\Http\Response|null
+   */
+  public function index()
+  {
+    // return view('admin.albums.create');
+  }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getPhoto($event_id)
-    {
-        $event = EventGallery::where([['event_id',$event_id],['school_id',Auth::user()->school_id]])->get();
-        return $event;
-    }
+  /**
+   * Get all photos for a specific event.
+   *
+   * @param  int  $event_id
+   * @return \Illuminate\Database\Eloquent\Collection
+   */
+  public function getPhoto($event_id)
+  {
+    return EventGallery::where([
+      ['event_id', $event_id],
+      ['school_id', Auth::user()->school_id]
+    ])->get();
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(EventGalleryRequest $request,$event_id)//EventGallery
-    {
-      //dump($request);
-      try 
-      {
-        if(count($request->data)!=null)
-        {
-          for ($i=0;$i<count($request->data);$i++) 
-          { 
-            $image_parts    = explode(";base64,",$request->data[$i]['path']);
-            $image_type_aux = explode("image/",$image_parts[0]);
-            $image_type     = $image_type_aux[1];
-            $image_base64   = base64_decode($image_parts[1]);
-            $school_id      = Auth::user()->school_id;
-            $location        = Auth::user()->school->slug.'/photos/events/';
-            //$location_path   = public_path().'/'.$location;
-                
-            $file            =  uniqid() .'.png';
+  /**
+   * Store newly uploaded event gallery photos.
+   *
+   * Accepts base64 encoded images, saves them to storage,
+   * creates database records, fires notifications,
+   * and logs activity.
+   *
+   * @param  \App\Http\Requests\EventGalleryRequest  $request
+   * @param  int  $event_id
+   * @return array
+   */
+  public function store(EventGalleryRequest $request, $event_id)
+  {
+    try {
 
-            $db_path=$location.$file;
-            //dd($db_path);
-            /*if( ! File::isDirectory($location_path)) 
-            {
-              File::makeDirectory($location_path,0777, true);
-            }
+        foreach ($request->file('photos') as $uploadedFile) {
 
-            $path= $location_path. $file;
-            $img = \File::put($path, $image_base64);*/
-            $img = $this->putContents($db_path, $image_base64);
+          $school_id = Auth::user()->school_id;
+          $location  = Auth::user()->school->slug . '/photos/events/';
+          $fileName  = uniqid() . '.' . $uploadedFile->getClientOriginalExtension();
+          $db_path   = $location . $fileName;
+          $fileContent = file_get_contents($uploadedFile->getRealPath());
 
-            $create = [
-              'event_id'   => $event_id,
-              'school_id'  => $school_id,
-              'path'       => $db_path,
-              'created_by' => Auth::id(),
-              'updated_by' => Auth::id(),
-            ];
-            $photo = EventGallery::create($create); 
-            //dump($photo);
-          }
+          // Save image using common storage helper
+          $this->putContents($db_path, $fileContent);
 
-          $data = [];
-
-          $data['school_id']    =   $school_id;
-          $data['message']      =   'New Event Gallery Created';
-          $data['type']         =   'event_gallery';
-
-          event(new PushEvent($data));
-
-          $array = [];
-
-          $array['school_id']   =   $school_id;
-          $array['details']     =   trans('notification.event_gallery_add_success_msg');
-
-          event(new SchoolNotificationEvent($array));
-
-
-          $message=('Events photos added Successfully');
-           
-          $ip= $this->getRequestIP();
-          $this->doActivityLog(
-            $photo,
-            Auth::user(),
-            ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
-            LOGNAME_EVENT_PHOTO,
-            $message
-          ); 
-
-          $res['message']="Uploaded Successfully";
-          return $res;
+          $photo = EventGallery::create([
+            'event_id'   => $event_id,
+            'school_id'  => $school_id,
+            'path'       => $db_path,
+            'created_by' => Auth::id(),
+            'updated_by' => Auth::id(),
+          ]);
         }
-        else
-        {
-          $res['count']="Select Atleast One";
-          return $res;
-        }
-      }  
-      catch (Exception $e) 
-      {
-        //dd($e->getMessage());
-      }       
-    }
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($event_id)
-    {      
-        $event = EventGallery::where([['event_id',$event_id],['school_id',Auth::user()->school_id]])->get();
 
-        return $event;
+        // Push notification
+        event(new PushEvent([
+          'school_id' => $school_id,
+          'message'   => 'New Event Gallery Created',
+          'type'      => 'event_gallery',
+        ]));
+
+        // School notification
+        event(new SchoolNotificationEvent([
+          'school_id' => $school_id,
+          'details'   => trans('notification.event_gallery_add_success_msg'),
+        ]));
+
+        // Activity log
+        $this->doActivityLog(
+          $photo,
+          Auth::user(),
+          [
+            'ip'      => $this->getRequestIP(),
+            'details' => $_SERVER['HTTP_USER_AGENT'] ?? null,
+          ],
+          LOGNAME_EVENT_PHOTO,
+          'Events photos added Successfully'
+        );
+
+        return ['message' => 'Uploaded Successfully'];
+
+      return ['count' => 'Select Atleast One'];
+    } catch (Exception $e) {
+      // You may log the exception here if needed
+      // report($e);
     }
-     
+  }
+
+  /**
+   * Display all photos for a specific event.
+   *
+   * @param  int  $event_id
+   * @return \Illuminate\Database\Eloquent\Collection
+   */
+  public function show($event_id)
+  {
+    return EventGallery::where([
+      ['event_id', $event_id],
+      ['school_id', Auth::user()->school_id]
+    ])->get();
+  }
 }

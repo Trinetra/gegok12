@@ -18,6 +18,15 @@ use Exception;
  */
 trait PaymentProcess
 {
+  /**
+   * Handle subscription payment response and update membership.
+   *
+   * @param object $data Payment gateway callback data
+   * @param int $user_id User identifier
+   * @param int $school_id School identifier
+   * @param \App\Models\Subscription $payment Existing subscription/payment record
+   * @return void
+   */
   public function PaymentProcess($data , $user_id , $school_id , $payment)
    {
         \DB::beginTransaction();

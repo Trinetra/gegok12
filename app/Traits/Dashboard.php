@@ -7,10 +7,10 @@ namespace App\Traits;
 use App\Http\Resources\Teacher\Timetable as TimetableResource;
 use App\Models\TeacherLeaveApplication;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Users\TeacherUser;
 use App\Models\TeacherProfile;
 use App\Models\BookCategory;
 use App\Models\Subscription;
-use App\Models\ExamSchedule;
 use App\Models\BookLending;
 use App\Models\LibraryCard;
 use App\Models\Teacherlink;
@@ -19,13 +19,11 @@ use App\Models\Userprofile;
 use App\Models\ActivityLog;
 use App\Helpers\SiteHelper;
 use App\Models\Attendance;
-use Gegok12\Timetable\Models\Timetable;
 use App\Models\Bulletin;
 use App\Models\Feedback;
 use App\Models\Product;
 use App\Models\Events;
 use App\Models\Video;
-use App\Models\Mark;
 use App\Models\User;
 use App\Models\Task;
 use App\Models\Book;
@@ -38,6 +36,13 @@ use Carbon\Carbon;
  */
 trait Dashboard
 {
+    /**
+     * Build data required for admin dashboard metrics and widgets.
+     *
+     * @param int $school_id School identifier
+     * @param int $admin_id Admin user identifier
+     * @return array Aggregated dashboard data
+     */
     public function adminDashboard($school_id,$admin_id)
     {
         $seconds = 300;
@@ -118,8 +123,8 @@ trait Dashboard
          $array['events']=$events->orderBy('id','DESC')->take(5)->get();
 
         $array['products'] =[];
-        if (class_exists('App\Models\Product')) {
-            $array['products']    = Product::where('school_id',$school_id)->where('product_type','sellable')->orderBy('created_at','DESC')->take(5)->get();
+        if (class_exists('Gegok12\Exam\Models\Inventory\Product')) {
+            $array['products']    = \Gegok12\Inventory\Models\Product::where('school_id',$school_id)->where('product_type','sellable')->orderBy('created_at','DESC')->take(5)->get();
         } 
 
    
@@ -175,6 +180,18 @@ trait Dashboard
         return $array;
     }
 
+    /**
+     * Build data required for student dashboard including exams, marks, and attendance.
+     *
+     * @param int $school_id School identifier
+     * @param \App\Models\User $user_id Student user model (expects ->id)
+     * @param int $standardLink_id Standard link identifier
+     * @param mixed $subject Subject filter (nullable)
+     * @param mixed $exam Exam filter (nullable)
+     * @param mixed $mark Mark filter (nullable)
+     * @param mixed $exam_date Exam date filter (nullable)
+     * @return array Student dashboard data
+     */
     public function studentDashboard($school_id,$user_id,$standardLink_id,$subject,$exam,$mark,$exam_date)
     {
         $array = [];
@@ -239,12 +256,19 @@ trait Dashboard
         return $array;
     }
 
+    /**
+     * Build data required for teacher dashboard including timetable, notices, and exams.
+     *
+     * @param int $school_id School identifier
+     * @param int $teacher_id Teacher user identifier
+     * @return array Teacher dashboard data
+     */
     public function teacherDashboard($school_id,$teacher_id)
     {
         $array = [];
 
-        $teacher = User::find($teacher_id);
-        $user = User::with('teacherlink')->where('id',$teacher_id)->get();
+        $teacher = TeacherUser::find($teacher_id);
+        $user = TeacherUser::with('teacherlink')->where('id',$teacher_id)->get();
         $academic_year  = SiteHelper::getAcademicYear($school_id);
         $teacherlinks   = $teacher->teacherlinkCurrentAcademicYear;
 
@@ -261,7 +285,7 @@ trait Dashboard
         $array['subject']       = $teachersubjects;
          $array['timetable'] = [];
          if (class_exists('Gegok12\Timetable\Models\Timetable')) {
-        $timetables     = Timetable::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['day',date('l')]])->whereIn('standardLink_id',$standardLinks)->get();
+        $timetables     = \Gegok12\Timetable\Models\Timetable::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['day',date('l')]])->whereIn('standardLink_id',$standardLinks)->get();
        
         foreach ($timetables as $key => $timetable) 
         {
@@ -299,6 +323,13 @@ trait Dashboard
         return $array;
     }
 
+    /**
+     * Build dashboard metrics for receptionist users.
+     *
+     * @param int $school_id School identifier
+     * @param int $receptionist_id Receptionist user identifier
+     * @return array Reception dashboard data
+     */
     public function receptionDashboard($school_id,$receptionist_id)
     {
         $seconds = 300;
@@ -328,6 +359,13 @@ trait Dashboard
         return $array;
     }
 
+    /**
+     * Build dashboard metrics for librarian users.
+     *
+     * @param int $school_id School identifier
+     * @param int $librarian_id Librarian user identifier
+     * @return array Librarian dashboard data
+     */
     public function librarianDashboard($school_id,$librarian_id)
     {
         $seconds = 300;
@@ -366,6 +404,13 @@ trait Dashboard
         return $array;
     }
 
+    /**
+     * Build dashboard metrics for accountant users.
+     *
+     * @param int $school_id School identifier
+     * @param int $accountant_id Accountant user identifier
+     * @return array Accountant dashboard data
+     */
     public function accountantDashboard($school_id,$accountant_id)
     {
         $seconds = 300;

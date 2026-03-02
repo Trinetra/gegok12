@@ -26,6 +26,17 @@ use Exception;
  */
 trait AutoPostProcess
 {
+    /**
+     * Create birthday event and post for a user.
+     *
+     * @param object $data User data with profiles and academic info
+     * @param int $school_id School identifier
+     * @param string $birth_date Birthday date
+     * @param string $date Current date/time for posting
+     * @param string|null $argument Optional scheduled post date
+     * @param string $image Attachment path for the post
+     * @return mixed Event object created via Calendar helper
+     */
     public function CreateBirthday($data,$school_id,$birth_date,$date,$argument,$image)
     {
         \DB::beginTransaction();
@@ -33,11 +44,11 @@ trait AutoPostProcess
         {       //dd($data->studentAcademic[0][academic_year_id]); 
             if($data->usergroup_id=='6')
             {
-                $academic_year_id = $data->studentAcademic[0][academic_year_id];
+                $academic_year_id = $data->studentAcademic[0]['academic_year_id'];
             }
             else
             {
-                $academic_year_id = $data->teacherprofile[0][academic_year_id];
+                $academic_year_id = $data->teacherprofile[0]['academic_year_id'];
             }
 
          $eventdata=[
@@ -86,14 +97,14 @@ trait AutoPostProcess
             $post->school_id     = $school_id;
             if($data->usergroup_id=='6')
             {
-                $post->academic_year_id = $data->studentAcademic[0][academic_year_id];
+                $post->academic_year_id = $data->studentAcademic[0]['academic_year_id'];
                 $post->visibility       = 'select_class';
-                $post->visible_for      = $data->studentAcademic[0][standardLink_id];
+                $post->visible_for      = $data->studentAcademic[0]['standardLink_id'];
 
             }
             else
             {
-                $post->academic_year_id = $data->teacherprofile[0][academic_year_id];
+                $post->academic_year_id = $data->teacherprofile[0]['academic_year_id'];
                 $post->visibility     = 'all_class';
                 $post->visible_for     = NULL;
             }
@@ -101,7 +112,7 @@ trait AutoPostProcess
             $post->entity_name     = 'App\Models\User';
             $post->description     = $data->userprofile->firstname.' '.$data->userprofile->lastname.' '.'Birthday';
 
-            $post->attachment_file     = '["uploads/images/birthday.jpg"]';
+            $post->attachment_file     = ['uploads/images/birthday.jpg'];
 
 
             //dump($post->attachment_file);
@@ -117,7 +128,7 @@ trait AutoPostProcess
             {
                 $post->posted_at     = $date;
             }
-            $post->tag     = 'Birthday';
+            // $post->tag     = 'Birthday';
             $post->status     = 'posted';
             $post->created_by     = '2';
           
@@ -146,18 +157,28 @@ trait AutoPostProcess
         catch(Exception $e)
         {
             \DB::rollBack();
-           // dd($e->getMessage());
+           \Log::info($e->getMessage());
         } 
     }
 
 
+    /**
+     * Create work anniversary event and announcement post.
+     *
+     * @param object $data User data with teacher profile
+     * @param string $image Attachment path for the post
+     * @param string $description Description to use in the event/post
+     * @param string $anniversary_date Anniversary date
+     * @param string $date Current date/time for posting
+     * @return mixed Event object created via Calendar helper
+     */
     public function CreateWorkAnniversary($data,$image,$description,$anniversary_date,$date)
     {
         \DB::beginTransaction();
         try
         {       //dd($data->studentAcademic[0]); 
          
-         $academic_year_id=$data->teacherprofile[0][academic_year_id];
+         $academic_year_id=$data->teacherprofile[0]['academic_year_id'];
          $eventdata=[
           'school_id'=>$data->school_id,
           'academic_year_id'=>$academic_year_id,
@@ -192,18 +213,19 @@ trait AutoPostProcess
             $post = new Post;
 
             $post->school_id     = $data->school_id;
-            $post->academic_year_id = $data->teacherprofile[0][academic_year_id];
+            $post->academic_year_id = $data->teacherprofile[0]['academic_year_id'];
             $post->entity_id  = '2';
             $post->entity_name     = 'App\Models\User';
             $post->description     = $data->userprofile->firstname.$data->userprofile->lastname.$description;
-            $post->attachment_file     = '['.$image.']';
+            $post->attachment_file     = [$image];
+
             $post->visibility     = 'all_class';
             $post->visible_for     = NULL;
             $post->post_created_at     = $date;
             //dd($post->post_created_at);
             $post->is_posted     = '1';
             $post->posted_at     = $date;
-            $post->tag     = 'Workanniversary';
+            // $post->tag     = 'Workanniversary';
 
            /*  $tagObjects=[];
 
@@ -218,7 +240,6 @@ trait AutoPostProcess
 
             $post->status     = 'posted';
             $post->created_by     = '2';
-          
             
             $post->save();
 
@@ -243,11 +264,19 @@ trait AutoPostProcess
         catch(Exception $e)
         {
             \DB::rollBack();
-           // dd($e->getMessage());
+           \Log::info($e->getMessage());
         } 
     }
 
 
+    /**
+     * Create an exam post announcement.
+     *
+     * @param object $data Exam context including exam, standardlink, and subject
+     * @param string $date Post creation date
+     * @param string $image Attachment path for the post
+     * @return mixed|null Variable $exam is referenced but not defined (returns null)
+     */
     public function CreateExam($data,$date,$image)
     {
         \DB::beginTransaction();

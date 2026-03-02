@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.teacher.layout')
 
 @section('content')
@@ -17,7 +16,7 @@
       <form method="POST" action="{{ url('/teacher/lessonplan/add') }}" enctype="multipart/form-data">
          @csrf
          <add-tab-lesson url="{{ url('/') }}" type="add"></add-tab-lesson>
-         <portal-target name="add_lessonplan"></portal-target>
+         <div id="add_lessonplan"></div>
       </form>
    </div>
 @endsection

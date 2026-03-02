@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.teacher.layout')
 @section('content')
 <h1 class="admin-h1 my-3">Feed</h1>
@@ -38,7 +37,7 @@
                                     @elseif($feed->tag=='Workanniversary')
                                         <img src="{{ $anniversary }}" class="w-full rounded h-64">
                                     @else
-                                        @if(count($feed->attachment_file)>0)
+                                        @if(count($feed->attachment_file ?? []) > 0)
                                             <slider-image url="{{ url('/') }}" id="{{ $feed->id }}" mode="teacher" left="{{ $leftarrow }}" right="{{ $rightarrow }}"></slider-image>
                                         @else
                                             <img src="{{ $feed->CoverPath }}" class="w-full rounded h-64">

@@ -1,91 +1,138 @@
 <template>
-  <div class="">
+  <div>
     <h1 class="admin-h1 my-3">Change Avatar</h1>
+
     <div class="bg-white shadow border border-grey p-5">
-      <div v-if="this.success!=null" class="alert alert-success font-muller text-hayvn-purple" id="success-alert">{{this.success}}</div>
-      <div class="flex flex-wrap">
-        <div class="w-24 mr-4" v-if="image">
-          <img :src="image" class="img-responsive" height="70" width="90">
-        </div>
+
+      <!-- Success Message -->
+      <div v-if="success" class="alert alert-success">
+        {{ success }}
       </div>
-      <div class="row">
-        <div class="my-3">
-          <div v-if="this.avatar != ''">
-            <img :src="avatar" style="width: 100px;height: 100px">
-          </div>
-          <VueImageUploadCroppie :defaultImage.sync="avatar" :height="100" :width="100" :trans="trans"></VueImageUploadCroppie>
-          <span v-if="errors.avatar" class="text-red-500 text-xs font-semibold">{{errors.avatar}}</span>
-        </div>
-        <div class="flex">
-          <a href="#" class="submit-btn" @click.prevent="uploadImage()">Upload</a>
-        </div>
+
+      <!-- Current Avatar -->
+      <div v-if="avatarUrl && !image" class="mb-3">
+        <img
+          :src="avatarUrl"
+          style="width:100px;height:100px;object-fit:cover;border-radius:50%;"
+        />
       </div>
+
+      <!-- File Input -->
+      <div class="mb-3">
+        <input type="file" @change="onFileChange" />
+      </div>
+
+      <!-- Cropper -->
+      <div v-if="image" class="mb-3">
+        <Cropper
+          :src="image"
+          :stencil-props="{ aspectRatio: 1 }"
+          style="width:300px;height:300px;"
+          ref="cropper"
+        />
+      </div>
+
+      <!-- Error -->
+      <div v-if="errors.avatar" class="text-red-500 text-xs">
+        {{ errors.avatar[0] }}
+      </div>
+
+      <!-- Upload Button -->
+      <div class="mt-3">
+        <button
+          class="submit-btn"
+          :disabled="loading"
+          @click="uploadImage"
+        >
+          {{ loading ? 'Uploading...' : 'Upload' }}
+        </button>
+      </div>
+
     </div>
   </div>
 </template>
 
 <script>
-	import axios from 'axios';
-  import VueImageUploadCroppi from 'vue-image-upload-croppie'
-  export default {
-    props:['url'],
-    components: 
-    { 
-      VueImageUploadCroppi,
-    },
-    data(){
-      return {
-        image: '',
-        avatar:'',
-        trans: { 
-          'cropImage': 'Choose File', 
-          'chooseImage':'Choose File', 
-          'confirmCutting': 'Save File'
-        },
-        errors:[],
-        success:null,
+import axios from 'axios'
+import { Cropper } from 'vue-advanced-cropper'
+import 'vue-advanced-cropper/dist/style.css'
+
+export default {
+  props: ['url', 'mode'],
+
+  components: {
+    Cropper,
+  },
+
+  data() {
+    return {
+      avatarUrl: '',     // current saved avatar
+      image: null,       // selected image for cropper
+      errors: {},
+      success: null,
+      loading: false,
+    }
+  },
+
+  methods: {
+
+    // Load existing avatar
+    async getAvatar() {
+      try {
+        const response = await axios.get(
+          `${this.url}/${this.mode}/getavatar`
+        )
+
+        this.avatarUrl = response.data.avatar
+      } catch (error) {
+        console.error(error)
       }
     },
-    methods: 
-    {
-      getdata()
-      {
-        axios.get('/teacher/getavatar').then(response => {
-          this.avatar = response.data.avatar;
-        });
-      },
 
-      uploadImage()
-      {
-        this.errors=[];
-        if(this.avatar==null) this.errors["avatar"] = "Required";
-        let formData = new FormData();
+    // When user selects file
+    onFileChange(e) {
+      const file = e.target.files[0]
+      if (!file) return
 
-        formData.append('avatar',this.avatar);
+      this.image = URL.createObjectURL(file)
+    },
 
-        axios.post('/teacher/changeavatar',formData).then(response => {
-          this.success = response.data.message;
-          window.location.reload();
-		    }).catch(error => {
-		      this.errors = error.response.data.errors;
-		    });
+    // Upload cropped image
+    async uploadImage() {
+      this.errors = {}
+      this.success = null
+
+      try {
+        const { canvas } = this.$refs.cropper.getResult()
+
+        if (!canvas) {
+          this.errors.avatar = ['Please crop image']
+          return
+        }
+
+        // Convert to base64
+        const base64 = canvas.toDataURL('image/jpeg')
+
+        const formData = new FormData()
+        formData.append('avatar', base64)
+
+        const response = await axios.post(
+          `${this.url}/${this.mode}/changeavatar`,
+          formData
+        )
+
+        this.success = response.data.message
+
+        this.image = null
+
+      } catch (error) {
+        this.errors = error.response?.data?.errors || {}
       }
     },
-    created()
-    {
-      this.getdata(); 
-    },     
-  }
+  },
+
+  created() {
+    this.getAvatar()
+  },
+}
 </script>
-
-<style>
-  .new
-  {
-    width: 0.1px;
-    height: 0.1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1;
-  }
-</style>

@@ -20,7 +20,7 @@
         <a href="#" class="text-gray-700 font-medium"  @click="setProfileTab('5')">Notes</a>
       </li>
     </ul>
-    <portal to="parent-profile">
+    <Teleport to="#parent-profile">
       <myprofile :url="this.url" :name="this.name"></myprofile>
       <timeline :url="this.url" :name="this.name"></timeline>
       <family :url="this.url" :name="this.name"></family>
@@ -28,12 +28,12 @@
       <div class="px-3 overflow-x-scroll lg:overflow-x-auto md:overflow-x-auto py-3" v-bind:class="[this.profile_tab==5?'block' :'hidden']">
         <notes :url="this.url" :entity_id="this.entity_id" entity_name="user" :school_id="this.school_id"></notes>
       </div>    
-    </portal>
+    </Teleport>
   </div>
 </template>
 
 <script>
-  import PortalVue from "portal-vue";
+  
   import { bus } from "../../../app";
   import notes from '../../notes';
   import myprofile from './myprofile';
@@ -61,15 +61,15 @@
       setProfileTab(val)
       {
         this.profile_tab=val;
-        bus.$emit("dataProfileTab", this.profile_tab);
+        bus.emit("dataProfileTab", this.profile_tab);
       }
     },
 
     created()
     {
-      bus.$emit("dataProfileTab", this.profile_tab);
+      bus.emit("dataProfileTab", this.profile_tab);
        
-      bus.$on("dataProfileTab", data => {
+      bus.on("dataProfileTab", data => {
         if(data!='')
         {
           this.profile_tab=data;                   

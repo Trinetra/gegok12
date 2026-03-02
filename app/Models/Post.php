@@ -1,8 +1,7 @@
 <?php
-/**
- * SPDX-License-Identifier: MIT
- * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
- */
+// SPDX-License-Identifier: MIT
+// (c) 2025 GegoSoft Technologies and GegoK12 Contributors
+
 namespace App\Models;
 
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
@@ -14,6 +13,37 @@ use App\Traits\Common;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\HasMedia;
 
+/**
+ * Class Post
+ *
+ * Model for managing posts and wall updates.
+ *
+ * @property int $id
+ * @property int $school_id
+ * @property int $academic_year_id
+ * @property int $entity_id
+ * @property string $entity_name
+ * @property string $description
+ * @property array $attachment_file
+ * @property string $visibility
+ * @property int $visible_for
+ * @property \DateTime $post_created_at
+ * @property int $is_posted
+ * @property \DateTime $posted_at
+ * @property int $status
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @property \DateTime $deleted_at
+ * @property string $attachment_path
+ * @property string $postComments
+ * @property-read \App\Models\School $school
+ * @property-read \App\Models\AcademicYear $academicYear
+ * @property-read \App\Models\StandardLink $standardLink
+ * @property-read \App\Models\PostDetail $postDetail
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PostComment[] $postComment
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tag
+ * @mixin \Eloquent
+ */
 class Post extends Model implements HasMedia
 {
     //
@@ -32,7 +62,7 @@ class Post extends Model implements HasMedia
 
     /**
      * The attributes that are mass assignable.
-     * 
+     *
      * @var array
      */
     protected $fillable = [
@@ -44,58 +74,107 @@ class Post extends Model implements HasMedia
      *
      * @var array
      */
-    protected $casts=[ 'attachment_file' => 'array' ];
+    protected $casts = [
+        'attachment_file' => 'array',
+        'post_created_at' => 'datetime',
+    ];
 
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $dates = ['post_created_at','posted_at','deleted_at'];
+    protected $dates = ['posted_at','deleted_at'];
 
+
+    /**
+     * Get the school for this post.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function school()
     {
     	return $this->belongsTo('\App\Models\School','school_id');
     }
 
+    /**
+     * Get the academic year for this post.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function academicYear()
     {
         return $this->belongsTo('\App\Models\AcademicYear','academic_year_id');
     }
 
+    /**
+     * Get the standard link for visibility of this post.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function standardLink()
     {
         return $this->belongsTo('\App\Models\StandardLink','visible_for');
     }
 
+    /**
+     * Get the post details for this post.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function postDetail()
     {
         return $this->hasOne('\App\Models\PostDetail','post_id','id');
     }
 
+    /**
+     * Get all comments on this post.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function postComment()
     {
         return $this->hasMany('\App\Models\PostComment','entity_id','id');
     }
 
+    /**
+     * Get the attachment file paths for this post.
+     *
+     * @return array
+     */
     public function getAttachmentPathAttribute()
     {
-        $count = count($this->attachment_file);
-        for($i=0 ; $i < $count ; $i++)
-        {
-            $attachment[$i]['original_path']    = $this->attachment_file[$i];
-            $attachment[$i]['path']             = $this->getFilePath($this->attachment_file[$i]);
-            $attachment[$i]['id']               = $i;
+        $files = $this->attachment_file ?? [];
+
+        if (!is_array($files)) {
+            $files = [];
         }
+
+        $attachment = [];
+
+        foreach ($files as $index => $file) {
+
+            $attachment[] = [
+                'original_path' => $file,
+                'path'          => $this->getFilePath($file),
+                'id'            => $index,
+            ];
+        }
+
         return $attachment;
     }
 
+    /**
+     * Get formatted post comments with additional details.
+     *
+     * @return array
+     */
     public function getPostCommentsAttribute()
     {
         $i = 0;
         $array = [];
-        foreach ($this->postComment as $postComment) 
-        { 
+        foreach ($this->postComment as $postComment)
+        {
             $array[$i]['comment_id']        = $postComment->id;
             $array[$i]['post_id']           = $postComment->post_id;
             $array[$i]['user_id']           = $postComment->user_id;
@@ -120,6 +199,11 @@ class Post extends Model implements HasMedia
         return $array;
     }
 
+    /**
+     * Get the tags associated with this post.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function tag()
     {
         return $this->belongsToMany(Tag::class,'post_tags');

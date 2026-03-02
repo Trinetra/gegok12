@@ -46,18 +46,18 @@
                     <div class="mb-2">
                         <multiselect v-model="select_id" id="ajax" name="select_id" label="fullname" track-by="fullname" placeholder="Type to search" open-direction="bottom" :options="users" :custom-label="customLabel" :show-labels="false" :multiple="true" :searchable="true" :loading="isLoading" :internal-search="true" :clear-on-select="false" :close-on-select="false" :limit-text="limitText" :max-height="600" :show-no-results="true" :hide-selected="true" @search-change="asyncFind">
 
-                            <template slot="tag" slot-scope="{ option, remove }">
+                            <template #tag="{ option, remove }">
                                 <span class="custom__tag">
                                     <span>{{ (option.fullname) }}</span>
                                     <span class="custom__remove" @click="remove(option)">❌</span>
                                 </span>
                             </template>
 
-                            <template slot="clear" slot-scope="props">
+                            <template #clear="props">
                                 <div class="multiselect__clear" v-if="select_id.length" @mousedown.prevent.stop="clearAll(props.search)"></div>
                             </template>
                   
-                            <template slot="option" slot-scope="props">
+                            <template  #option="props">
                                 <div class="option__desc">
                                     <span class="option__name">{{ props.option.fullname }}</span>
                                 </div>
@@ -66,7 +66,9 @@
                                 </div>
                             </template>
 
-                            <span slot="noResult">Oops! No users found.</span>
+                            <template #noResult>
+                              Oops! No users found.
+                            </template>
                         </multiselect>
                         <span v-if="errors.select_id" class="text-red-500 text-xs font-semibold">{{errors.select_id[0]}}</span>
                     </div> 
@@ -261,28 +263,28 @@
                 </div>
             </div>
 
-            <portal-target name="official_address"></portal-target>
-
-            <portal-target name="submit-btn"></portal-target>
-            <portal to="submit-btn">
+                <GoogleMap
+                  v-model:address="address"
+                  v-model:latitude="latitude"
+                  v-model:longitude="longitude"
+                />
                 <div class="my-6">
                     <a href="#" dusk="submit-btn" class="btn btn-primary submit-btn" @click="submitForm()">Submit</a>
                     <a href="#" class="btn btn-reset reset-btn" @click="resetForm()">Reset</a>
                     <input type="submit" class="hidden" id="submit-btn">
                 </div>
-            </portal>
         </div>
     </div>
 </template>
 
 <script> 
     import Multiselect from 'vue-multiselect'
-    // register globally
-    Vue.component('multiselect', Multiselect)
+    import GoogleMap from '../GoogleMap.vue'
     export default {
         props:['url' , 'ref_name' ],
         components: {
-            Multiselect
+            Multiselect,
+            GoogleMap
         },
         data(){
             return {
@@ -312,6 +314,9 @@
                 isLoading: false,
                 errors:[],
                 success:null,
+                latitude:'',
+                longitude:'',
+                address:'',
             }
         },
 
@@ -442,6 +447,8 @@
                 formData.append('relation',this.relation);  
                 formData.append('annual_income',this.annual_income);
                 formData.append('count',this.inputs.length);
+                formData.append('official_address',this.address);
+                
 
                 for(let i=0; i<this.inputs.length;i++)
                 { 

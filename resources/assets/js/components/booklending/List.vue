@@ -1,81 +1,78 @@
 <template>
-<div>
- <vue-good-table
-  :columns="columns"
-  :rows="rows"
-  :search-options="{
-    enabled: true,
-    skipDiacritics: true,
-    placeholder: 'Search this table'
-  }">
-</vue-good-table> 
-         
-</div>
+  <div>
+    <vue-good-table
+      :columns="columns"
+      :rows="rows"
+      :search-options="{ enabled: true }"
+    />
+  </div>
 </template>
-<script>
-import 'vue-good-table/dist/vue-good-table.css'
-import { VueGoodTable } from 'vue-good-table';
-export default {
 
- components: {
-  VueGoodTable,
-},
+<script>
+import { VueGoodTable } from "vue-good-table-next";
+import "vue-good-table-next/dist/vue-good-table-next.css";
+import axios from "axios";
+
+export default {
+  components: { VueGoodTable },
+
   data() {
-    return{
+    return {
       columns: [
         {
-          label: 'Book Code',
-          field: 'book_code_no',
-         
-          
+          label: "Book Code",
+          field: "book_code_no",
+          filterOptions: {
+            enabled: true,
+            placeholder: "Filter Book Code",
+          },
         },
         {
-          label: 'Book Name',
-          field: 'title',
-         
+          label: "Book Name",
+          field: "title",
+          filterOptions: {
+            enabled: true,
+            placeholder: "Filter Book Name",
+          },
         },
         {
-          label: 'ISBN',
-          field: 'isbn_number',
-         
+          label: "ISBN",
+          field: "isbn_number",
+          filterOptions: {
+            enabled: true,
+            placeholder: "Filter ISBN",
+          },
         },
         {
-          label: 'Lent Date',
-          field: 'issue_date',
+          label: "Lent Date",
+          field: "issue_date",
+          filterOptions: {
+            enabled: true,
+          },
         },
-
-         {
-          label: 'Return Date',
-          field: 'return_date',
+        {
+          label: "Return Date",
+          field: "return_date",
+          filterOptions: {
+            enabled: true,
+          },
         },
-      
       ],
-      rows: [
-     
-       
-      ],
+      rows: [],
     };
   },
 
-  created()
-  {
-    //alert('sfdfsd');
+  mounted() {
     this.getData();
   },
+
   methods: {
-
-    getData()
-    {
-      axios.get("/student/libraryactivity/show").then(response => {
-
-        this.rows = response.data.data;
-          
-      });
+    async getData() {
+      const response = await axios.get(
+        "/student/libraryactivity/show"
+      );
+      this.rows = response.data.data;
     },
-
-
   },
-
-
 };
 </script>

@@ -58,7 +58,7 @@ import { bus } from "../../../app";
       {       
         this.getData();
 
-        bus.$on("dataProfileTab", data => {
+        bus.on("dataProfileTab", data => {
           if(data!='')
           {
             this.profile_tab=data;                   

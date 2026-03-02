@@ -32,12 +32,28 @@ use App\Traits\Common;
 use Carbon\Carbon;
 use Exception;
 
+/**
+ * Class NoticeBoardController
+ *
+ * Manages notice board operations including listing, creating,
+ * updating, deleting notices and handling notifications,
+ * background images, and activity logging.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class NoticeBoardController extends Controller
 {
 
     use LogActivity;
     use Common;
-
+     /**
+     * Get notice list based on filters.
+     *
+     * Supports filtering by expiry, standard link, and search keyword.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function showList(Request $request)
     {
         //
@@ -60,16 +76,16 @@ class NoticeBoardController extends Controller
                 $notice = $notice->where('title','LIKE','%'.$request->search.'%')->orWhere('description','LIKE','%'.$request->search.'%');
             }
         }
-        $notice = $notice->get();
+        $notice = $notice->paginate(10);
         $noticelist = NoticeResource::collection($notice);
         
         return $noticelist;
     }
 
     /**
-     * Display a listing of the resource.
+     * Display notice board index page.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     { 
@@ -77,7 +93,11 @@ class NoticeBoardController extends Controller
 
         return view('/admin/noticeboard/index' ,['query' => $query]);
     }
-
+    /**
+     * Get standard links and background images.
+     *
+     * @return array
+     */
     public function list()
     {
         //
@@ -95,9 +115,9 @@ class NoticeBoardController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show notice creation form.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -107,10 +127,13 @@ class NoticeBoardController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created notice.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Handles notice creation, file upload, push notifications,
+     * and activity logging.
+     *
+     * @param \App\Http\Requests\NoticeRequest $request
+     * @return array|null
      */
     public function store(NoticeRequest $request)
     {
@@ -229,7 +252,12 @@ class NoticeBoardController extends Controller
         }
     }
 
-
+    /**
+     * Upload and store background image.
+     *
+     * @param \App\Http\Requests\BackgroundImageRequest $request
+     * @return array
+     */
     public function addimage(BackgroundImageRequest $request)
     {
          $backgroundimages=new BackgroundImage;
@@ -254,10 +282,10 @@ class NoticeBoardController extends Controller
     
 
     /**
-     * Display the specified resource.
+     * Display a specific notice.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return array
      */
     public function show($id)
     {
@@ -290,10 +318,10 @@ class NoticeBoardController extends Controller
     
 
     /**
-     * Show the form for editing the specified resource.
+     * Show edit notice form.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
@@ -310,11 +338,11 @@ class NoticeBoardController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified notice.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param \App\Http\Requests\NoticeUpdateRequest $request
+     * @param int $id
+     * @return array|null
      */
     public function update(NoticeUpdateRequest $request, $id)
     {
@@ -428,10 +456,10 @@ class NoticeBoardController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a notice.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return array|null
      */
     public function destroy($id)
     {

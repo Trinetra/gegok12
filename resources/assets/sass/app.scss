@@ -1,23 +1,13 @@
+@use "style";
+@use "adminstyle";
+@use "paginate";
+@use "table";
+@use "video";
+
 @tailwind base;
-
 @tailwind components;
-
 @tailwind utilities;
 
-// // Fonts
-// @import url('https://fonts.googleapis.com/css?family=Nunito');
-
-// // Variables
-// @import 'variables';
-
-// // Bootstrap
-// @import '~bootstrap/scss/bootstrap';
-
-@import "style";
-@import "adminstyle";
-@import "paginate";
-@import "table";
-@import "video";
 .navbar-laravel {
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);

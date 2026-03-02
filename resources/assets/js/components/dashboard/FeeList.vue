@@ -80,7 +80,7 @@
 
             showDetails()
             {
-                axios.post('/admin/dashboard/structuralList',{
+                axios.post('/'+this.mode+'/dashboard/structuralList',{
                     feegroup:this.feegroup,
                 }).then(response => {            
                     //console.log(response.data.data);

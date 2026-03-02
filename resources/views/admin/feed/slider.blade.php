@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <!doctype html>
 <html lang="en">
     <head>

@@ -4,79 +4,88 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
-use NotificationChannels\Fcm\Resources\AndroidConfig;
-use NotificationChannels\Fcm\Resources\AndroidFcmOptions;
-use NotificationChannels\Fcm\Resources\AndroidNotification;
-use NotificationChannels\Fcm\Resources\ApnsConfig;
-use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
-use App\Models\User;
-
+use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
 class SendDeviceNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $data;
-    public $token;
+    public array $data;
+    public string $token;
 
-    /**
-     * Create a new notification instance.
-     */
-    public function __construct($data,$token)
+    public function __construct(array $data, string $token)
     {
         $this->queue = 'notification';
-               $this->data = $data; 
-               $this->token = $token; 
+        $this->data  = $data;
+        $this->token = $token;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return [FcmChannel::class];
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
-   
-
-    public function toFcm($notifiable)
+    public function toFcm($notifiable): FcmMessage
     {
+        try {
+            $type    = $this->data['type'] ?? 'Notification';
+            $message = $this->data['message'] ?? '';
 
-            $type=$this->data['type'];
-            $message=$this->data['message'];
+            return FcmMessage::create()
+                ->token($this->token)
+                ->data([
+                    'type'    => $type,
+                    'message' => $message,
+                ])
+                ->notification(
+                    FcmNotification::create($type, $message)
+                )
+                ->custom([
+                    'android' => [
+                        'notification' => [
+                            'color' => '#0A0A0A',
+                            'sound' => 'default',
+                        ],
+                        'fcm_options' => [
+                            'analytics_label' => 'analytics',
+                        ],
+                    ],
+                    'apns' => [
+                        'payload' => [
+                            'aps' => [
+                                'sound' => 'default',
+                            ],
+                        ],
+                        'fcm_options' => [
+                            'analytics_label' => 'analytics_ios',
+                        ],
+                    ],
+                ]);
 
-        return FcmMessage::create()
-             ->setToken($this->token)
-            ->setData(["type" =>$type,"message" =>$message])
-             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                 ->setTitle($type)
-                 ->setBody($message))                 
-               //  ->setImage(url('/notification/mobile_logo.png')))
-            ->setAndroid(
-                AndroidConfig::create()
-                    ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics'))
-                    ->setNotification(AndroidNotification::create()->setColor('#0A0A0A'))
-            )->setApns(
-                ApnsConfig::create()
-                    ->setFcmOptions(ApnsFcmOptions::create()->setAnalyticsLabel('analytics_ios')));
+        } catch (\Exception $e) {
+            Log::error('FCM Notification Error', [
+                'token' => $this->token,
+                'data'  => $this->data,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Optional: prevent job from crashing
+            return FcmMessage::create()
+                ->token($this->token)
+                ->data([
+                    'type'    => 'Error',
+                    'message' => 'Notification failed',
+                ]);
+        }
     }
 
-    // optional method when using kreait/laravel-firebase:^3.0, this method can be omitted, defaults to the default project
-    public function fcmProject($notifiable, $message)
+    public function fcmProject($notifiable, $message): ?string
     {
-        // $message is what is returned by `toFcm`
-        return 'app'; // name of the firebase project to use
+        return 'app';
     }
-
-
-    
 }

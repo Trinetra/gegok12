@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\Classwall\PostCommentEditRequest;
@@ -21,75 +22,97 @@ use App\Models\User;
 use Exception;
 use Log;
 
+/**
+ * Class PostCommentsController
+ *
+ * Handles CRUD operations for post comments including
+ * adding, editing, deleting comments, sending notifications,
+ * and logging activities.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class PostCommentsController extends Controller
 {
     use LogActivity;
     use Common;
 
     /**
-     * Store a newly created resource in storage.
+     * Add a new comment to a post.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Creates a post comment, uploads attachment if provided,
+     * sends notification to the post owner, and logs activity.
+     *
+     * @param \App\Http\Requests\Classwall\PostCommentAddRequest $request
+     * @param int $post_id
+     * @return array|null
      */
-    public function addComment(PostCommentAddRequest $request,$post_id)
+    public function addComment(PostCommentAddRequest $request, $post_id)
     {
         //
         try
         {
-            $post = Post::where('id',$post_id)->first();
+            $post = Post::where('id', $post_id)->first();
             $post_reply = new PostComment;
 
-            $post_reply->user_id    = Auth::id();
-            $post_reply->entity_id  = $post_id;
-            $post_reply->entity_name= 'App\Models\Post';
-            $post_reply->comments   = $request->comments;
-            $file = $request->attachment;
-            
-            if($file != null) 
-            {
-                $path = $this->uploadFile(Auth::user()->school->slug.'/posts/'.$post_id.'/comments',$file);
-            }
-            $post_reply->attachment_file   = $path;
-            $post_reply->status     = 1;
+            $post_reply->user_id     = Auth::id();
+            $post_reply->entity_id   = $post_id;
+            $post_reply->entity_name = 'App\Models\Post';
+            $post_reply->comments    = $request->comments;
 
+            $file = $request->attachment;
+            if ($file != null)
+            {
+                $path = $this->uploadFile(
+                    Auth::user()->school->slug . '/posts/' . $post_id . '/comments',
+                    $file
+                );
+            }
+
+            $post_reply->attachment_file = $path;
+            $post_reply->status = 1;
             $post_reply->save();
 
-            $message = trans('messages.add_success_msg',['module' => 'Post Comment']);
+            $message = trans('messages.add_success_msg', ['module' => 'Post Comment']);
 
-            if($post->entity_name == 'App\Models\User')
+            if ($post->entity_name == 'App\Models\User')
             {
-                $user    = User::where('id',$post->entity_id)->first();
-                $details = trans('notification.post_comment_add_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Post']);
+                $user    = User::where('id', $post->entity_id)->first();
+                $details = trans('notification.post_comment_add_success_msg', [
+                    'user'   => Auth::user()->FullName,
+                    'entity' => 'Post'
+                ]);
             }
-            elseif($post->entity_name == 'App\Models\Page')
+            elseif ($post->entity_name == 'App\Models\Page')
             {
-                $user    = User::where('id',$post->created_by)->first();
-                $details = trans('notification.post_comment_add_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Page']);
+                $user    = User::where('id', $post->created_by)->first();
+                $details = trans('notification.post_comment_add_success_msg', [
+                    'user'   => Auth::user()->FullName,
+                    'entity' => 'Page'
+                ]);
             }
-            if($user->id != Auth::id())
+
+            if ($user->id != Auth::id())
             {
                 $data = [];
-
-                $data['user']       = $user;
-                $data['details']    = $details;
+                $data['user']    = $user;
+                $data['details'] = $details;
 
                 event(new SingleNotificationEvent($data));
             }
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $post_reply,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_ADD_COMMENT,
                 $message
-            ); 
+            );
 
             $res['success'] = $message;
             return $res;
         }
-        catch(Exception $e)
+        catch (Exception $e)
         {
             Log::info($e->getMessage());
             //dd($e->getMessage());
@@ -97,89 +120,104 @@ class PostCommentsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Get comment details for editing.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param int $comment_id
+     * @return array
      */
     public function editCommentList($comment_id)
     {
         //
-        $post_reply = PostComment::where('id',$comment_id)->first();
+        $post_reply = PostComment::where('id', $comment_id)->first();
 
         $array = [];
-            
-        $array['id']                = $post_reply->id;
-        $array['comments']          = $post_reply->comments;
-        $array['attachment_file']   = $post_reply->attachment_file == null ? '':$post_reply->AttachmentPath;
+        $array['id']              = $post_reply->id;
+        $array['comments']        = $post_reply->comments;
+        $array['attachment_file'] = $post_reply->attachment_file == null
+            ? ''
+            : $post_reply->AttachmentPath;
 
         return $array;
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Update an existing comment.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Updates comment content and attachment,
+     * sends notification to the post owner,
+     * and logs activity.
+     *
+     * @param \App\Http\Requests\Classwall\PostCommentEditRequest $request
+     * @param int $comment_id
+     * @return array|null
      */
-    public function editComment(PostCommentEditRequest $request,$comment_id)
+    public function editComment(PostCommentEditRequest $request, $comment_id)
     {
         //
         try
         {
-            $post_reply = PostComment::where('id',$comment_id)->first();
+            $post_reply = PostComment::where('id', $comment_id)->first();
 
             $post_reply->comments = $request->edit_comments;
             $file = $request->attachment_file;
-            
-            if($file != null) 
+
+            if ($file != null)
             {
-                $path = $this->uploadFile(Auth::user()->school->slug.'/posts/'.$post_id.'/comments',$file);
+                $path = $this->uploadFile(
+                    Auth::user()->school->slug . '/posts/' . $post_id . '/comments',
+                    $file
+                );
             }
             else
             {
                 $path = $post_reply->attachment_file;
             }
-            $post_reply->attachment_file   = $path;
-            $post_reply->status = 1;
 
+            $post_reply->attachment_file = $path;
+            $post_reply->status = 1;
             $post_reply->save();
 
-            $message = trans('messages.update_success_msg',['module' => 'Post Comment']);
+            $message = trans('messages.update_success_msg', ['module' => 'Post Comment']);
 
-            if($post_reply->post->entity_name == 'App\Models\User')
+            if ($post_reply->post->entity_name == 'App\Models\User')
             {
-                $user    = User::where('id',$post_reply->post->entity_id)->first();
-                $details = trans('notification.post_comment_update_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Post']);
+                $user    = User::where('id', $post_reply->post->entity_id)->first();
+                $details = trans('notification.post_comment_update_success_msg', [
+                    'user'   => Auth::user()->FullName,
+                    'entity' => 'Post'
+                ]);
             }
-            elseif($post_reply->post->entity_name == 'App\Models\Page')
+            elseif ($post_reply->post->entity_name == 'App\Models\Page')
             {
-                $user    = User::where('id',$post_reply->post->created_by)->first();
-                $details = trans('notification.post_comment_update_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Page']);
+                $user    = User::where('id', $post_reply->post->created_by)->first();
+                $details = trans('notification.post_comment_update_success_msg', [
+                    'user'   => Auth::user()->FullName,
+                    'entity' => 'Page'
+                ]);
             }
-            if($user->id != Auth::id())
+
+            if ($user->id != Auth::id())
             {
                 $data = [];
-
-                $data['user']       = $user;
-                $data['details']    = $details;
+                $data['user']    = $user;
+                $data['details'] = $details;
 
                 event(new SingleNotificationEvent($data));
             }
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $post_reply,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_EDIT_COMMENT,
                 $message
-            ); 
+            );
 
             $res['success'] = $message;
             return $res;
         }
-        catch(Exception $e)
+        catch (Exception $e)
         {
             Log::info($e->getMessage());
             //dd($e->getMessage());
@@ -187,54 +225,64 @@ class PostCommentsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a comment.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Soft deletes the comment if the authenticated user
+     * is the owner, sends notification, and logs activity.
+     *
+     * @param int $comment_id
+     * @return array|null
      */
     public function destroy($comment_id)
     {
         //
         try
         {
-            $post_reply = PostComment::where('id',$comment_id)->first();
-            if($post_reply->user_id == Auth::id())
-            {
-                $post_reply->status  = 0;
-                $post_reply->save();
+            $post_reply = PostComment::where('id', $comment_id)->first();
 
+            if ($post_reply->user_id == Auth::id())
+            {
+                $post_reply->status = 0;
+                $post_reply->save();
                 $post_reply->delete();
 
-                $message=trans('messages.delete_success_msg',['module' => 'Post Comment']);
+                $message = trans('messages.delete_success_msg', ['module' => 'Post Comment']);
 
-                if($post_reply->post->entity_name == 'App\Models\User')
+                if ($post_reply->post->entity_name == 'App\Models\User')
                 {
-                    $user    = User::where('id',$post_reply->post->entity_id)->first();
-                    $details = trans('notification.post_comment_delete_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Post']);
+                    $user    = User::where('id', $post_reply->post->entity_id)->first();
+                    $details = trans('notification.post_comment_delete_success_msg', [
+                        'user'   => Auth::user()->FullName,
+                        'entity' => 'Post'
+                    ]);
                 }
-                elseif($post_reply->post->entity_name == 'App\Models\Page')
+                elseif ($post_reply->post->entity_name == 'App\Models\Page')
                 {
-                    $user    = User::where('id',$post_reply->post->created_by)->first();
-                    $details = trans('notification.post_comment_delete_success_msg',['user' => Auth::user()->FullName , 'entity' => 'Page']);
+                    $user    = User::where('id', $post_reply->post->created_by)->first();
+                    $details = trans('notification.post_comment_delete_success_msg', [
+                        'user'   => Auth::user()->FullName,
+                        'entity' => 'Page'
+                    ]);
                 }
-                if($user->id != Auth::id())
+
+                if ($user->id != Auth::id())
                 {
                     $data = [];
-
-                    $data['user']       = $user;
-                    $data['details']    = $details;
+                    $data['user']    = $user;
+                    $data['details'] = $details;
 
                     event(new SingleNotificationEvent($data));
                 }
-                
-                $ip= $this->getRequestIP();
+
+                $ip = $this->getRequestIP();
                 $this->doActivityLog(
                     $post_reply,
                     Auth::user(),
-                    ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                    ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                     LOGNAME_DELETE_COMMENT,
                     $message
                 );
+
                 $res['success'] = $message;
                 return $res;
             }
@@ -243,7 +291,7 @@ class PostCommentsController extends Controller
                 abort(403);
             }
         }
-        catch(Exception $e)
+        catch (Exception $e)
         {
             Log::info($e->getMessage());
             //dd($e->getMessage());

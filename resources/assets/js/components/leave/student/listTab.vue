@@ -14,14 +14,14 @@
       </li>
     </ul>
 
-    <portal to="student_leave_list">
+    <Teleport to="#student_leave_list">
       <List :url="this.url"></List>
-    </portal>
+    </Teleport>
   </div>
 </template>
 
 <script>
-  import PortalVue from "portal-vue";
+  
   import { bus } from "../../../app";
   import List from './List';
 
@@ -41,15 +41,15 @@
       setProfileTab(val)
       {
         this.status=val;
-        bus.$emit("statusTab", this.status);
+        bus.emit("statusTab", this.status);
       }
     },
 
     created()
     {
-      bus.$emit("statusTab", this.status);
+      bus.emit("statusTab", this.status);
        
-      bus.$on("statusTab", data => {
+      bus.on("statusTab", data => {
         if(data!='')
         {
           this.status=data;                   

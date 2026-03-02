@@ -22,7 +22,7 @@ class CreatePostsTable extends Migration
             $table->integer('entity_id');
             $table->string('entity_name');
             $table->longText('description');
-            $table->string('attachment_file')->nullable();
+            $table->longText('attachment_file')->nullable();
             $table->enum('visibility',['all_class','select_class','select_page'])->nullable(); 
             $table->integer('visible_for')->unsigned()->nullable();
             $table->foreign('visible_for')->references('id')->on('standards_link');

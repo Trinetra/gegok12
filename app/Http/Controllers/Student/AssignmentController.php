@@ -66,7 +66,7 @@ class AssignmentController extends Controller
                 });
             }
         }
-        $assignment=$assignment->paginate(10);
+        $assignment=$assignment->orderBy('id','desc')->paginate(10);
         $assignmentlist = AssignmentResource::collection($assignment);
         
         return $assignmentlist;
@@ -93,76 +93,95 @@ class AssignmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)//StudentAssignmentAdd
+    public function store(Request $request)
     {
-        //
-        try
-        {
+        try {
+
+            // $request->validate([
+            //     'assignment_id' => 'required|exists:assignments,id',
+            //     'assignment_file' => 'required',
+            //     'assignment_file.*' => 'image|mimes:jpg,jpeg,png|max:8192'
+            // ]);
+
             $school_id = Auth::user()->school_id;
-            $academic_year = SiteHelper::getAcademicYear($school_id);
 
             $studentAssignment = new StudentAssignment;
+            $studentAssignment->assignment_id = $request->assignment_id;
+            $studentAssignment->user_id = Auth::id();
 
-            $studentAssignment->assignment_id   =   $request->assignment_id;
-            $studentAssignment->user_id         =   Auth::id();
-            //$file   =   $request->file('assignment_file');
-            /*if($file)
-            {
-                $path = $this->uploadFile(Auth::user()->school->slug.'/uploads/student/assignment/'.$school_id.'/'.$request->assignment_id,$file);
-                $studentAssignment->assignment_file =   $path; 
-            }*/
-            $files = $request->assignment_file;
-            $path = [];
-            $i = 1;
-            foreach($files as $file) 
-            {
-                $path[$i] = $this->uploadFile(Auth::user()->school->slug.'/assignments/student/'.$request->assignment_id,$file); 
-                $i++;     
+            $uploadedPaths = [];
+
+            if ($request->hasFile('assignment_file')) {
+
+                $files = $request->file('assignment_file');
+
+                // If single file, convert to array safely
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
+
+                foreach ($files as $file) {
+
+                    if ($file instanceof \Illuminate\Http\UploadedFile) {
+
+                        $path = $this->uploadFile(
+                            Auth::user()->school->slug . '/assignments/student/' . $request->assignment_id,
+                            $file
+                        );
+
+                        $uploadedPaths[] = $path;
+                    }
+                }
             }
-            $studentAssignment->assignment_file =   $path; 
-            $studentAssignment->submitted_on    =   date('Y-m-d');
-            $studentAssignment->status          =   'submitted';
 
+            // $studentAssignment->assignment_file = json_encode($uploadedPaths);
+            $studentAssignment->assignment_file = $uploadedPaths;
+            $studentAssignment->submitted_on = now();
+            $studentAssignment->status = 'submitted';
             $studentAssignment->save();
 
-            $assignment = Assignment::where('id',$request->assignment_id)->first();
-            $teacher = User::where('id',$assignment->teacher_id)->first();
-            $student = User::where('id',$studentAssignment->user_id)->first();
+            $assignment = Assignment::findOrFail($request->assignment_id);
+            $teacher = User::findOrFail($assignment->teacher_id);
+            $student = Auth::user();
 
-            $array=[];
+            event(new SinglePushEvent([
+                'school_id' => $school_id,
+                'user_id'   => $teacher->id,
+                'message'   => $student->FullName . ' Added Assignment File',
+                'type'      => 'assignment'
+            ]));
 
-            $array['school_id']  =   $school_id;
-            $array['user_id']    =   $teacher->id;
-            $array['message']    =   $student->FullName.' Added Assignment File';
-            $array['type']       =   'assignment';
+            event(new SingleNotificationEvent([
+                'user'    => $teacher,
+                'details' => trans('notification.student_assignment_add_msg')
+            ]));
 
-            event(new SinglePushEvent($array));
+            $message = trans('messages.add_success_msg', ['module' => 'Assignment']);
 
-            $data = [];
-
-            $data['user']       =   $teacher;
-            $data['details']    =   trans('notification.student_assignment_add_msg');
-
-            event(new SingleNotificationEvent($data));
-
-            $message=trans('messages.add_success_msg',['module' => 'Assignment']);
-
-            $ip= $this->getRequestIP();
             $this->doActivityLog(
                 $studentAssignment,
-                Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                $student,
+                [
+                    'ip' => $request->ip(),
+                    'details' => $request->userAgent()
+                ],
                 LOGNAME_ADD_STUDENT_ASSIGNMENT,
                 $message
             );
 
-            $res['success'] = $message;
-            return $res;
-        }
-        catch(Exception $e)
-        {
-            Log::info($e->getMessage());
-            //dd($e->getMessage());
+            return response()->json([
+                'status' => true,
+                'message' => $message
+            ]);
+
+        } catch (\Exception $e) {
+
+            Log::error($e->getMessage());
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Upload failed'
+            ], 500);
         }
     }
 

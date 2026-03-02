@@ -1,8 +1,7 @@
 <?php
-/**
- * SPDX-License-Identifier: MIT
- * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
- */
+// SPDX-License-Identifier: MIT
+// (c) 2025 GegoSoft Technologies and GegoK12 Contributors
+
 namespace App\Models;
 
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
@@ -12,7 +11,20 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\Models\Media;
 use App\Traits\Common;
 
-class PostTag extends Model 
+/**
+ * Class PostTag
+ *
+ * Model for managing tags on posts.
+ *
+ * @property int $id
+ * @property int $tag_id
+ * @property int $post_id
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Tag[] $tag
+ * @mixin \Eloquent
+ */
+class PostTag extends Model
 {
     //
 
@@ -28,7 +40,7 @@ class PostTag extends Model
 
     /**
      * The attributes that are mass assignable.
-     * 
+     *
      * @var array
      */
     protected $fillable = [
@@ -40,19 +52,24 @@ class PostTag extends Model
      *
      * @var array
      */
-    
+
 
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
+    /**
+     * Get tags for this post.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function tag()
     {
         return $this->hasMany(Tag::class);
     }
 
-  
 
-  
+
+
 }

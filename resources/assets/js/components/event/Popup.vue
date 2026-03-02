@@ -1,6 +1,6 @@
 <template>
     <div>
-        <portal to="eventpopup">
+        <Teleport to="#eventpopup">
             <div class="hide-menu absolute top-0 right-0 left-0 flex flex-col items-center justify-center h-full" id="show-detail">
                 <div class="bg-white w-full lg:w-1/3 md:w-1/3 shadow-lg border border-r-0 member-detail z-40 right-0 overflow-y-auto mx-auto relative">
                     <a href="#" @click="disableform()" class="absolute right-0">
@@ -58,13 +58,13 @@
 
                 </div>
             </div>
-        </portal>
+        </Teleport>
     </div>
 </template>
 
 <script>
     import { bus } from "../../app";
-    import PortalVue from "portal-vue";
+    
     export default {
         props:['url','mode'],
         data(){
@@ -78,14 +78,14 @@
         created() 
         {
             //
-            bus.$on("dataEventDetail", data => {
+            bus.on("dataEventDetail", data => {
                 if(data!='')
                 {
                     this.eventid=data; 
                     this.getData();
                 }
             });
-            bus.$on("dataEventFilter", data => {
+            bus.on("dataEventFilter", data => {
                 if(data!='')
                 {
                     this.disableform();

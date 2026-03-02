@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Notification\ClassNotificationEvent;
-use App\Models\StandardPushEvent;
+use App\Events\Notification\ClassNotificationEvent;
+use App\Events\StandardPushEvent;
 use Illuminate\Console\Command;
 use App\Helpers\SiteHelper;
 use App\Models\Assignment;

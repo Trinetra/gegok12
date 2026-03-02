@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <nav class="navbar bg-white w-full flex  lg:flex-row px-4 lg:px-8 py-2 justify-between items-center">
     <div class="nav-brand flex items-center">
         @if(\Auth::user())
@@ -12,11 +11,11 @@
                 <a class="h-10 object-contain" href="{{ route('dashboard') }}">
                     <img src="{{ Auth::user()->SchoolLogoPath }}" class="h-10 w-auto object-cover">
                 </a>
-            @endif
-
-             <a class="h-10 object-contain" href="{{ route('dashboard') }}">
+                @else
+                <a class="h-10 object-contain" href="{{ route('dashboard') }}">
                     <img src="/uploads/demologo.png" class="h-10 w-auto object-cover mr-3">
                 </a>
+            @endif
             <a class="text-lg lg:text-3xl font-exo font-medium text-gray-600" href="{{ route('dashboard') }}">
                 <strong>{{ ucwords(Auth::user()->school->name) }}</strong>
             </a>
@@ -52,7 +51,7 @@
                         <li>
                             <div class="profile-click" dusk="profile-menu">
                                 @if(Auth::user()->userprofile->avatar!= null)
-                                    <img src="{{ url(Auth::user()->userprofile->AvatarPath) }}" class="w-8 h-8 rounded-full cursor-pointer">
+                                    <img src="{{ url(Auth::user()->userprofile->avatar) }}" class="w-8 h-8 rounded-full cursor-pointer">
                                 @else
                                     <img src="{{ asset('uploads/user/avatar/default-user.jpg') }}" class="w-8 h-8 rounded-full cursor-pointer">
                                 @endif
@@ -60,7 +59,7 @@
                                     <ul class="list-reset bg-white border border-gray-400 -mt-3 shadow-lg z-40">
                                         <div class="flex border-b p-2 items-center">
                                             @if(Auth::user()->userprofile->avatar!= null)
-                                                <img src="{{ url(Auth::user()->userprofile->AvatarPath) }}" class="w-10 h-10 rounded-full cursor-pointer">
+                                                <img src="{{ url(Auth::user()->userprofile->avatar) }}" class="w-10 h-10 rounded-full cursor-pointer">
                                             @else
                                                 <img src="{{asset('uploads/user/avatar/default-user.jpg')}}" class="w-10 h-10 rounded-full cursor-pointer">
                                             @endif

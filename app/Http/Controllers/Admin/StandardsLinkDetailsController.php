@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Traits\AcademicProcess;
 use Illuminate\Http\Request;
+use App\Models\Users\StudentUser;
 use App\Models\VideoConference;
 use App\Models\ExamSchedule;
 use App\Models\StandardLink;
@@ -34,13 +35,25 @@ use App\Models\User;
 use App\Models\Fee;
 use Carbon\Carbon;
 
+/**
+ * Class StandardsLinkDetailsController
+ *
+ * Provides detailed information for a specific
+ * standard–section (class) including students,
+ * teachers, attendance, timetable, exams, fees,
+ * events, class wall, and online conferences.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class StandardsLinkDetailsController extends Controller
 {
-    //
     /**
-     * Display the specified resource.
+     * Show standard overview details.
      *
-     * @param  int  $id
+     * Displays class information and student count
+     * after authorization check.
+     *
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -62,10 +75,10 @@ class StandardsLinkDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get timetable details for a standard.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return array
      */
     public function showTimetable($id)
     {
@@ -107,10 +120,10 @@ class StandardsLinkDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get teachers assigned to a standard.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function showTeachers($id)
     {
@@ -134,10 +147,10 @@ class StandardsLinkDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get students enrolled in a standard.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function showStudents($id)
     {
@@ -147,7 +160,7 @@ class StandardsLinkDetailsController extends Controller
         if(Gate::allows('standardlink',$standardLink))
         {
             $academic_year = SiteHelper::getAcademicYear(Auth::user()->school_id);
-            $users  = User::where([['school_id',Auth::user()->school_id],['status','!=','exit']])->whereHas('studentAcademic',function($query) use($academic_year)
+            $users  = StudentUser::where([['school_id',Auth::user()->school_id],['status','!=','exit']])->whereHas('studentAcademic',function($query) use($academic_year)
                 { 
                     $query->where('academic_year_id',$academic_year->id);
                 })->ByRole(6)->ByStandard($id)->get()->sortBy('userprofile.firstname');
@@ -161,10 +174,12 @@ class StandardsLinkDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get aggregated student attendance summary.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Groups absent sessions month-wise.
+     *
+     * @param int $id
+     * @return array
      */
     public function getStudentAttendance($id)
     {
@@ -217,10 +232,10 @@ class StandardsLinkDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get daily attendance with chart data.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return array
      */
     public function getAttendance($id)
     {
@@ -236,12 +251,23 @@ class StandardsLinkDetailsController extends Controller
             $start = strtotime('last month', strtotime($academic_year->start_date));
             $now = strtotime($academic_year->end_date);
             $i = 0;
-            while(($start = strtotime('next month', $start)) <= $now) 
+            // while(($start = strtotime('next month', $start)) <= $now) 
+            // {
+            //     $array['months']->$i->id = date('m-Y', $start);
+            //     $array['months']->$i->name = date('M Y', $start);
+            //     $i++;
+            // }
+
+            //new
+            while (($start = strtotime('next month', $start)) <= $now) 
             {
-                $array['months']->$i->id = date('m-Y', $start);
-                $array['months']->$i->name = date('M Y', $start);
-                $i++;
+                $months[] = [
+                    'id' => date('m-Y', $start),
+                    'name' => date('M Y', $start),
+                ];
             }
+            $array['months'] = $months;
+            
             $startDate  = Carbon::now()->firstOfMonth()->format('Y-m-d');  
             $endDate    = Carbon::now()->lastOfMonth()->format('Y-m-d');
             
@@ -275,13 +301,13 @@ class StandardsLinkDetailsController extends Controller
                 { 
                     if($session == 'forenoon')
                     {
-                        $forenoonpresent[$i]    = count($student[1]);
-                        $forenoonabsent[$i]     = count($student[0]);
+                        $forenoonpresent[$i]    = isset($student[1]) ? count($student[1]) : 0;
+                        $forenoonabsent[$i]     = isset($student[0]) ? count($student[0]) : 0;
                     }
                     else
                     {
-                        $afternoonpresent[$i]   = count($student[1]);
-                        $afternoonabsent[$i]    = count($student[0]);
+                        $afternoonpresent[$i]   = isset($student[1]) ? count($student[1]) : 0;
+                        $afternoonabsent[$i]    = isset($student[0]) ? count($student[0]) : 0;
                     }
                 }
                 for ($j = 0 ;$j < count($attendancechart) ; $j++) 
@@ -323,12 +349,24 @@ class StandardsLinkDetailsController extends Controller
             $start = strtotime('last month', strtotime($academic_year->start_date));
             $now = strtotime($academic_year->end_date);
             $i = 0;
-            while(($start = strtotime('next month', $start)) <= $now) 
+            // while(($start = strtotime('next month', $start)) <= $now) 
+            // {
+            //     $array['months']->$i->id = date('m-Y', $start);
+            //     $array['months']->$i->name = date('M Y', $start);
+            //     $i++;
+            // }
+            
+            // new
+            while (($start = strtotime('next month', $start)) <= $now) 
             {
-                $array['months']->$i->id = date('m-Y', $start);
-                $array['months']->$i->name = date('M Y', $start);
-                $i++;
+                $months[] = [
+                    'id' => date('m-Y', $start),
+                    'name' => date('M Y', $start),
+                ];
             }
+
+            $array['months'] = $months;
+
             $startDate      = Carbon::parse($date)->firstOfMonth()->format('Y-m-d');  
             $endDate        = Carbon::parse($date)->lastOfMonth()->format('Y-m-d'); 
             
@@ -645,7 +683,12 @@ class StandardsLinkDetailsController extends Controller
 
         return $array;
     }
-
+    /**
+     * Get online conference sessions for a class.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function showConference($id)
     {
         //
@@ -655,12 +698,15 @@ class StandardsLinkDetailsController extends Controller
         {
             $school_id = Auth::user()->school_id;
             $academic_year = SiteHelper::getAcademicYear($school_id);
-            
-            $conference = VideoConference::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['standard',$standardLink->id]])->orderBy('created_at','DESC')->paginate(10); 
+            if(class_exists('Gegok12\Videoroom\Models\VideoConference'))
+            {
+
+            $conference = \Gegok12\Videoroom\Models\VideoConference::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['standard',$standardLink->id]])->orderBy('created_at','DESC')->paginate(10); 
 
             $conference = ClassConferenceResource::collection($conference);
 
             return $conference;
+            }
         }
     }
 }

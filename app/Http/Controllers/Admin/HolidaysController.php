@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Resources\Holiday as HolidayResource;
@@ -17,31 +18,54 @@ use App\Models\Events;
 use App\Traits\Common;
 use Exception;
 
+/**
+ * Class HolidaysController
+ *
+ * Handles CRUD operations for school holidays in the admin panel.
+ * This controller is responsible for:
+ * - Listing holidays (API & view)
+ * - Creating holidays
+ * - Updating holidays
+ * - Deleting holidays
+ * - Logging holiday-related activities
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class HolidaysController extends Controller
 {
     use LogActivity;
     use Common;
 
     /**
-     * Display a listing of the resource.
+     * Get a paginated list of holidays for the current school and academic year.
      *
-     * @return \Illuminate\Http\Response
+     * Returned as an API resource collection.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function list()
     {
         //
         $school_id = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
-        $holidays = Events::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['category','holidays']])->orderBy('start_date','ASC')->paginate(10);
+
+        $holidays = Events::where([
+            ['school_id', $school_id],
+            ['academic_year_id', $academic_year->id],
+            ['category', 'holidays'],
+        ])
+            ->orderBy('start_date', 'ASC')
+            ->paginate(10);
+
         $holidays = HolidayResource::collection($holidays);
 
         return $holidays;
     }
 
     /**
-     * Display a listing of the resource.
+     * Display the holidays index page.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -50,27 +74,28 @@ class HolidaysController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Provide default values required for creating a holiday.
      *
-     * @return \Illuminate\Http\Response
+     * Used for frontend initialization.
+     *
+     * @return array<string, string>
      */
     public function createList()
     {
         //
         $school_id = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
-        
-        $array = [];
 
+        $array = [];
         $array['start_date'] = date('Y-m-d');
 
         return $array;
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the holiday creation form.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -79,146 +104,137 @@ class HolidaysController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store one or more holidays in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Supports bulk holiday creation.
+     *
+     * @param  \App\Http\Requests\HolidayAddRequest  $request
+     * @return array<string, string>|null
      */
     public function store(HolidayAddRequest $request)
     {
         //
-        try
-        {
-            for($i = 0 ; $i < $request->count ; $i++)
-            {
-                $date = 'date'.$i;
-                $title = 'title'.$i;
+        try {
+            for ($i = 0; $i < $request->count; $i++) {
+                $date = 'date' . $i;
+                $title = 'title' . $i;
 
                 $school_id = Auth::user()->school_id;
                 $academic_year = SiteHelper::getAcademicYear($school_id);
 
                 $holiday = new Events;
 
-                $holiday->school_id         = $school_id;
-                $holiday->academic_year_id  = $academic_year->id;
-                $holiday->select_type       = 'school';
-                $holiday->title             = $request->$title;
-                $holiday->category          = 'holidays';
-                $holiday->start_date        = date('Y-m-d',strtotime($request->$date));
-                $holiday->end_date          = date('Y-m-d',strtotime($request->$date));
+                $holiday->school_id        = $school_id;
+                $holiday->academic_year_id = $academic_year->id;
+                $holiday->select_type      = 'school';
+                $holiday->title            = $request->$title;
+                $holiday->category         = 'holidays';
+                $holiday->start_date       = date('Y-m-d', strtotime($request->$date));
+                $holiday->end_date         = date('Y-m-d', strtotime($request->$date));
 
                 $holiday->save();
- 
-                $message= trans('messages.add_success_msg',['module' => 'Holidays']);
 
-                $ip= $this->getRequestIP();
+                $message = trans('messages.add_success_msg', ['module' => 'Holidays']);
+
+                $ip = $this->getRequestIP();
                 $this->doActivityLog(
                     $holiday,
                     Auth::user(),
-                    ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                    ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                     LOGNAME_ADD_HOLIDAY,
                     $message
                 );
-            } 
- 
-            $res['success']= $message;
+            }
+
+            $res['success'] = $message;
             return $res;
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             //dd($e->getMessage());
         }
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Retrieve holiday data for editing.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array<string, string>
      */
     public function edit($id)
     {
         //
-        $holiday = Events::where('id',$id)->first();
+        $holiday = Events::where('id', $id)->first();
 
         $array = [];
-
-        $array['date']  =   date('Y-m-d',strtotime($holiday->start_date));
-        $array['title'] =   $holiday->title;
+        $array['date']  = date('Y-m-d', strtotime($holiday->start_date));
+        $array['title'] = $holiday->title;
 
         return $array;
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified holiday.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\HolidayUpdateRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array<string, string>|null
      */
     public function update(HolidayUpdateRequest $request, $id)
     {
         //
-        try
-        {
-            $holiday = Events::where('id',$id)->first();
+        try {
+            $holiday = Events::where('id', $id)->first();
 
-            $holiday->title             = $request->title;
-            $holiday->start_date        = date('Y-m-d',strtotime($request->date));
-            $holiday->end_date          = date('Y-m-d',strtotime($request->date));
+            $holiday->title      = $request->title;
+            $holiday->start_date = date('Y-m-d', strtotime($request->date));
+            $holiday->end_date   = date('Y-m-d', strtotime($request->date));
 
             $holiday->save();
- 
-            $message= trans('messages.update_success_msg',['module' => 'Holiday']);
 
-            $ip= $this->getRequestIP();
+            $message = trans('messages.update_success_msg', ['module' => 'Holiday']);
+
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $holiday,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_EDIT_HOLIDAY,
                 $message
             );
- 
-            $res['success']= $message;
+
+            $res['success'] = $message;
             return $res;
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             //dd($e->getMessage());
         }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete the specified holiday.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array<string, string>|null
      */
     public function destroy($id)
     {
         //
-        try
-        {
-            $holiday = Events::where('id',$id)->first();
+        try {
+            $holiday = Events::where('id', $id)->first();
             $holiday->delete();
 
-            $message=trans('messages.delete_success_msg',['module' => 'Holiday']);
+            $message = trans('messages.delete_success_msg', ['module' => 'Holiday']);
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $holiday,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_DELETE_HOLIDAY,
                 $message
             );
- 
-            $res['success']= $message;
+
+            $res['success'] = $message;
             return $res;
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             //dd($e->getMessage());
         }
     }

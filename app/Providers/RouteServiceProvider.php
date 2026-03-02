@@ -24,7 +24,7 @@ class RouteServiceProvider extends ServiceProvider
     protected $receptionistNamespace = 'App\Http\Controllers\Receptionist';
     protected $accountantNamespace = 'App\Http\Controllers\Accountant';
     protected $payrollNamespace = 'App\Http\Controllers\Payroll';
-    protected $alumniNamespace = 'App\Http\Controllers\Alumni';
+    // protected $alumniNamespace = 'App\Http\Controllers\Alumni'; // Moved to add-on module
     protected $superadminNamespace = 'App\Http\Controllers\Superadmin';
 
     //public const HOME = '/dashboard';
@@ -61,7 +61,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapReceptionistRoutes();
         $this->mapAccountantRoutes();
         $this->mapPayrollRoutes();
-        $this->mapAlumniRoutes();
+        // $this->mapAlumniRoutes(); // Moved to add-on module
         $this->mapSuperadminRoutes();
         //
     }
@@ -122,7 +122,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapStockRoutes()
     {
         Route::prefix('stock')
-            ->middleware(['web','auth', 'stock'])
+            ->middleware(['web','auth', 'stockkeeper'])
             ->namespace($this->stockNamespace)
             ->group(base_path('routes/stock.php'));
     }
@@ -182,13 +182,14 @@ class RouteServiceProvider extends ServiceProvider
             ->group(base_path('routes/payroll.php'));
     }
 
-    protected function mapAlumniRoutes()
-    {
-        Route::prefix('alumni')
-            ->middleware(['web','auth', 'alumni'])
-            ->namespace($this->alumniNamespace)
-            ->group(base_path('routes/alumni.php'));
-    }
+    // Alumni routes moved to add-on module
+    // protected function mapAlumniRoutes()
+    // {
+    //     Route::prefix('alumni')
+    //         ->middleware(['web','auth', 'alumni'])
+    //         ->namespace($this->alumniNamespace)
+    //         ->group(base_path('routes/alumni.php'));
+    // }
 
     protected function mapSuperadminRoutes()
     {

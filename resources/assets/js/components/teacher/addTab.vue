@@ -22,24 +22,23 @@
       </li>
     </ul>
 
-    <portal to="add_teacherprofile" v-if="this.type == 'add'">
+    <Teleport to="#add_teacherprofile" v-if="this.type == 'add'">
       <create-teacher :url="this.url" :staff="this.staff"></create-teacher>
       <createQualification :url="this.url" :teacher_name="null" :type="this.type"></createQualification>
       <notes-tab :type="this.type"></notes-tab>
       <address-tab :type="this.type"></address-tab>
-    </portal>
+    </Teleport>
 
-    <portal to="edit_teacherprofile" v-if="this.type == 'edit'">
+    <Teleport to="#edit_teacherprofile" v-if="this.type == 'edit'">
       <edit-teacher :url="this.url" :staff="this.staff" :teacher_name="this.teacher_name"></edit-teacher>
       <createQualification :url="this.url" :teacher_name="this.teacher_name" :type="this.type"></createQualification>
       <notes-tab :type="this.type" :teacher_name="this.teacher_name"></notes-tab>
       <address-tab :type="this.type" :teacher_name="this.teacher_name"></address-tab>
-    </portal>
+    </Teleport>
   </div>
 </template>
 
 <script>
-  import PortalVue from "portal-vue";
   import { bus } from "../../app";
   import createTeacher from './Create';
   import editTeacher from './Edit';
@@ -67,15 +66,15 @@
       setProfileTab(val)
       {
         this.profile_tab=val;
-        bus.$emit("dataProfileTab", this.profile_tab);
+        bus.emit("dataProfileTab", this.profile_tab);
       }
     },
 
     created()
     {
-      bus.$emit("dataProfileTab", this.profile_tab);
+      bus.emit("dataProfileTab", this.profile_tab);
        
-      bus.$on("dataProfileTab", data => {
+      bus.on("dataProfileTab", data => {
         if(data!='')
         {
           this.profile_tab=data;                   

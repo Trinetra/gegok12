@@ -13,7 +13,7 @@ class UserprofileFactory extends Factory
 
    public function definition()
     {
-    $alternate_no = $this->faker->unique()->randomNumber($nbDigits = 9, $strict = false);
+    $alternate_no = $this->faker->unique()->numerify('#########');
 
     $gender = $this->faker->randomElement(['male', 'female']);
 
@@ -31,11 +31,11 @@ class UserprofileFactory extends Factory
 
     $state_id = $this->faker->randomElement(['12' , '24' , '25' ,  '15' , '13']);
 
-    $pincode = $this->faker->unique()->randomNumber($nbDigits = 6, $strict = false);
+    $pincode = $this->faker->unique()->numerify('######');
 
-    $registration_number = $this->faker->unique()->randomNumber($nbDigits = 6, $strict = false);
+    $registration_number = $this->faker->unique()->numerify('######');
 
-    $EMIS_number = $this->faker->unique()->randomNumber($nbDigits = 6, $strict = false);
+    $EMIS_number = $this->faker->unique()->numerify('######');
 
     $joining_date = $this->faker->dateTimeBetween($startDate = '-4 years', $endDate = '-2 years', $timezone = null);
 
@@ -61,7 +61,7 @@ class UserprofileFactory extends Factory
         'native_place'          =>  $city,
         'mother_tongue'         =>  $mother_tongue,
         'caste'                 =>  $caste,
-        'address'               =>  $city,
+        'address'               =>  $this->faker->address,
         'city_id'               =>  $city_id,
         'state_id'              =>  $state_id,
         'country_id'            =>  7,

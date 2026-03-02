@@ -5,46 +5,48 @@
 
       <div class="flex">
         <table class="w-3/4">
-          <tr class="border-b">
-            <td class="py-3 px-2">
-              <p class="font-semibold text-xs">Student Name</p>
-            </td>
-            <td class="py-3 px-10">
-              <p class="text-xs">{{ leaves.name }}</p>
-            </td>
-          </tr>
-          <tr class="border-b">
-            <td class="py-3 px-2">
-              <p class="font-semibold text-xs">From Date</p>
-            </td>
-            <td class="py-3 px-10">
-              <p class="text-xs">{{ leaves.from_date }}</p>
-            </td>
-          </tr>
-          <tr class="border-b">
-            <td class="py-3 px-2">
-              <p class="font-semibold text-xs">To Date</p>
-            </td>
-            <td class="py-3 px-10">
-              <p class="text-xs">{{ leaves.to_date }}</p>
-            </td>
-          </tr>
-          <tr class="border-b">
-            <td class="py-3 px-2">
-              <p class="font-semibold text-xs">Reason</p>
-            </td>
-            <td class="py-3 px-10">
-              <p class="text-xs">{{ leaves.reason_id }}</p>
-            </td>
-          </tr>
-          <tr class="border-b">
-            <td class="py-3 px-2">
-              <p class="font-semibold text-xs">Remarks</p>
-            </td>
-            <td class="py-3 px-10">
-              <p class="text-xs">{{ leaves.remarks }}</p>
-            </td>
-          </tr>
+          <tbody>
+            <tr class="border-b">
+              <td class="py-3 px-2">
+                <p class="font-semibold text-xs">Student Name</p>
+              </td>
+              <td class="py-3 px-10">
+                <p class="text-xs">{{ leaves.name }}</p>
+              </td>
+            </tr>
+            <tr class="border-b">
+              <td class="py-3 px-2">
+                <p class="font-semibold text-xs">From Date</p>
+              </td>
+              <td class="py-3 px-10">
+                <p class="text-xs">{{ leaves.from_date }}</p>
+              </td>
+            </tr>
+            <tr class="border-b">
+              <td class="py-3 px-2">
+                <p class="font-semibold text-xs">To Date</p>
+              </td>
+              <td class="py-3 px-10">
+                <p class="text-xs">{{ leaves.to_date }}</p>
+              </td>
+            </tr>
+            <tr class="border-b">
+              <td class="py-3 px-2">
+                <p class="font-semibold text-xs">Reason</p>
+              </td>
+              <td class="py-3 px-10">
+                <p class="text-xs">{{ leaves.reason_id }}</p>
+              </td>
+            </tr>
+            <tr class="border-b">
+              <td class="py-3 px-2">
+                <p class="font-semibold text-xs">Remarks</p>
+              </td>
+              <td class="py-3 px-10">
+                <p class="text-xs">{{ leaves.remarks }}</p>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
 
@@ -72,11 +74,12 @@
 </template>
 
 <script>
-import datetime from 'vuejs-datetimepicker';
+import { VueDatePicker } from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 
 export default {
   components: {
-    datetime,
+    VueDatePicker,
   },
 
   props : ['url','id' , 'status'],

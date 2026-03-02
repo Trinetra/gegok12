@@ -1,10 +1,18 @@
 <template>
 	<div class=" overflow-x-scroll lg:overflow-x-auto md:overflow-x-auto py-3 bg-white shadow px-3" v-bind:class="[this.profile_tab==4?'block' :'hidden']">
     <div v-if="this.type == 'add'">
-      <portal-target name="address"></portal-target>
+      <GoogleMap
+          v-model:address="address"
+          v-model:latitude="latitude"
+          v-model:longitude="longitude"
+        />
     </div>
     <div v-if="this.type == 'edit'">
-      <portal-target name="edit_address"></portal-target>
+      <GoogleMap
+        v-model:address="address"
+        v-model:latitude="latitude"
+        v-model:longitude="longitude"
+      />
     </div>
 
       <div class="tw-form-group">
@@ -15,7 +23,12 @@
             </div>
             <div class="mb-2">
               <select class="tw-form-control w-full" id="country_id" v-model="country_id" name="country_id">
-               <option v-for="country in countrylist" v-bind:value="country.id">{{country.name}}</option>
+               <option
+                v-for="country in countrylist"
+                :key="country.id"
+                :value="country.id">
+                {{ country.name }}
+              </option>
               </select>
             </div>
             <span v-if="errors.country_id" class="text-red-500 text-xs font-semibold">{{errors.country_id[0]}}</span>
@@ -28,7 +41,12 @@
             <div class="mb-2">
               <select class="tw-form-control w-full" id="state_id" v-model="state_id" name="state_id">
                <option value="" disabled>Select State</option>
-               <option value="" v-for="state in statelist[this.country_id]" v-bind:value="state.id">{{state.name}}</option>
+               <option
+                  v-for="state in statelist[country_id]"
+                  :key="state.id"
+                  :value="state.id">
+                  {{ state.name }}
+                </option>
               </select>  
             </div>
             <span v-if="errors.state_id" class="text-red-500 text-xs font-semibold">{{errors.state_id[0]}}</span>
@@ -41,7 +59,12 @@
             <div class="mb-2">
               <select class="tw-form-control w-full" id="city_id" v-model="city_id" name="city_id">
                <option value="" disabled>Select City</option>
-               <option value="" v-for="city in citylist [this.state_id]" v-bind:value="city.id">{{city.name}}</option>
+               <option
+                  v-for="city in citylist[state_id]"
+                  :key="city.id"
+                  :value="city.id">
+                  {{ city.name }}
+                </option>
               </select>   
             </div>
             <span v-if="errors.city_id" class="text-red-500 text-xs font-semibold">{{errors.city_id[0]}}</span>
@@ -59,23 +82,23 @@
         </div>
       </div>
 
-      <portal-target name="submit-btn"></portal-target>
-      <portal to="submit-btn">
         <div class="my-6">
           <a href="#" dusk="submit-btn" class=" btn-primary submit-btn blue-bg text-sm text-white px-2 py-1 rounded mx-1" @click="previous(2)">Previous</a>
           <a href="#" dusk="submit-btn" class="btn-primary submit-btn blue-bg text-sm text-white px-2 py-1 rounded mx-1" @click="submitForm()">Submit</a>
           <a href="#" class="btn-reset reset-btn" @click="resetForm()">Reset</a>
-          <input type="submit" class="hidden" id="submit-btn">
+          <input type="submit" class="hidden" id="real-submit-btn">
         </div>
-      </portal>
 	</div>
 </template>
 
 <script> 
 	import { bus } from "../../app";
-	import PortalVue from "portal-vue";
+  import GoogleMap from '../GoogleMap.vue'
 	export default {
     props:['type' , 'teacher_name'],
+    components: {
+        GoogleMap
+      },
 	  	data(){
 	    	return {
 	      	profile_tab:'',
@@ -89,6 +112,7 @@
 	      	citylist:[],
 	      	errors:[],
 	      	success:null,
+          address:'',
 	    	}
 	  	},
 
@@ -130,7 +154,7 @@
 	    	setProfileTab(val)
 	    	{
 	      		this.profile_tab=val;
-	      		bus.$emit("dataProfileTab", this.profile_tab);
+	      		bus.emit("dataProfileTab", this.profile_tab);
 	    	},
 
         resetForm()
@@ -143,7 +167,7 @@
         previous(tab)
        {
         //this.profile_tab=val;
-        bus.$emit("dataProfileTab", tab);
+        bus.emit("dataProfileTab", tab);
 
       } ,
 
@@ -162,7 +186,7 @@
             if(this.type == 'add')
             {
               axios.post('/admin/teacher/add/validationAddress',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => { 
-                $('#submit-btn').click();  
+                $('#real-submit-btn').click();  
               }).catch(error => {
                 this.errors = error.response.data.errors;
               });
@@ -170,7 +194,7 @@
 	      		else if(this.type == 'edit')
             {
               axios.post('/admin/teacher/edit/validationAddress/'+this.teacher_name,formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => { 
-                $('#submit-btn').click();  
+                $('#real-submit-btn').click();  
               }).catch(error => {
               this.errors = error.response.data.errors;
               });
@@ -188,7 +212,7 @@
       {
         this.getData('/admin/teacher/editTeacher/'+this.teacher_name);
       } 
-	    	bus.$on("dataProfileTab", data => {
+	    	bus.on("dataProfileTab", data => {
 	      		if(data!='')
 	      		{
 	        		this.profile_tab=data;                   

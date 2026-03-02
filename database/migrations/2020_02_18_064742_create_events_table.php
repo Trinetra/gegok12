@@ -37,7 +37,7 @@ class CreateEventsTable extends Migration
             $table->dateTime('end_date')->nullable();
             $table->tinyInteger('allDay')->default(1);
             $table->text('url')->nullable();
-             $table->enum('status',['active','inactive'])->default('inactive');;
+            $table->enum('status',['active','inactive'])->default('inactive');
             $table->integer('created_by')->unsigned()->nullable();
             $table->foreign('created_by')->references('id')->on('users');
             $table->integer('updated_by')->unsigned()->nullable();

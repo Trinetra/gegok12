@@ -9,36 +9,50 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\MailTemplate;
 use App\Models\Reminder;
 
+/**
+ * ReminderMail
+ *
+ * Mailable class for sending event reminder notifications.
+ * Contains event details such as title, description, location, and schedule.
+ *
+ * @package App\Mail
+ */
 class ReminderMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+    /**
+     * The reminder instance
+     *
+     * @var Reminder
+     */
     public $reminder;
+    
     /**
      * Create a new message instance.
      *
+     * @param Reminder $reminder The reminder instance
      * @return void
      */
     public function __construct(Reminder $reminder)
     {
-       //dd($reminder);
+        $this->queue='emails';
         $this->reminder = $reminder;
     }
 
     /**
      * Build the message.
      *
+     * Retrieves the event reminder template and replaces placeholders
+     * with event details including school name, title, description, location, and dates.
+     *
      * @return $this
      */
     public function build()
     {
-        //dd('kjhhsdf');
         $template = MailTemplate::where([['name','event_reminder'],['status','active']])->first();
-        //dd($template);
         $subject =  $template->subject;
-        //dd($subject);
         $mail_content = $template->mail_content;
-       //dd($mail_content);
         $mail_content = str_replace(":school_name",$this->reminder->school->name,$mail_content);
         $mail_content = str_replace(":title",$this->reminder->events->title,$mail_content);
         $mail_content = str_replace(":description",$this->reminder->events->description,$mail_content);
@@ -52,4 +66,4 @@ class ReminderMail extends Mailable implements ShouldQueue
                             'content' => $mail_content,
                             ]);
     }
-}
+}}

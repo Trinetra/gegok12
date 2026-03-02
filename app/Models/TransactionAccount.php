@@ -8,10 +8,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-
+/**
+ * Class TransactionAccount
+ *
+ * Model for managing transaction accounts.
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $key
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @property \DateTime $deleted_at
+ * @mixin \Eloquent
+ */
 class TransactionAccount extends Model
 {
     use SoftDeletes;
-	
+
      protected $fillable=['name','key'];
 }

@@ -76,14 +76,12 @@
                     </div>
                 </div>
 
-                <portal-target name="submit-btn"></portal-target>
-                <portal to="submit-btn">
+                
                     <div class="my-6">
                         <a href="#" dusk="submit-btn" class=" btn-primary submit-btn blue-bg text-sm text-white px-2 py-1 rounded mx-1" @click="previousForm('4')">Previous</a>
                         <a href="#" dusk="submit-btn" class=" btn-primary submit-btn blue-bg text-sm text-white px-2 py-1 rounded mx-1" @click="submitForm()">Submit</a>
-                        <input type="submit" class="hidden" id="submit-btn">
+                        <input type="submit" id="submit-btn">
                     </div>
-                </portal>
             </fieldset>
         </div>
     </div>
@@ -91,7 +89,7 @@
 
 <script>
     import { bus } from "../../app";
-    import PortalVue from "portal-vue";
+    
     export default {
         props:['url','slug'],
         data(){
@@ -145,7 +143,7 @@
             setProfileTab(val)
             {
                 this.profile_tab=val;
-                bus.$emit("dataAdmissionTab", this.profile_tab);
+                bus.emit("dataAdmissionTab", this.profile_tab);
             },
         },
 
@@ -155,7 +153,7 @@
                 this.transportList = response.data.transportList;
             });
             
-            bus.$on("dataAdmissionTab", data => {
+            bus.on("dataAdmissionTab", data => {
                 if(data!='')
                 {
                     this.profile_tab=data;                   

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 {!! strip_tags($header) !!}
 
 {!! strip_tags($slot) !!}

@@ -16,6 +16,7 @@ use App\Http\Resources\Fee as FeeResource;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Models\Users\StudentUser;
 use Illuminate\Http\Request;
 use App\Models\ExamSchedule;
 use App\Models\StandardLink;
@@ -206,7 +207,7 @@ class StandardsLinkController extends Controller
         if(Gate::allows('standardlink',$standardLink))
         {
             $academic_year = SiteHelper::getAcademicYear(Auth::user()->school_id);
-            $users  = User::where('school_id',Auth::user()->school_id)->whereHas('studentAcademic',function($query) use($academic_year)
+            $users  = StudentUser::where('school_id',Auth::user()->school_id)->whereHas('studentAcademic',function($query) use($academic_year)
                 { 
                     $query->where('academic_year_id',$academic_year->id);
                 })->ByRole(6)->ByStandard($id)->get();

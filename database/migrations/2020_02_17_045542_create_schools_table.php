@@ -26,7 +26,7 @@ class CreateSchoolsTable extends Migration
             $table->integer('city_id')->unsigned()->nullable();
             $table->foreign('city_id')->references('id')->on('cities'); 
             $table->string('pincode')->nullable();
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
             $table->text('slug')->nullable();
             $table->timestamps();
             $table->softDeletes();

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.student.layout')
 
 @section('content')
@@ -6,5 +5,5 @@
         <show-event url="{{url('/')}}" count="{{ $count }}" no_of_events="{{ $subscription->plan->no_of_events }}" events="{{ $events }}"></show-event>
     </div>
     <event-popup :url="this.url" mode="student"></event-popup>
-    <portal-target name="eventpopup"></portal-target>
+    <div id="eventpopup"></div>
 @endsection

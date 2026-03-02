@@ -1,6 +1,6 @@
 <template>
   <div>
-    <portal to="search">
+    <Teleport to="#search">
       <div class="relative mt-2 z-40">
         <input type="text" class="border px-10 py-2 text-sm border-gray-400 w-full rounded bg-white shadow "  placeholder="Search query" @click="showfilter()">
         <span class="input-group-btn absolute left-0 px-3 py-3 top-0">
@@ -38,8 +38,8 @@
       L284.286,256.002z"></path></g></g></svg>
         </a>
       </div>
-    </portal>
-    <portal to="teacherfilter">
+    </Teleport>
+    <Teleport to="#teacherfilter">
       <div class="hide-menu" id="show-filter">
         <div class="absolute bg-white w-full  lg:w-2/4  shadow-lg border border-r-0 z-40  h-auto py-3 lg:px-4  overflow-auto search_user_filter">  
           <div id="search_filter">
@@ -230,13 +230,13 @@
         </div>
       </div>
     </div>
-    </portal>
+    </Teleport>
   </div>
 </template>
 
 <script>
 import { bus } from "../../app";
-  import PortalVue from "portal-vue";
+  
    export default {
     props:['url','searchquery'],
        data(){
@@ -355,7 +355,7 @@ import { bus } from "../../app";
         {   
           this.show_filter =1;  
           $('#show-filter').removeClass('hide-menu').addClass('block');
-          bus.$emit("datashowFilter", '1');
+          bus.emit("datashowFilter", '1');
         },
 
         disablefilter()
@@ -388,7 +388,7 @@ import { bus } from "../../app";
 
       created()
       {
-        bus.$on("dataMemberName", data => {
+        bus.on("dataMemberName", data => {
           if(data!='')
             {
                  this.disablefilter();

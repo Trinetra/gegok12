@@ -6,6 +6,7 @@
 /.idea
 /.vscode
 /.vagrant
+/_co-pilot_docs
 Homestead.json
 Homestead.yaml
 npm-debug.log
@@ -105,3 +106,4 @@ public/uploads/reports/*
 /.vapor
 .vapor/*
 composer.lock
+public/demo-school

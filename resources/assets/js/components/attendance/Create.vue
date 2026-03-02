@@ -26,7 +26,7 @@
               <label for="date" class="tw-form-label">Date<span class="text-red-500">*</span></label>
             </div>
             <div class="mb-2 w-full lg:w-3/4  md:w-2/3">
-              <input type="date" name="date" v-model="date" class="tw-form-control w-full" id="date">
+              <input type="date" name="date" v-model="dateValue" class="tw-form-control w-full" id="date">
               <span v-if="errors.date" class="text-red-500 text-xs font-semibold">{{errors.date[0]}}</span>
             </div>
           </div>
@@ -61,7 +61,7 @@
         <a href="#" class="btn btn-submit blue-bg text-white rounded px-3 py-1 mr-3 text-sm font-medium" @click="selectStudent()">Select Students</a>
       </div>
 
-      <div class="w-full flex flex-col lg:flex-row hidden" id="select">
+      <div class="w-full flex flex-col lg:flex-row" v-if="showSelection">
         <div class="w-full lg:w-1/2 bg-white shadow border px-4">
           <div class="w-full my-4">
             <div class="flex justify-between items-center my-4">
@@ -71,7 +71,9 @@
             <div v-for="(present,index) in presents" class="">
               <div class="flex items-center py-1" :id="present.present_id">
                 <div class="w-6">
-                  <input type="checkbox" name="present_id" v-model="present.present_id" class="tw-form-control w-full" @click="absentStudent($event,present.user,index)">
+                  <input type="checkbox"
+                   :checked="true"
+                   @change="absentStudent(present, index)">
                 </div>
                 <div class="mx-2"> 
                   <p class="tw-form-label">{{ present.user_name }}</p>
@@ -89,7 +91,7 @@
             <div class="flex items-center justify-between py-1" v-for="(absent,index) in absents">
               <div class="flex items-center">
                 <div class="w-6">
-                  <input type="checkbox" name="user_id" v-model="absent.user_id" class="tw-form-control w-full" @click="presentStudent($event,absent.user,index)">
+                  <input type="checkbox" @change="presentStudent(absent, index)">
                 </div>
                 <div class="mx-2"> 
                   <p class="tw-form-label">{{ absent.user_name }}</p>
@@ -117,7 +119,7 @@
         </div>
       </div>
 
-        <div class="my-6 hidden" id="btn_div">
+        <div class="my-6" v-if="showSubmitButton">
         <a href="#" id="submit-btn" class="btn btn-submit blue-bg text-white rounded px-3 py-1 mr-3 text-sm font-medium" @click="submitForm()">Submit</a>
             <a href="#" class="btn btn-reset bg-gray-100 text-gray-700 border rounded px-3 py-1 mr-3 text-sm font-medium" @click="resetForm()">Reset</a>    
         </div>
@@ -150,9 +152,11 @@
         }],
         errors:[],
         success:null,
+        dateValue:'',
+        showSelection: false,
+        showSubmitButton: false,
       }
     },
-        
     methods:
     {
       resetForm()
@@ -174,88 +178,50 @@
         }
       },
 
-      selectStudent()
-      {
-        if($('#select').hasClass('hidden'))
-        {
-          $('#select').removeClass('hidden').addClass('block');
-          $('#select_student_btn').addClass('hidden').removeClass('block');
-        }
-        this.presents.splice(0,1);
-        this.absents.splice(0,1);
-        
-        var students = this.groupBy(this.studentlist, this.standardLink_id);
-        var count = Object.keys(students).length;
-        for(var i=0,students ; i < count ; i++)
-        { 
-          this.presents.push({
-            present_id:students[i].user_id,
-            user_name:students[i].name,
-            user:students[i],
-          });
-        }
-      },
+      selectStudent() {
+        this.showSelection = true;
 
-      absentStudent(e,student,index)
-      {
-        if (!e.target.checked) 
-        { 
-          var students = this.groupBy(this.studentlist, this.standardLink_id);
-          var count = Object.keys(students).length;
-          for(var i=0,students ; i < count ; i++)
-          { 
-            if(students[i].user_id == student.user_id)
-            {
-              this.absents.push({
-                user_id:students[i].user_id,
-                user_name:students[i].name,
-                user:students[i],
-                reason_id:'',
-                remarks:'',
-              });
+        this.presents = [];
+        this.absents = [];
 
-              $('#'+student.user_id).removeClass('block').addClass('hidden');
-            }
-          }
-        }
-        else
-        {
-          this.absents.splice(index,1);
-        }
-      },
+        const students = this.studentlist[this.standardLink_id] || [];
 
-      presentStudent(e,student,index)
-      { 
-        if (!e.target.checked) 
-        { 
-          var students = this.groupBy(this.studentlist, this.standardLink_id);
-          var count = Object.keys(students).length;
-          for(var i=0,students ; i < count ; i++)
-          { 
-            if(students[i].user_id == student.user_id)
-            {
-              this.presents.push({
-                present_id:students[i].user_id,
-                user_name:students[i].name,
-                user:students[i],
-              });
-              this.absents.splice(index,1);
-            }
-          }
-        }
-        else
-        {
-            this.absents.splice(index,1);
-        }
-      },
+        students.forEach(student => {
+            this.presents.push({
+                present_id: student.user_id,
+                user_name: student.name,
+                user: student
+            });
+        });
+    },
+
+      absentStudent(present, index) {
+        // remove from presents
+        const student = this.presents.splice(index, 1)[0];
+
+        // add to absents
+        this.absents.push({
+            user_id: student.present_id,
+            user_name: student.user_name,
+            user: student.user,
+            reason_id: '',
+            remarks: ''
+        });
+    },
+
+      presentStudent(absent, index) {
+        const student = this.absents.splice(index, 1)[0];
+
+        this.presents.push({
+            present_id: student.user_id,
+            user_name: student.user_name,
+            user: student.user
+        });
+    },
 
       saveStudents()
       {
-        if($('#btn_div').hasClass('hidden'))
-        {
-          $('#btn_div').removeClass('hidden').addClass('block');
-          $('#save_btn').addClass('hidden').removeClass('block');
-        }
+        this.showSubmitButton = true;
       },
 
       submitForm()
@@ -266,7 +232,7 @@
         let formData=new FormData();
 
         formData.append('standardLink_id',this.standardLink_id);   
-        formData.append('date',this.date);                 
+        formData.append('date',this.dateValue);                 
         formData.append('session',this.session); 
         
         formData.append('absentCount',this.absents.length);
@@ -345,6 +311,7 @@
     },
     created()
     {
+      this.dateValue = this.date || '';
       this.getData();
     }
   }

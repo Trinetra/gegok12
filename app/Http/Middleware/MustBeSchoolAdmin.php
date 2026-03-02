@@ -16,45 +16,43 @@ class MustBeSchoolAdmin
     public function handle($request, Closure $next)
     {
        
-        if(\Auth::user()->usergroup_id==3)
+        if(\Auth::user()->isAdmin())
         {
             return $next($request);
         }
-          
-        if(\Auth::user()->usergroup_id==1)
-        {//dd('schooladmin');
-            //return redirect('/portal');
-            return redirect('/superadmin/dashboard');
-        }
 
-        if(\Auth::user()->usergroup_id==5)
+        if(\Auth::user()->isTeacher())
         {
             return redirect('/teacher/dashboard');
         }
 
-        if(\Auth::user()->usergroup_id==6)
+        if(\Auth::user()->isStudent())
         {
             return redirect('/student/dashboard');
         }
         
-        if(\Auth::user()->usergroup_id==8)
+        if(\Auth::user()->isLibrarian())
         {
             return redirect('/library/dashboard');          
         }
         
-        if(\Auth::user()->usergroup_id==9)
+        if(\Auth::user()->isAlumni())
         {
             return redirect('/alumni/dashboard');          
         }
         
-        if(\Auth::user()->usergroup_id==10)
+        if(\Auth::user()->isReceptionist())
         {
             return redirect('/receptionist/dashboard');          
         }
         
-        if(\Auth::user()->usergroup_id==11)
+        if(\Auth::user()->isAccountant())
         {
             return redirect('/accountant/dashboard');          
+        }
+        if(\Auth::user()->isStockKeeper())
+        {
+            return redirect('/stock/dashboard');          
         }
             
         abort(404);

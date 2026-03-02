@@ -6,6 +6,7 @@ namespace App\Traits;
 
 use App\Events\Notification\SingleNotificationEvent;
 use App\Events\Notification\ClassNotificationEvent;
+use App\Models\Users\StudentUser;
 use App\Events\StandardPushEvent;
 use App\Events\SinglePushEvent;
 use App\Models\TaskAssignee;
@@ -201,7 +202,7 @@ trait TodolistProcess
     public function addClassReminder($school_id,$reminder_date,$title,$entity_id,$standardLink_id)
     {
         //
-        $students = User::where('school_id',$school_id)->ByRole(6)->ByStandard($standardLink_id)->get();
+        $students = StudentUser::where('school_id',$school_id)->ByRole(6)->ByStandard($standardLink_id)->get();
 
         foreach ($students as $student) 
         {

@@ -9,6 +9,7 @@ use App\Http\Resources\API\MyInfo as MyInfoResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Users\ParentUser;
 use App\Models\User;
 use Exception;
 
@@ -17,7 +18,7 @@ class MeController extends Controller
     //
     public function myInfo()
     {
-    	$user = User::where('id',Auth::user()->id)->first();
+    	$user = ParentUser::where('id',Auth::user()->id)->first();
 
     	$myInfo = new MyInfoResource($user);
 

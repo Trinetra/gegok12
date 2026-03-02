@@ -232,10 +232,10 @@ defined('LOGNAME_IMPORT_STUDENT_PROMOTION') or define('LOGNAME_IMPORT_STUDENT_PR
 
 //task
 defined('LOGNAME_ADD_TASK') or define('LOGNAME_ADD_TASK','addtask');
-defined('LOGNAME_EDIT_TASK,') or define('LOGNAME_EDIT_TASK,','edittask');
-defined('LOGNAME_SNOOZE_TASK,') or define('LOGNAME_SNOOZE_TASK,','snoozetask');
-defined('LOGNAME_MARK_TASK_COMPLETE,') or define('LOGNAME_MARK_TASK_COMPLETE,','marktaskcomplete');
-defined('LOGNAME_DELETE_TASK,') or define('LOGNAME_DELETE_TASK,','deletetask');
+defined('LOGNAME_EDIT_TASK') or define('LOGNAME_EDIT_TASK','edittask');
+defined('LOGNAME_SNOOZE_TASK') or define('LOGNAME_SNOOZE_TASK','snoozetask');
+defined('LOGNAME_MARK_TASK_COMPLETE') or define('LOGNAME_MARK_TASK_COMPLETE','marktaskcomplete');
+defined('LOGNAME_DELETE_TASK') or define('LOGNAME_DELETE_TASK','deletetask');
 
 //visitorlog
 defined('LOGNAME_ADD_VISITOR_LOG') or define('LOGNAME_ADD_VISITOR_LOG','addvisitorlog');
@@ -262,6 +262,7 @@ defined('LOGNAME_DELETE_BOOK') or define('LOGNAME_DELETE_BOOK','deletebook');
 
 //book lending
 defined('LOGNAME_ADD_BOOK_LENDING') or define('LOGNAME_ADD_BOOK_LENDING','addbooklending');
+defined('LOGNAME_EDIT_BOOKLENDING') or define('LOGNAME_EDIT_BOOKLENDING','editbooklending');
 
 //creating room
 defined('LOGNAME_ADD_ROOM') or define('LOGNAME_ADD_ROOM','addroom');
@@ -359,6 +360,7 @@ defined('LOGNAME_UNLIKE_PAGE') or define('LOGNAME_UNLIKE_PAGE','unlikepage');
 
 //post
 defined('LOGNAME_ADD_POST') or define('LOGNAME_ADD_POST','addpost');
+defined('LOGNAME_EDIT_POST') or define('LOGNAME_EDIT_POST','editpost');
 defined('LOGNAME_DELETE_POST') or define('LOGNAME_DELETE_POST','deletepost');
 defined('LOGNAME_LIKE_POST') or define('LOGNAME_LIKE_POST','likepost');
 defined('LOGNAME_UNLIKE_POST') or define('LOGNAME_UNLIKE_POST','unlikepost');
@@ -422,6 +424,9 @@ defined('LOGNAME_DELETE_telephonedirectory') or define('LOGNAME_DELETE_telephone
 
 defined('LOGNAME_UPDATE_ADMISSION_FORM') or define('LOGNAME_UPDATE_ADMISSION_FORM','updateAdmissionform');
 
+defined('CURRENCY_SYMBOL') or define('CURRENCY_SYMBOL','₹');
+
+defined('LOGNAME_DOWNLOAD_SAMPLE_FORMAT_LIBRARYCARD') or define('LOGNAME_DOWNLOAD_SAMPLE_FORMAT_LIBRARYCARD','downloadsampleformatlibrary');
 
 
 

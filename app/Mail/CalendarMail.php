@@ -9,34 +9,47 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\Events;
 use App\Models\MailTemplate;
 
+/**
+ * CalendarMail
+ *
+ * Mailable class for sending calendar event notifications.
+ * Includes event details such as title, location, category, and date range.
+ *
+ * @package App\Mail
+ */
 class CalendarMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+    /**
+     * The events instance
+     *
+     * @var Events
+     */
     public $events;
 
     /**
      * Create a new message instance.
      *
+     * @param Events $events The event instance
      * @return void
      */
     public function __construct($events)
     {
-        
+       $this->queue='emails';
        $this->events=$events;
-
     }
 
     /**
      * Build the message.
      *
+     * Retrieves the calendar event template and replaces placeholders
+     * with event details including title, location, category, and dates.
+     *
      * @return $this
      */
     public function build()
     {
-
-
-
         $template = MailTemplate::where([['name','calendar_event'],['status','active']])->first();
         $subject =  $template->subject;
         $mail_content = $template->mail_content;

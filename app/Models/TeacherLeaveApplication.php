@@ -1,13 +1,42 @@
 <?php
-/**
- * SPDX-License-Identifier: MIT
- * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
- */
+// SPDX-License-Identifier: MIT
+// (c) 2025 GegoSoft Technologies and GegoK12 Contributors
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Class TeacherLeaveApplication
+ *
+ * Model for managing teacher leave applications and approvals.
+ *
+ * @property int $id
+ * @property int $school_id
+ * @property int $academic_year_id
+ * @property int $user_id
+ * @property \DateTime $from_date
+ * @property \DateTime $to_date
+ * @property int $reason_id
+ * @property string $remarks
+ * @property int $leave_type_id
+ * @property int $approved_by
+ * @property \DateTime $approved_on
+ * @property string $comments
+ * @property int $status
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @property \DateTime $deleted_at
+ * @property-read \App\Models\School $school
+ * @property-read \App\Models\AcademicYear $academicYear
+ * @property-read \App\Models\User $teacher
+ * @property-read \App\Models\StandardLink $standardLink
+ * @property-read \App\Models\AbsentReason $absentReason
+ * @property-read \App\Models\LeaveType $leaveType
+ * @property-read \App\Models\User $approvedUser
+ * @mixin \Eloquent
+ */
 class TeacherLeaveApplication extends Model
 {
     //
@@ -42,41 +71,84 @@ class TeacherLeaveApplication extends Model
         'deleted_at' => 'datetime',
     ];
 
+    /**
+     * Get the school for this application.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function school()
     {
         return $this->belongsTo('\App\Models\School','school_id');
     }
 
+    /**
+     * Get the academic year for this application.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function academicYear()
     {
         return $this->belongsTo('\App\Models\AcademicYear','academic_year_id');
     }
 
+    /**
+     * Get the teacher who applied for leave.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function teacher()
     {
         return $this->belongsTo('\App\Models\User','user_id');
     }
 
+    /**
+     * Get the standard link for this application.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function standardLink()
     {
         return $this->belongsTo('\App\Models\StandardLink','standardLink_id');
     }
 
+    /**
+     * Get the reason for absence if specified.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function absentReason()
     {
         return $this->belongsTo('App\Models\AbsentReason','reason_id');
     }
 
+    /**
+     * Get the leave type for this application.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function leaveType()
     {
         return $this->belongsTo('\App\Models\LeaveType','leave_type_id');
     }
 
+    /**
+     * Get the user who approved this application.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function approvedUser()
     {
         return $this->belongsTo('\App\Models\User','approved_by');
     }
 
+    /**
+     * Scope to filter applications by date range (overlapping dates).
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \DateTime $from_date
+     * @param \DateTime $to_date
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeByDate($query,$from_date,$to_date)
     {
        $query->where(function ($q) use ($from_date, $to_date) {

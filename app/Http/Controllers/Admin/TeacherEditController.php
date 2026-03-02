@@ -16,6 +16,7 @@ use App\Http\Requests\TeacherUpdateRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\TeacherProfile;
+use App\Models\Users\TeacherUser;
 use App\Traits\RegisterUser;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
@@ -43,7 +44,7 @@ class TeacherEditController extends Controller
     public function editTeacher($name)
     {
       //
-      $user           = User::where('name',$name)->first();
+      $user           = TeacherUser::where('name',$name)->first();  //User
       $userprofile    = Userprofile::where('user_id',$user->id)->first();
       $teacherprofile = $user->getTeacherDetails();
         
@@ -101,7 +102,7 @@ class TeacherEditController extends Controller
     public function edit($name)
     {
       //
-      $user = User::where('name',$name)->first();
+      $user = TeacherUser::where('name',$name)->first();
       $userprofile = Userprofile::where('user_id',$user->id)->first();
        
       return view('/admin/teacher/edit',['user' => $user , 'userprofile' => $userprofile ]);
@@ -287,17 +288,17 @@ class TeacherEditController extends Controller
 
         if($request->designation == 'principal')
         {
-          $user->attachRole('principal');
+          $user->addRole('principal');
         }
 
         if( ($request->designation == 'principal') || ($request->designation == 'vice_principal') || ($request->designation == 'head_of_the_department') )
         {
-          $user->attachRole('leave_checker');
-          $user->attachRole('class_coordinator');
+          $user->addRole('leave_checker');
+          $user->addRole('class_coordinator');
         }
         else
         {
-          $user->attachRole('leave_applier');
+          $user->addRole('leave_applier');
         }
 
         $message=trans('messages.update_success_msg',['module' => 'Teacher']);

@@ -27,7 +27,7 @@
 	    		</div>
 	    			<div class="flex text-xs justify-between flex-col lg:flex-row w-4/5">
 					    <div class="my-2 lg:my-0">
-					      	<p class="text-gray-800 text-sm" v-html="post.description">{{ post.description }}</p>
+					      	<p class="text-gray-800 text-sm">{{ post.description }}</p>
 					    </div>   
 		    		</div>
 	    		<div class="flex flex-wrap" v-if="post.attachments != null">
@@ -211,13 +211,13 @@
     
 	    created()
 	    {   
-	      bus.$on("dataProfileTab", data => {
+	      bus.on("dataProfileTab", data => {
 	        if(data!='')
 	        {
 	          this.profile_tab=data;                   
 	        }
 	      });
-          bus.$on("successMsg", data => {
+          bus.on("successMsg", data => {
             if(data!='')
             {
               this.success=data;                     

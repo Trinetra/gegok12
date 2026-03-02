@@ -17,7 +17,7 @@ class CreateAddressLocationsTable extends Migration
             $table->id();
             $table->string('name');
             $table->integer('order')->nullable();
-            $table->boolean('status')->default('0');
+            $table->boolean('status')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

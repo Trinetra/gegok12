@@ -5,6 +5,7 @@ use App\Models\User;
 use Log;
 use App\Traits\SendPushNotification;
 use App\Notifications\SendDeviceNotification;
+use App\Notifications\SendTeacherNotification;
 class CheckPushNotification extends Command
 {
     /**
@@ -47,7 +48,14 @@ class CheckPushNotification extends Command
            // $data['platform_token']=$user->platform_token;
            //  $this->sendNotification($data,$user->platform_token);
             dump($user->platform_token);
+            if($user->usergroup_id==7)
+            {
              $user->notify(new SendDeviceNotification($data,$user->platform_token));
+            }
+             if($user->usergroup_id==5)
+            {
+             $user->notify(new SendTeacherNotification($data,$user->platform_token));
+            }
         $this->info("Notification Send");
     }
     catch(Exception $e){

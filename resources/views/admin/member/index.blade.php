@@ -1,16 +1,16 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.admin.layout')
 
 @section('content')
     <div class="relative">
         <div class="flex flex-wrap lg:flex-row justify-between my-3">
-            <portal-target name="student_count"></portal-target>
+            <div id="student_count"></div>
+            <div id="memberdetail"></div>
             <!-- <div class="">
                 <h1 class="admin-h1 my-3">Students ( {{ $count }} )</h1>
             </div> -->
             <div class="w-full lg:w-2/4">
-   	            <portal-target name="search" ></portal-target>
-   	            <portal-target name="memberfilter" ></portal-target>
+   	            <div id="search" ></div>
+   	            <div id="memberfilter" ></div>
             </div>
             <div class="relative flex items-center w-1/4 lg:justify-end">
                 <div class="flex items-center" dusk="add-button">

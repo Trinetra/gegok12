@@ -27,9 +27,9 @@ class CreateTaskTable extends Migration
             $table->enum('reminder',['one_hour_before_the_task','one_day_before_the_task','others','two_days_before_the_task']);
             $table->dateTime('reminder_date')->nullable();
             $table->string('to_do_list');
-            $table->boolean('task_status')->default('0');
+            $table->boolean('task_status')->default(false);
             $table->integer('task_flag');//0->over due, 1->today, 2->upcoming
-            $table->boolean('snooze')->default('0'); 
+            $table->boolean('snooze')->default(false); 
             $table->timestamps();
             $table->softDeletes();
         });

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <div class="w-full lg:w-40 md:w-40 settings-sidebar h-auto">
 	<ul class="list-reset">
 		<li class=""><a href="{{url('admin/settings/generalsettings/')}}" class="no-underline">General settings</a></li>

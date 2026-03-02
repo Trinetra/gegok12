@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <div class="message-wrapper">
     <div class="message-container">
         @if (session('successmessage'))

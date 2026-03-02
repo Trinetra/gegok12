@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class DisciplineRequest extends FormRequest
 {
@@ -29,19 +30,33 @@ class DisciplineRequest extends FormRequest
             return preg_match('/^[A-Za-z_~\-!@#\$%\^&*.,:(\)\s]+$/', request('incident_detail')) ;
         });
 
-        Validator::extend('check_incident_date',function($attribute,$value,$parameters,$validator)
-        {
-            if( request('incident_date') <= date('d-m-Y H:i:s'))
-            {
-                return true;
-            }
-            return false;
-        });
+        // Validator::extend('check_incident_date',function($attribute,$value,$parameters,$validator)
+        // {
+        //     if( request('incident_date') <= date('d-m-Y H:i:s'))
+        //     {
+        //         return true;
+        //     }
+        //     return false;
+        // });
+
+        // Validator::extend('check_incident_date', function ($attribute, $value, $parameters, $validator) {
+
+        //     try {
+        //         dd();
+        //         $incidentDate = Carbon::createFromFormat('d-m-Y H:i:s', $value);
+        //         $currentDate  = Carbon::now();
+
+        //         return $incidentDate->lessThanOrEqualTo($currentDate);
+
+        //     } catch (\Exception $e) {
+        //         return false;
+        //     }
+        // });
 
         return [
             //
             //'student_id'        =>  'required',
-            'incident_date'     =>  'required|date|check_incident_date',
+            'incident_date'     =>  'required|date|before_or_equal:now',
             'teacher_id'        =>  'required',
             'incident_detail'   =>  'required|check_incident_detail',
             'action_taken'      =>  'required',

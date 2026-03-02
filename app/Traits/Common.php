@@ -15,6 +15,12 @@ use Log;
  */
 trait Common
 {
+    /**
+     * Get the public URL for a stored file.
+     *
+     * @param string $file Storage path
+     * @return string Publicly accessible URL or empty string on failure
+     */
     public function getFilePath($file)
     {
         $path = '';
@@ -31,6 +37,13 @@ trait Common
         return $path;
     }
 
+    /**
+     * Upload a file to storage and return its path.
+     *
+     * @param string $folder Target folder path
+     * @param \Illuminate\Http\UploadedFile $file File to upload
+     * @return string Storage path for the uploaded file
+     */
     public function uploadFile($folder,$file)
     {
         $path = '';
@@ -48,6 +61,35 @@ trait Common
         return $path;
     }
 
+    /**
+     * Write raw file contents to storage.
+     *
+     * @param string $folder Target path (including filename)
+     * @param string $file Raw file contents
+     * @return string Storage path of the written file
+     */
+    public function fileUpload($folder,$file)
+    {
+        $path = '';
+
+        try
+        {
+            $path = \Storage::put($folder, $file,'public');
+        }
+        catch(Exception $e)
+        {
+            Log::info($e->getMessage());
+            //dd($e->getMessage());
+        }
+
+        return $path;
+    }
+
+    /**
+     * Retrieve the client IP address considering proxies.
+     *
+     * @return string IP address
+     */
     public function getRequestIP()
     {
         $ip = request()->ip();
@@ -66,6 +108,13 @@ trait Common
         return $ip;
     }
 
+    /**
+     * Resolve default event image path by category.
+     *
+     * @param string $category Event category slug
+     * @param string $image Unused parameter kept for compatibility
+     * @return string|null Public URL for the event image or null on failure
+     */
     public function eventImagePath($category,$image)
     {
         $image = '';
@@ -98,6 +147,13 @@ trait Common
         }   
     }
 
+    /**
+     * Save plain contents to storage with public visibility.
+     *
+     * @param string $folder Destination path
+     * @param string $contents File contents
+     * @return string Storage path of the saved file
+     */
     public function putContents($folder,$contents)
     {
         $path = '';
@@ -115,6 +171,14 @@ trait Common
         return $path;
     }
 
+    /**
+     * Save a file with a specific filename to storage.
+     *
+     * @param string $folder Destination folder
+     * @param \Illuminate\Http\UploadedFile $contents File instance
+     * @param string $filename Target filename
+     * @return string Storage path of the saved file
+     */
     public function putContentsByFilename($folder,$contents,$filename)
     {
         $path = '';
@@ -132,6 +196,12 @@ trait Common
         return $path;
     }
     
+    /**
+     * Convert a Roman numeral string to an integer.
+     *
+     * @param string $roman Roman numeral value
+     * @return int|null Converted integer or null on failure
+     */
     public function romanToInteger($roman)
     {
         try
@@ -173,6 +243,13 @@ trait Common
     }
 
 
+    /**
+     * Get file contents for download optionally from a specific disk.
+     *
+     * @param string $disk Storage disk name
+     * @param string $file File path
+     * @return string File contents
+     */
     public function getFilePathforDownload($disk='',$file)
     { 
         $path = '';
@@ -192,10 +269,16 @@ trait Common
             Log::info($e->getMessage());
             //dd($e->getMessage());
         }
- 
+
         return $path;
     }
 
+    /**
+     * Delete a file from the S3 disk.
+     *
+     * @param string $file File path on S3
+     * @return bool True after attempting deletion
+     */
     public function unlinkFilePath($file)
     { 
         try
@@ -208,10 +291,16 @@ trait Common
             Log::info($e->getMessage());
             //dd($e->getMessage());
         }
- 
+
         return TRUE;
     }
 
+    /**
+     * Determine if a user ID belongs to an admin role (usergroup_id == 3).
+     *
+     * @param int|string $userid User identifier
+     * @return bool True if user is admin, false otherwise
+     */
     public static function is_admin($userid)
     {
         if ($userid == '')

@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Classwall;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Carbon\Carbon;
 
 class Post extends JsonResource
 {
@@ -28,7 +29,7 @@ class Post extends JsonResource
             //
             'id'                =>  $this->id,
             'description'       =>  $this->description,
-            'post_created_at'   =>  $this->post_created_at->diffForHumans(),
+            'post_created_at'   =>  Carbon::parse($this->post_created_at)->diffForHumans(),//$this->post_created_at->diffForHumans(),
             'attachments'       =>  $this->AttachmentPath,
             'visibility'        =>  $visibility,
             'created_by'        =>  $this->created_by,

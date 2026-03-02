@@ -85,81 +85,113 @@ class HomeworkController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$id)//StudentHomeworkAdd
+    public function store(Request $request, $id)
     {
-        //
-        try
-        {
-            $files = $request->file;
-            if(count($request->file))
-            {
-                $studentHomework = new StudentHomework;
+        try {
 
-                $studentHomework->homework_id       = $id;
-                $studentHomework->user_id           = Auth::id();
-                $studentHomework->submitted_on      = date('Y-m-d');
-                $studentHomework->status            = 'unchecked';
+            // $request->validate([
+            //     'file' => 'required',
+            //     'file.*' => 'image|mimes:jpg,jpeg,png|max:8192'
+            // ]);
 
-                $path = [];
-                $i = 1;
-                foreach($files as $file) 
-                {
-                    $path[$i] = $this->uploadFile(Auth::user()->school->slug.'/homeworks/'.$id,$file); 
-                    $i++;     
+            // if (!$request->hasFile('file')) {
+            //     return response()->json([
+            //         'status' => false,
+            //         'message' => 'No files uploaded'
+            //     ], 422);
+            // }
+
+            $files = $request->file('file');
+
+            // Convert single file to array
+            if (!is_array($files)) {
+                $files = [$files];
+            }
+
+            $studentHomework = new StudentHomework;
+            $studentHomework->homework_id  = $id;
+            $studentHomework->user_id      = Auth::id();
+            $studentHomework->submitted_on = now();
+            $studentHomework->status       = 'unchecked';
+
+            $uploadedPaths = [];
+
+            foreach ($files as $file) {
+
+                if ($file instanceof \Illuminate\Http\UploadedFile) {
+
+                    $path = $this->uploadFile(
+                        Auth::user()->school->slug . '/homeworks/' . $id,
+                        $file
+                    );
+
+                    $uploadedPaths[] = $path;
                 }
-                $studentHomework->attachment = $path;
-                     
-                $studentHomework->save(); 
+            }
 
-                $homework=Homework::find($homework_id);
+            // If you added casting in model
+            $studentHomework->attachment = $uploadedPaths;
 
-                $standardLink = StandardLink::where('id',Auth::user()->studentAcademicLatest->standardLink_id)->first();
+            $studentHomework->save();
 
-                    if($homework->teacher_id==null){
-                    $teacher = User::where('id',$standardLink->class_teacher_id)->first();
-                    }
-                    else{
-                    $teacher = User::where('id',$homework->teacher_id)->first(); 
-                    }   
 
-                $student = Auth::user();
+            $homework = Homework::findOrFail($id);
 
-                $array=[];
+            $standardLink = StandardLink::find(
+                Auth::user()->studentAcademicLatest->standardLink_id
+            );
 
-                $array['school_id']  =   Auth::user()->school_id;
-                $array['user_id']    =   $teacher->id;
-                $array['message']    =   $student->FullName.' Added Homework File';
-                $array['type']       =   'homework';
+            if ($homework->teacher_id == null) {
+                $teacher = User::find($standardLink->class_teacher_id);
+            } else {
+                $teacher = User::find($homework->teacher_id);
+            }
 
-                event(new SinglePushEvent($array));
+            $student = Auth::user();
 
-                $data = [];
+            event(new SinglePushEvent([
+                'school_id' => $student->school_id,
+                'user_id'   => $teacher->id,
+                'message'   => $student->FullName . ' Added Homework File',
+                'type'      => 'homework'
+            ]));
 
-                $data['user']       =   $teacher;
-                $data['details']    =   trans('notification.student_homework_add_msg',['student' => $student->FullName]);
+            event(new SingleNotificationEvent([
+                'user'    => $teacher,
+                'details' => trans(
+                    'notification.student_homework_add_msg',
+                    ['student' => $student->FullName]
+                )
+            ]));
 
-                event(new SingleNotificationEvent($data));
+            $message = trans('messages.add_success_msg', [
+                'module' => 'Homework File'
+            ]);
 
-                $message=trans('messages.add_success_msg',['module' => 'Homework File']);
+            $this->doActivityLog(
+                $studentHomework,
+                $student,
+                [
+                    'ip' => $request->ip(),
+                    'details' => $request->userAgent()
+                ],
+                LOGNAME_ADD_STUDENT_HOMEWORK,
+                $message
+            );
 
-                $ip= $this->getRequestIP();
-                $this->doActivityLog(
-                    $studentHomework,
-                    Auth::user(),
-                    ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
-                    LOGNAME_ADD_STUDENT_HOMEWORK,
-                    $message
-                );
+            return response()->json([
+                'status' => true,
+                'message' => $message
+            ]);
 
-                $res['success'] = $message;
+        } catch (\Exception $e) {
 
-                return $res;
-            }            
-        }
-        catch(Exception $e)
-        {
-            Log::info($e->getMessage());
-            //dd($e->getMessage());
+            Log::error($e->getMessage());
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Upload failed'
+            ], 500);
         }
     }
 

@@ -80,7 +80,7 @@ import { bus } from "../../../app";
         //alert(this.user);
         this.getData();
 
-          bus.$on("dataProfileTab", data => {
+          bus.on("dataProfileTab", data => {
           if(data!='')
             {
               this.profile_tab=data;                   

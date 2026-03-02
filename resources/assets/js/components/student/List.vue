@@ -1,10 +1,10 @@
 <template>
     <div>
-        <portal to="student_count">
+        <Teleport to="#student_count">
             <div class="">
                 <h1 class="admin-h1 my-3">Students ( {{ Object.keys(this.users).length }} )</h1>
             </div>
-        </portal>
+        </Teleport>
         <div v-if="this.success!=null" class="alert alert-success" id="success-alert">{{this.success}}</div>
         <div class="my-4 filter-alphabet">
             <ul class="list-reset flex flex-wrap">
@@ -26,7 +26,7 @@
 
         <div>
             <memberdetails :url="this.url"></memberdetails>
-            <portal-target name="memberdetail"></portal-target>
+            <div id="memberdetail"></div>
             <div class="my-8">
                 <div class="w-full flex flex-wrap items-center justify-between mb-4">
                     <div class="flex items-center text-sm">
@@ -47,7 +47,7 @@
                             <span class="mx-1 text-sm font-semibold">Add Fees Details</span>
                             <svg class="w-3 h-3 fill-current text-white" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 409.6 409.6" style="enable-background:new 0 0 409.6 409.6;" xml:space="preserve"><g><g><path d="M392.533,187.733H221.867V17.067C221.867,7.641,214.226,0,204.8,0s-17.067,7.641-17.067,17.067v170.667H17.067 C7.641,187.733,0,195.374,0,204.8s7.641,17.067,17.067,17.067h170.667v170.667c0,9.426,7.641,17.067,17.067,17.067 s17.067-7.641,17.067-17.067V221.867h170.667c9.426,0,17.067-7.641,17.067-17.067S401.959,187.733,392.533,187.733z"/></g></g></svg>
                         </a>
-                        <a href="#" class="btn btn-submit blue-bg text-white text-sm font-medium rounded " @click="buspass()">Bus Pass</a>
+                        <!-- <a href="#" class="btn btn-submit blue-bg text-white text-sm font-medium rounded " @click="buspass()">Bus Pass</a> -->
                     </div>
                 </div>
                 <div class="flex flex-wrap" v-if="Object.keys(this.users).length > 0">
@@ -125,7 +125,15 @@
                                 <label for="executed_at" class="tw-form-label">Date Time</label>
                             </div>
                             <div class="w-full lg:w-3/4">
-                                <datetime format="DD-MM-YYYY h:i:s" name="executed_at" v-model="executed_at" class="w-full rounded" id="executed_at"></datetime>
+                                <VueDatePicker
+                                  v-model="executed_at"
+                                  format="dd-MM-yyyy HH:mm:ss"
+                                  model-type="format"
+                                  :enable-time-picker="true"
+                                  :is-24="true"
+                                  :auto-apply="true"
+                                  input-class-name="w-full rounded"
+                                />
                                 <span v-if="errors.executed_at" class="text-red-500 text-xs font-semibold">{{errors.executed_at[0]}}</span>
                             </div>
                         </div>
@@ -278,9 +286,9 @@
 
 <script>
     import { bus } from "../../app";
-    import PortalVue from "portal-vue";
     import memberdetails from './Detail';
-    import datetime from 'vuejs-datetimepicker';
+    import { VueDatePicker } from '@vuepic/vue-datepicker'
+    import '@vuepic/vue-datepicker/dist/main.css'
 
     export default {
         props:['url' , 'searchquery' , 'letter' , 'standard' , 'birthday' , 'selected_standard'],
@@ -288,7 +296,7 @@
         components:
         {
             memberdetails,
-            datetime,
+            VueDatePicker,
         },
         data(){
             return{
@@ -324,12 +332,16 @@
 
         created() 
         {
-            console.log(this.standard,this.searchquery,this.letter);
+            this.selectedLetter = this.letter || null;
             axios.get('/admin/students/find?'+this.searchquery).then(response => {
                 this.users = response.data.data;
             });
             this.getUrl();
-            this.getFeeDetails();
+            if(this.tab=='fees')
+            {
+                this.getFeeDetails();
+            }
+            
             this.getStandardsList();
 
 
@@ -394,7 +406,7 @@
             {
                 this.success=null;
                 $('#show-detail').removeClass('hide-menu').addClass('block');
-                bus.$emit("dataMemberName", val);
+                bus.emit("dataMemberName", val);
             },
             
             sortMembers(name)

@@ -1,32 +1,32 @@
 .admin-h1 {
-    @apply .text-lg .font-semibold .text-gray-700;
+    @apply text-lg font-semibold text-gray-700;
 }
 /*form css start*/
 .submit-btn {
     background-color: #3492e2;
-    @apply .px-3 .py-1 .text-xs .rounded .text-white .font-semibold capitalize;
+    @apply px-3 py-1 text-xs rounded text-white font-semibold capitalize;
 }
 .reset-btn {
-    @apply .px-3 .py-1 bg-gray-100 .text-xs .rounded .text-gray-700 .font-semibold capitalize border;
+    @apply px-3 py-1 bg-gray-100 text-xs rounded text-gray-700 font-semibold capitalize border;
 }
 .tw-form-label {
-    @apply .text-xs  .text-gray-800 .font-bold;
+    @apply text-xs text-gray-800 font-bold;
 }
 .tw-form-control {
-    @apply .border .px-2 .py-1 .text-sm .border-gray-400 .rounded;
+    @apply border px-2 py-1 text-sm border-gray-400 rounded;
 }
 .ch-form-control {
-    @apply .border .px-2 .py-1 .text-sm .border-gray-400;
+    @apply border px-2 py-1 text-sm border-gray-400;
 }
 .filter-form-control {
-    @apply .border-b .text-xs .border-gray-300 .w-full .leading-none;
+    @apply border-b text-xs border-gray-300 w-full leading-none;
 }
 .filter-form-control:focus {
     outline: none;
     border-color: #3492e2;
 }
 .tw-form-group {
-    @apply .mt-3 mb-2;
+    @apply mt-3 mb-2;
 }
 @media (min-width: 992px) {
     .lg\:w-128 {
@@ -43,20 +43,20 @@
 /*form css end*/
 /*table css start*/
 .custom-table table {
-    @apply .border;
+    @apply border;
 }
 .custom-table thead th {
-    @apply .text-sm .text-left .font-semibold .text-white .px-3 py-2;
+    @apply text-sm text-left font-semibold text-white px-3 py-2;
 }
 .custom-table thead {
-    @apply .bg-gray-500;
+    @apply bg-gray-500;
 }
 .custom-table tbody td {
-    @apply .text-sm .px-3 .py-3 .border .border-gray-400;
+    @apply text-sm px-3 py-3 border border-gray-400;
 }
 
 .custom-table tbody tr:nth-child(even) {
-    @apply .bg-gray-100 .border-t .border-b .border-gray-300;
+    @apply bg-gray-100 border-t border-b border-gray-300;
 }
 /*table css end*/
 /*sidebar css start*/
@@ -65,22 +65,22 @@
     background: #063f8d;
 }
 .admin-sidebar ul li a {
-    @apply .text-white .text-sm .font-normal;
+    @apply text-white text-sm font-normal;
 }
 .admin-sidebar .active {
     background: #033374;
 }
 .admin-sidebar li:hover {
-    @apply .bg-red-900;
+    @apply bg-red-900;
 }
 /*sidebar css end*/
 /*memberlist start*/
 .filter-alphabet li a {
     background-color: #fff;
-    @apply .text-gray-600 .py-1 .px-3 .mx-1 .text-sm .shadow .font-semibold .uppercase .whitespace-no-wrap;
+    @apply text-gray-600 py-1 px-3 mx-1 text-sm shadow font-semibold uppercase whitespace-nowrap;
 }
 .filter-alphabet li {
-    @apply .my-1;
+    @apply my-1;
 }
 .filter-alphabet li a.active,
 .filter-alphabet li a:hover {
@@ -88,16 +88,16 @@
     color: #fff;
 }
 .member-list {
-    @apply .border .bg-gray-100 .border-gray-200 .rounded .mx-1 .cursor-pointer;
+    @apply border bg-gray-100 border-gray-200 rounded mx-1 cursor-pointer;
 }
 /*.member-list:hover {
-  @apply .bg-blue-100;
+  @apply bg-blue-100;
 }*/
 .member-list .active {
-    @apply .bg-blue-100;
+    @apply bg-blue-100;
 }
 .member-list p {
-    @apply .capitalize .text-gray-600 .text-xs;
+    @apply capitalize text-gray-600 text-xs;
 }
 .member-contact {
     background-color: #f4f4f4;
@@ -132,10 +132,10 @@
   color:#3492e2;
 }*/
 .profiletab-table thead th {
-    @apply .text-xs .text-gray-800 .text-left .px-2 .py-3;
+    @apply text-xs text-gray-800 text-left px-2 py-3;
 }
 .profiletab-table tbody td {
-    @apply .text-xs .px-2 .py-3;
+    @apply text-xs px-2 py-3;
 }
 .profiletab-table tr {
     border-bottom: 1px solid #edf2f7;
@@ -145,7 +145,7 @@
 }
 /*memberdetail end*/
 .filter_container {
-    @apply .text-xs;
+    @apply text-xs;
 }
 /*timeline start*/
 .timeline-img {
@@ -465,7 +465,7 @@
     display: none;
     width: 200px;
     top: 0;
-    @apply .bg-red-700;
+    @apply bg-red-700;
 }
 .sidebar li:hover > .sites-sidebar,
 .sidebar li .sites-sidebar:hover {
@@ -478,7 +478,7 @@ body {
     font-family: "Nunito", sans-serif;
 }
 .sidebar ul li.active {
-    @apply .bg-red-900;
+    @apply bg-red-900;
 }
 .file_list:hover .media_file_dtl {
     visibility: visible !important;
@@ -501,13 +501,13 @@ body {
     overflow-y: auto;
 }
 .conversations textarea {
-    @apply .border .w-1/3 .px-2 .py-1;
+    @apply border w-1/3 px-2 py-1;
 }
 .conversations .btn-block {
-    @apply .bg-blue-500 .rounded .text-white .py-1 .px-2;
+    @apply bg-blue-500 rounded text-white py-1 px-2;
 }
 .conversations input[type="text"] {
-    @apply .border .px-2 .py-1;
+    @apply border px-2 py-1;
 }
 @media (min-width: 1024px) and (max-width: 1430px) {
     .dashboard-task {
@@ -518,7 +518,7 @@ body {
     }
 }
 .conversations .form-control {
-    @apply .border;
+    @apply border;
 }
 @media (max-width: 767px) {
     .sites-sidebar {
@@ -643,7 +643,7 @@ body {
 }
 
 .menu__btn {
-    @apply .bg-red-600 .px-3 .py-2 .rounded-full;
+    @apply bg-red-600 px-3 py-2 rounded-full;
     display: flex;
     align-items: center;
     /*position: fixed;
@@ -709,7 +709,7 @@ body {
     display: none;
 }
 #menu__toggle:checked ~ .menu__btn {
-    @apply .rounded-l-full .rounded-r-none .px-4 .py-4;
+    @apply rounded-l-full rounded-r-none px-4 py-4;
     right: 0;
 }
 /*@media(max-width: 1023px) {
@@ -867,7 +867,7 @@ button.fc-button.fc-button-primary {
     box-shadow: 0 0 4px 2px #6ee7b7;
 }
 .mobile-frame {
-    background-image: url("../../images/mobile.png");
+    background-image: url("/images/mobile.png");
     min-height: 550px;
     background-size: contain;
     background-position: center;

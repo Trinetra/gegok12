@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.admin.layout')
 
 @section('content')
@@ -17,7 +16,9 @@
                     <div class=" flex flex-wrap items-center mb-3">
                         <select class="tw-form-control text-xs" name="type">
                             <option value="">Filter By Type</option>
+                            @if(config('galumni.enabled', false))
                             <option value="alumni" {{ \request()->query('type')== 'alumni' ? 'selected' : '' }}>Alumni</option>
+                            @endif
                             <option value="parent" {{ \request()->query('type')== 'parent' ? 'selected' : '' }}>Parent</option>
                             <option value="teacher" {{ \request()->query('type')== 'teacher' ? 'selected' : '' }}>Teacher</option>
                         </select>

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.admin.layout')
 
 @section('content')
@@ -13,7 +12,7 @@
     @include('partials.message')
     <show-page url="{{ url('/') }}" id="{{ $page->id }}" entity_id="{{ $entity_id }}" entity_name="{{ $entity_name }}" mode="admin"></show-page> 
     <page-tab url="{{ url('/') }}" id="{{ $page->id }}" entity_id="{{ $entity_id }}" entity_name="{{ $entity_name }}" mode="admin"></page-tab>
-    <portal-target name="tab"></portal-target>
+    <div id="tab"></div>
 </div>
 
 @endsection

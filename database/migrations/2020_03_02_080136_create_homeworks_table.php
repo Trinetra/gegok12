@@ -28,6 +28,10 @@ class CreateHomeworksTable extends Migration
             $table->longText('description');
             $table->string('attachment')->nullable();
             $table->dateTime('date')->nullable();
+            $table->integer('created_by')->unsigned()->nullable();
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->integer('updated_by')->unsigned()->nullable();
+            $table->foreign('updated_by')->references('id')->on('users');
             $table->dateTime('submission_date')->nullable();
             $table->timestamps();
             $table->softDeletes();

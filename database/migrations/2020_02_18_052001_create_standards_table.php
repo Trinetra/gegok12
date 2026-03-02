@@ -19,7 +19,7 @@ class CreateStandardsTable extends Migration
             $table->foreign('school_id')->references('id')->on('schools');
             $table->string('name');
             $table->integer('order')->nullable();
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

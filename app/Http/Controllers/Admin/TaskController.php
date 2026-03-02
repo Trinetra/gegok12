@@ -65,26 +65,41 @@ class TaskController extends Controller
     public function list(Request $request)
     {
         $academic_year = SiteHelper::getAcademicYear(Auth::user()->school_id);
-        $teachers = SiteHelper::getTeachers(Auth::user()->school_id,$academic_year->id);
-        $array = [];
 
-        $array['standardlinks'] = SiteHelper::getStandardLinkList(Auth::user()->school_id);
-        if($request->standardlink_id != null)
-        {
-            $students = SiteHelper::getClassStudents(Auth::user()->school_id,$academic_year->id,$request->standardlink_id);
-            $array['students'] = StudentlistResource::collection($students);
+        $teachers = SiteHelper::getTeachers(
+            Auth::user()->school_id,
+            $academic_year->id
+        );
+
+        $standardlinks = SiteHelper::getStandardLinkList(
+            Auth::user()->school_id
+        );
+
+        // Default empty collection
+        $students = collect();
+
+        if ($request->standardlink_id) {
+            $students = SiteHelper::getClassStudents(
+                Auth::user()->school_id,
+                $academic_year->id,
+                $request->standardlink_id
+            );
         }
-        $array['teachers']  = TeacherResource::collection($teachers);
-        $array['task_date'] = date('Y-m-d');
-        
-        return $array;
+
+        return response()->json([
+            'standardlinks' => $standardlinks,
+            'students'      => StudentlistResource::collection($students),
+            'teachers'      => TeacherResource::collection($teachers),
+            'task_date'     => now()->format('Y-m-d'),
+        ]);
     }
 
     public function changestatus(Request $request)
     {
         try
         {
-            if( count($request->selectedTaskCount) > 0 )
+            // if( count($request->selectedTaskCount) > 0 )
+            if( $request->selectedTaskCount > 0 )
             {
                 foreach ($request->task_completed as $task_id) 
                 {

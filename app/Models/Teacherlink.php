@@ -7,10 +7,33 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * Class Teacherlink
+ *
+ * Model for managing teacher-subject-class assignments.
+ *
+ * @property int $id
+ * @property int $school_id
+ * @property int $academic_year_id
+ * @property int $standardLink_id
+ * @property int $subject_id
+ * @property int $teacher_id
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @property \DateTime $deleted_at
+ * @property-read \App\Models\StandardLink $standardLink
+ * @property-read \App\Models\Subject $subject
+ * @property-read \App\Models\Userprofile $userprofile
+ * @property-read \App\Models\User $teacher
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\LessonPlan[] $lessonPlan
+ * @mixin \Eloquent
+ */
 class Teacherlink extends Model
 {
     use SoftDeletes;
+    use HasFactory;
 
     /**
      * The table associated with the model.
@@ -18,7 +41,7 @@ class Teacherlink extends Model
      * @var string
      */
     protected $table='class_teacher_links';
-	
+
 
     /**
      * The attributes that are mass assignable.
@@ -31,49 +54,82 @@ class Teacherlink extends Model
 
     protected $with=['subject' , 'teacher' , 'standardLink'];
 
-	public function standardLink()
+    /**
+     * Get the standard link for this teacher assignment.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function standardLink()
     {
         return $this->belongsTo('\App\Models\StandardLink','standardLink_id');
     }
 
+    /**
+     * Get the subject for this teacher assignment.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function subject()
     {
         return $this->belongsTo('\App\Models\Subject','subject_id');
     }
 
-     public function userprofile()
+    /**
+     * Get the user profile for this teacher.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function userprofile()
     {
         return $this->belongsTo('\App\Models\Userprofile','teacher_id','user_id');
     }
 
+    /**
+     * Get the teacher for this assignment.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function teacher()
     {
         return $this->belongsTo('\App\Models\User','teacher_id')->where('usergroup_id',5);
     }
 
-      public function getTeacherTimeTableAttribute()
+    /**
+     * Get the count of timetable entries for this teacher.
+     *
+     * @return int
+     */
+    public function getTeacherTimeTableAttribute()
     {
        return $this->belongsTo('\Gegok12\Timetable\Models\TempTimetable','teacher_id','teacher_id')->count();
-    
+
     }
 
+    /**
+     * Get timetable entries for this teacher.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function temp_timetable()
     {
         return $this->hasMany('\Gegok12\Timetable\Models\TempTimetable','teacher_id','teacher_id');
     }
 
+    /**
+     * Get lesson plans for this teacher assignment.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function lessonPlan()
     {
         return $this->hasMany('\App\Models\LessonPlan','teacher_link_id','id');
-    }
-
-//       public function getMondayAttribute()
+    }//       public function getMondayAttribute()
 //     {
 
 //         $mentry=$this->hasMany('\App\Models\TempTimetable','teacher_id','teacher_id')->where('day','Monday')->orderBy('schedule')->get();
 //         $mcount=$this->hasMany('\App\Models\TempTimetable','teacher_id','teacher_id')->where('day','Monday')->count();
 
-        
+
 //         if($mcount!=8)
 //         {
 //             $monday=['free','free','free','free','free','free','free','free'];
@@ -111,7 +167,7 @@ class Teacherlink extends Model
 //            {
 //             $monday[$mentry[$i]->schedule]=$mentry[$i];
 //         }
-           
+
 //         }
 // }
 // else
@@ -127,8 +183,8 @@ class Teacherlink extends Model
 //         $tuentry=$this->hasMany('\App\Models\TempTimetable','teacher_id','teacher_id')->where('day','Tuesday')->orderBy('schedule')->get();
 //         $tucount=$this->hasMany('\App\Models\TempTimetable','teacher_id','teacher_id')->where('day','Tuesday')->count();
 
-        
-      
+
+
 //         if($tucount!=8)
 //         {
 //             $tuesday=['free','free','free','free','free','free','free','free'];
@@ -166,7 +222,7 @@ class Teacherlink extends Model
 //            {
 //             $tuesday[$tuentry[$i]->schedule]=$tuentry[$i];
 //         }
-           
+
 //         }
 // }
 // else
@@ -183,8 +239,8 @@ class Teacherlink extends Model
 //         $wentry=$this->hasMany('\App\Models\TempTimetable','teacher_id','teacher_id')->where('day','Wednesday')->orderBy('schedule')->get();
 //         $wcount=$this->hasMany('\App\Models\TempTimetable','teacher_id','teacher_id')->where('day','Wednesday')->count();
 
-       
-      
+
+
 //         if($wcount!=8)
 //         {
 //              $wednesday=['free','free','free','free','free','free','free','free'];
@@ -222,7 +278,7 @@ class Teacherlink extends Model
 //            {
 //             $wednesday[$wentry[$i]->schedule]=$wentry[$i];
 //         }
-           
+
 //         }
 // }
 // else
@@ -238,8 +294,8 @@ class Teacherlink extends Model
 //         $thentry=$this->hasMany('\App\Models\TempTimetable','teacher_id','teacher_id')->where('day','Thursday')->orderBy('schedule')->get();
 //         $thcount=$this->hasMany('\App\Models\TempTimetable','teacher_id','teacher_id')->where('day','Thursday')->count();
 
-       
-      
+
+
 //         if($thcount!=8)
 //         {
 //              $thursday=['free','free','free','free','free','free','free','free'];
@@ -277,7 +333,7 @@ class Teacherlink extends Model
 //            {
 //             $thursday[$thentry[$i]->schedule]=$thentry[$i];
 //         }
-           
+
 //         }
 // }
 // else
@@ -293,8 +349,8 @@ class Teacherlink extends Model
 //         $fentry=$this->hasMany('\App\Models\TempTimetable','teacher_id','teacher_id')->where('day','Friday')->orderBy('schedule')->get();
 //         $fcount=$this->hasMany('\App\Models\TempTimetable','teacher_id','teacher_id')->where('day','Friday')->count();
 
-       
-      
+
+
 //         if($fcount!=8)
 //         {
 //              $friday=['free','free','free','free','free','free','free','free'];
@@ -333,7 +389,7 @@ class Teacherlink extends Model
 //            {
 //             $friday[$fentry[$i]->schedule]=$fentry[$i];
 //         }
-           
+
 //         }
 // }
 // else

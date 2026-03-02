@@ -41,20 +41,18 @@ class LeaveEditRequest extends FormRequest
             $from_date = date('Y-m-d',strtotime(request('from_date')));
             
             $application = TeacherLeaveApplication::where([
-                ['id','!=',request('id')],
-                ['user_id',Auth::id()],
-                ['school_id',$school_id],
-                ['academic_year_id',$academic_year->id],
-                ['status','pending'],
-                [\DB::raw("(DATE_FORMAT(from_date,'%Y-%m-%d'))"),'=',$from_date]
-            ])->orWhere([
-                ['id','!=',request('id')],
-                ['user_id',Auth::id()],
-                ['school_id',$school_id],
-                ['academic_year_id',$academic_year->id],
-                ['status','pending'],
-                [\DB::raw("(DATE_FORMAT(to_date,'%Y-%m-%d'))"),'=',$from_date]
-            ])->latest()->first();
+                ['id', '!=', request('id')],
+                ['user_id', Auth::id()],
+                ['school_id', $school_id],
+                ['academic_year_id', $academic_year->id],
+                ['status', 'pending'],
+            ])
+            ->where(function ($query) use ($from_date) {
+                $query->whereDate('from_date', $from_date)
+                      ->orWhereDate('to_date', $from_date);
+            })
+            ->latest()
+            ->first();
 
             if( $application == null)
             {

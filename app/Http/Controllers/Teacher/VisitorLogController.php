@@ -11,6 +11,7 @@ use App\Http\Resources\User as UserResource;
 use App\Http\Requests\VisitorLogRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\Users\StudentUser;
 use App\Models\ParentProfile;
 use Illuminate\Http\Request;
 use App\Helpers\SiteHelper;
@@ -21,16 +22,24 @@ use App\Traits\Common;
 use App\Models\User;
 use Exception;
 use Log;
-
+/**
+ * Class VisitorLogController
+ *
+ * Handles visitor log management for teachers including
+ * listing, creating, viewing, updating and deleting visitor records.
+ *
+ * @package App\Http\Controllers\Teacher
+ */
 class VisitorLogController extends Controller
 {
     use LogActivity;
     use Common;
 
     /**
-     * Display a listing of the resource.
+     * Display paginated visitor log list (API).
      *
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function showlist(Request $request)
     {
@@ -38,16 +47,29 @@ class VisitorLogController extends Controller
 
         $visitorlog = VisitorLog::where([['school_id',Auth::user()->school_id],['academic_year_id',$academic_year->id]])->orderBy('date_of_visit','DESC')->paginate(5);       
        
-        $visitorloglist = VisitorlogResource::collection($visitorlog);
+        $visitorloglist = VisitorLogResource::collection($visitorlog);
         
         return $visitorloglist;
     }
-    
+
+    /**
+     * Show visitor log listing page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     { 
         return view('/teacher/visitorlog/index');
     }
-
+     
+     /**
+     * Get required data for visitor log create/edit forms.
+     *
+     * Includes teachers, standards and students based on standard selection.
+     *
+     * @param  Request  $request
+     * @return array
+     */ 
      public function list(Request $request)
     {
         //
@@ -60,20 +82,31 @@ class VisitorLogController extends Controller
 
         if($request->standardLink_id != null)
         {
-            $studentlist = User::BySchool(Auth::user()->school_id)->ByRole(6)->ByStandard($request->standardLink_id)->get();
+            $studentlist = StudentUser::BySchool(Auth::user()->school_id)->ByRole(6)->ByStandard($request->standardLink_id)->get();
             $array['studentlist']   = UserResource::collection($studentlist);
         }
 
         return $array;
     }
 
+    /**
+     * Show visitor log create page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $date = date('Y-m-d');
 
         return view('/teacher/visitorlog/create',['date' => $date]);
     }
-
+    
+    /**
+     * Store a new visitor log entry.
+     *
+     * @param  VisitorLogRequest  $request
+     * @return array
+     */
     public function store(VisitorLogRequest $request)
     {
         try 
@@ -162,7 +195,13 @@ class VisitorLogController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    
+    /**
+     * Display visitor log details.
+     *
+     * @param  int  $id
+     * @return array
+     */
     public function show($id)
     {
         $visitorlog=VisitorLog::where('id',$id)->first();

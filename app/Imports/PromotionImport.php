@@ -16,11 +16,36 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Log;
-    
-class PromotionImport implements ToCollection , WithHeadingRow
+
+/**
+ * Class PromotionImport
+ *
+ * Handles student promotion processing via Excel import.
+ * Based on exam results, students are either promoted
+ * to the next academic year/standard or marked as alumni.
+ *
+ * Uses database transactions to ensure data integrity.
+ *
+ * @package App\Imports
+ */
+class PromotionImport implements ToCollection, WithHeadingRow
 {
     use RegisterUser;
 
+    /**
+     * Process imported promotion records.
+     *
+     * For each student row:
+     * - Updates academic status (pass/fail)
+     * - Creates promotion records for passed students
+     * - Creates next academic year StudentAcademic records
+     * - Handles alumni conversion when applicable
+     *
+     * All operations are wrapped in a database transaction.
+     *
+     * @param \Illuminate\Support\Collection $rows
+     * @return void
+     */
     public function collection(Collection $rows)
     {
         \DB::beginTransaction();
@@ -37,51 +62,47 @@ class PromotionImport implements ToCollection , WithHeadingRow
             
             foreach ($rows as $row) 
             { 
-                $curr_studentAcademic = StudentAcademic::where('roll_number',$row['roll_number'])->first();
+                $curr_studentAcademic = StudentAcademic::where('roll_number', $row['roll_number'])->first();
               
-                if($curr_studentAcademic->academic_status == NULL)
+                if ($curr_studentAcademic->academic_status == NULL)
                 { 
-                    if($next_standardLink_id != 'alumni')
+                    if ($next_standardLink_id != 'alumni')
                     {
-                        $curr_standardLink = StandardLink::where('id',$curr_standardLink_id)->first();
-                        $next_standardLink = StandardLink::where('id',$next_standardLink_id)->first();
-                        $user = User::where('id',$curr_studentAcademic->user_id)->first();
+                        $curr_standardLink = StandardLink::where('id', $curr_standardLink_id)->first();
+                        $next_standardLink = StandardLink::where('id', $next_standardLink_id)->first();
+                        $user = User::where('id', $curr_studentAcademic->user_id)->first();
 
-                        if($row['academic_status'] == 'P')
+                        if ($row['academic_status'] == 'P')
                         {
                             $academic_status = 'pass';
                         }
-                        elseif($row['academic_status'] == 'F')
+                        elseif ($row['academic_status'] == 'F')
                         {
                             $academic_status = 'fail';
                         }
-                        $curr_studentAcademic->academic_status =  $academic_status;
 
+                        $curr_studentAcademic->academic_status = $academic_status;
                         $curr_studentAcademic->save();
-                        //$update['academic_status'] = $academic_status;
-                        //$student = StudentAcademic::where('id',$curr_studentAcademic->id)->update($update);
-                        //dump($curr_studentAcademic->id);
 
-                        if($row['academic_status'] == 'P')
+                        if ($row['academic_status'] == 'P')
                         {
                             $promotion = new Promotion;
 
-                            $promotion->school_id                 =   $school_id;
-                            $promotion->user_id                   =   $user->id;
-                            $promotion->current_academic_year_id  =   $curr_academic_year_id;
-                            $promotion->current_standard_id       =   $curr_standardLink->standard_id;
-                            $promotion->current_section_id        =   $curr_standardLink->section_id;
-                            $promotion->exam_id                   =   $exam_id;
-                            $promotion->next_academic_year_id     =   $next_academic_year_id;
-                            $promotion->next_standard_id          =   $next_standardLink->standard_id;
-                            $promotion->next_section_id           =   $next_standardLink->section_id;
-                            $promotion->comments                  =   $row['comments'];
-                            $promotion->status                    =   1;
+                            $promotion->school_id                 = $school_id;
+                            $promotion->user_id                   = $user->id;
+                            $promotion->current_academic_year_id  = $curr_academic_year_id;
+                            $promotion->current_standard_id       = $curr_standardLink->standard_id;
+                            $promotion->current_section_id        = $curr_standardLink->section_id;
+                            $promotion->exam_id                   = $exam_id;
+                            $promotion->next_academic_year_id     = $next_academic_year_id;
+                            $promotion->next_standard_id          = $next_standardLink->standard_id;
+                            $promotion->next_section_id           = $next_standardLink->section_id;
+                            $promotion->comments                  = $row['comments'];
+                            $promotion->status                    = 1;
 
                             $promotion->save();
 
                             $next_studentAcademic                             = new StudentAcademic;
-
                             $next_studentAcademic->school_id                  = $school_id;
                             $next_studentAcademic->academic_year_id           = $next_academic_year_id;
                             $next_studentAcademic->user_id                    = $user->id;
@@ -92,53 +113,61 @@ class PromotionImport implements ToCollection , WithHeadingRow
 
                             $next_studentAcademic->save();
                         }
+
                         $insertedcount++;
                     }
                     else
                     {
-                        $curr_standardLink = StandardLink::where('id',$curr_standardLink_id)->first();
-                        $user = User::where('id',$curr_studentAcademic->user_id)->first();
+                        $curr_standardLink = StandardLink::where('id', $curr_standardLink_id)->first();
+                        $user = User::where('id', $curr_studentAcademic->user_id)->first();
 
-                        if($row['academic_status'] == 'P')
+                        if ($row['academic_status'] == 'P')
                         {
                             $academic_status = 'pass';
                         }
-                        elseif($row['academic_status'] == 'F')
+                        elseif ($row['academic_status'] == 'F')
                         {
                             $academic_status = 'fail';
                         }
-                        $curr_studentAcademic->academic_status =  $academic_status;
 
+                        $curr_studentAcademic->academic_status = $academic_status;
                         $curr_studentAcademic->save();
 
-                        if($row['academic_status'] == 'P')
+                        if ($row['academic_status'] == 'P')
                         {
                             $promotion = new Promotion;
 
-                            $promotion->school_id                 =   $school_id;
-                            $promotion->user_id                   =   $user->id;
-                            $promotion->current_academic_year_id  =   $curr_academic_year_id;
-                            $promotion->current_standard_id       =   $curr_standardLink->standard_id;
-                            $promotion->current_section_id        =   $curr_standardLink->section_id;
-                            $promotion->exam_id                   =   $exam_id;
-                            $promotion->next_academic_year_id     =   $next_academic_year_id;
-                            $promotion->comments                  =   $row['comments'];
-                            $promotion->status                    =   1;
+                            $promotion->school_id                 = $school_id;
+                            $promotion->user_id                   = $user->id;
+                            $promotion->current_academic_year_id  = $curr_academic_year_id;
+                            $promotion->current_standard_id       = $curr_standardLink->standard_id;
+                            $promotion->current_section_id        = $curr_standardLink->section_id;
+                            $promotion->exam_id                   = $exam_id;
+                            $promotion->next_academic_year_id     = $next_academic_year_id;
+                            $promotion->comments                  = $row['comments'];
+                            $promotion->status                    = 1;
 
                             $promotion->save();
 
-                            $curr_academic_year = AcademicYear::where('id',$curr_academic_year_id)->first();
+                            $curr_academic_year = AcademicYear::where('id', $curr_academic_year_id)->first();
 
-                            $alumni_user = $this->AddAlumni($user, 9, $school_id, date('Y',strtotime($curr_academic_year->end_date)));
+                            $alumni_user = $this->AddAlumni(
+                                $user,
+                                9,
+                                $school_id,
+                                date('Y', strtotime($curr_academic_year->end_date))
+                            );
                         }
+
                         $insertedcount++;
                     }
                 }       
             } 
-            \Session::put('insertedcount',$insertedcount);
+
+            \Session::put('insertedcount', $insertedcount);
             \DB::commit();     
         }
-        catch(Exception $e)
+        catch (Exception $e)
         {
             \DB::rollBack();
             Log::info($e->getMessage());

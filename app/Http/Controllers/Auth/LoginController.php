@@ -1,14 +1,16 @@
 <?php
+
 /**
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-//use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\Traits\AuthenticatesUsers;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller implements ShouldQueue
 {
@@ -26,11 +28,17 @@ class LoginController extends Controller implements ShouldQueue
     use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
+     * Determine where to redirect users after login.
      *
-     * @var string
+     * Routes users based on their role (usergroup_id):
+     * - Stock Keeper (ID 12) → /stock/dashboard
+     * - All other roles → /admin/dashboard (then middleware handles role-specific routing)
+     *
+     * @return string The redirect path
      */
+
     protected $redirectTo = '/admin/dashboard';
+
 
     /**
      * Create a new controller instance.
@@ -42,9 +50,13 @@ class LoginController extends Controller implements ShouldQueue
         $this->middleware('guest')->except('logout');
     }
 
+    /**
+     * Display the login form.
+     *
+     * @return \Illuminate\View\View
+     */
     public function showLoginForm()
-    {//dd('tfttfy');
+    {
         return view('auth.login');
     }
 }
-

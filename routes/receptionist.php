@@ -117,6 +117,47 @@ Route::get('/notifications', 'NotificationController@index');
 Route::post('/notification/read', 'NotificationController@store');
 Route::get('/notification/showList', 'NotificationController@showList');
 
+//Telephone Directory
+
+    //index
+    Route::get('/phonenumbers', 'TelephoneDirectoryController@index');
+
+    //add
+    Route::get('/phonenumber/list', 'TelephoneDirectoryController@list');
+    Route::get('/phonenumber/add', 'TelephoneDirectoryController@create');
+    Route::post('/phonenumber/add', 'TelephoneDirectoryController@store');
+
+    //show
+    Route::get('/phonenumber/show/{id}','TelephoneDirectoryController@show');
+
+    //edit
+    Route::get('/phonenumber/editlist/{id}', 'TelephoneDirectoryController@editlist');
+    Route::get('/phonenumber/edit/{id}', 'TelephoneDirectoryController@edit');
+    Route::post('/phonenumber/edit/{id}','TelephoneDirectoryController@update');
+
+    //delete
+    Route::get('/phonenumber/delete/{id}','TelephoneDirectoryController@destroy');
+
+    //leave application
+Route::get( '/leave/list', 'LeaveController@list' );
+Route::get( '/leave/pendingCount', 'LeaveController@pendingCount' );
+Route::get( '/staff/leaves', 'LeaveController@index' );
+//add
+Route::get( '/leave/add/list', 'LeaveController@createList' );
+Route::get( '/leave/add', 'LeaveController@create' );
+Route::post( '/leave/add', 'LeaveController@store' );
+//show
+Route::get( '/leave/show/{id}', 'LeaveController@view' );
+//edit
+Route::get( '/leave/edit/list/{id}', 'LeaveController@show' );
+Route::get( '/leave/edit/{id}', 'LeaveController@edit' );
+Route::post( '/leave/edit/{id}', 'LeaveController@update' );
+
+//delete
+Route::get( '/leave/delete/{id}', 'LeaveController@destroy' );
+
+Route::get( '/notice/list', 'NoticeBoardController@noticelist' );
+
 //class wall
 
 //page

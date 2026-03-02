@@ -8,25 +8,43 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use App\Models\MailTemplate;
 
+/**
+ * AdmissionApprovalMail
+ *
+ * Mailable class for sending admission approval confirmation emails.
+ * Contains application details and school information to confirm
+ * successful admission submission or approval.
+ *
+ * @package App\Mail
+ */
 class AdmissionApprovalMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+    /**
+     * The admission data array
+     *
+     * @var array
+     */
     public $data;
 
     /**
      * Create a new message instance.
      *
+     * @param array $data Array containing application_no and school_name
      * @return void
      */
     public function __construct($data)
     {
-        //
+        $this->queue='emails';
         $this->data = $data;
     }
 
     /**
      * Build the message.
+     *
+     * Retrieves the admission confirmation template and replaces
+     * placeholders with application number and school name.
      *
      * @return $this
      */

@@ -38,7 +38,7 @@ export default {
       {    
 
           //alert(this.event_id);
-        bus.$on("dataEventTab", data => {
+        bus.on("dataEventTab", data => {
           if(data!='')
             {
               this.event_tab=data;                   

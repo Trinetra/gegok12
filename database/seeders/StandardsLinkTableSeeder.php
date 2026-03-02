@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use DB;
 use Illuminate\Database\Seeder;
 use App\Helpers\SiteHelper;
+use App\Models\StandardLink;
+use App\Models\RoleUser;
 use App\Models\Standard;
 use App\Models\Section;
 use App\Models\School;
@@ -20,32 +22,36 @@ class StandardsLinkTableSeeder extends Seeder
     public function run()
     {
         //
-        $schools = School::where('status',1)->get();
-        foreach ($schools as $school) 
+        if (env('APP_ENV') == 'local' || env('APP_ENV') == 'development') 
         {
-            $standards = Standard::where('school_id',$school->id)->get();
-            $sections = Section::where('school_id',$school->id)->get();
-            $teachers = User::where([['school_id',$school->id],['usergroup_id', 5]])->pluck('id')->toArray();
 
-            foreach($standards as $stdKey => $standard)
+            $schools = School::where('status',1)->get();
+            foreach ($schools as $school) 
             {
-                foreach ($sections as $secKey => $section)
+                $standards = Standard::where('school_id',$school->id)->get();
+                $sections = Section::where('school_id',$school->id)->get();
+                $teachers = User::where([['school_id',$school->id],['usergroup_id', 5]])->pluck('id')->toArray();
+
+                foreach($standards as $stdKey => $standard)
                 {
-                    $academic_year = SiteHelper::getAcademicyear($school->id);
-                    $sectionRef = $stdKey * $sections->count() + $secKey + 1;
-                    factory(\App\Models\StandardLink::class, 1)->create([
+                    foreach ($sections as $secKey => $section)
+                    {
+                        $academic_year = SiteHelper::getAcademicyear($school->id);
+                        $sectionRef = $stdKey * $sections->count() + $secKey + 1;
+                        StandardLink::factory(1)->create([
 
-                        'school_id'         =>  $standard->school_id,
-                        'academic_year_id'  =>  $academic_year->id,
-                        'standard_id'       =>  $standard->id,
-                        'section_id'        =>  $section->id,
-                        'class_teacher_id'  =>  $teachers[$sectionRef]
-                    ]);
+                            'school_id'         =>  $standard->school_id,
+                            'academic_year_id'  =>  $academic_year->id,
+                            'standard_id'       =>  $standard->id,
+                            'section_id'        =>  $section->id,
+                            'class_teacher_id'  =>  $teachers[$sectionRef]
+                        ]);
 
-                    factory(\App\Models\RoleUser::class, 1)->create([
-                        'user_id'   =>  $teachers[$sectionRef],
-                        'role_id'   =>  4, 
-                    ]);
+                        RoleUser::factory(1)->create([
+                            'user_id'   =>  $teachers[$sectionRef],
+                            'role_id'   =>  4, 
+                        ]);
+                    }
                 }
             }
         }

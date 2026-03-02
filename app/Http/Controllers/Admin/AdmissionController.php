@@ -24,7 +24,14 @@ use App\Traits\Common;
 use App\Models\Fee;
 use Exception;
 use Log;
-
+/**
+ * Class AdmissionController
+ *
+ * Controller for managing student admissions: listing, viewing,
+ * approving, updating and deleting admission records.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class AdmissionController extends Controller
 {  
     use AdmissionUser;
@@ -67,8 +74,11 @@ class AdmissionController extends Controller
         $admission = Admission::where('school_id',Auth::user()->school_id)->where('id',$id)->where('application_status','Draft')->orWhere('application_status','Pending')->first();
 
         $sections = StandardLink::where('standard_id',$admission->standard_id)->get();
-
-        $fee = FeeGroup::where('school_id',Auth::user()->school_id)->get();
+        
+        if(class_exists('Gegok12\Fee\Models\FeeGroup'))
+        {
+            $fee = \Gegok12\Fee\Models\FeeGroup::where('school_id',Auth::user()->school_id)->get();
+        }    
 
         $array=[];
         $array['id']                    =   $admission->id;
@@ -77,7 +87,11 @@ class AdmissionController extends Controller
         $array['application_no']        =   $admission->application_no;
         $array['application_status']    =   $admission->application_status;
         $array['sectionlist']           =   SectionResource::collection($sections);
-        $array['feelist']               =   FeeGroupResource::collection($fee);
+
+        if(class_exists('Gegok12\Fee\Http\Resources\FeeGroup'))
+        {
+            $array['feelist']               =   \Gegok12\Fee\Http\Resources\FeeGroup::collection($fee);
+        }    
 
         return $array;  
     }
@@ -119,8 +133,11 @@ class AdmissionController extends Controller
                 $admission->save();
 
                 $standardLink_id=StandardLink::where([['school_id',Auth::user()->school_id],['standard_id',$admission->standard_id],['section_id',$admission->section_id]])->first();
-
-                $fee = Fee::where([['school_id',Auth::user()->school_id],['fee_group_id',$request->fee_group_id]])->first();
+                
+                if(class_exists('Gegok12\Fee\Models\Fee'))
+                { 
+                    $fee = \Gegok12\Fee\Models\Fee::where([['school_id',Auth::user()->school_id],['fee_group_id',$request->fee_group_id]])->first();
+                }    
 
                 if($request->payment_status == 'paid')
                 {

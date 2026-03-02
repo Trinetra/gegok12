@@ -7,144 +7,163 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
+import { createApp, defineAsyncComponent } from 'vue'
+import mitt from 'mitt';
+
+export const bus = mitt();
+window.bus = bus;
+
+require('./custom_addon');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-// require('./inventory');
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+const appContainer = document.getElementById('app');
+const rootTemplate = appContainer ? appContainer.innerHTML : '<div></div>';
+const app = createApp({ template: rootTemplate });
+
+const originalComponent = app.component.bind(app);
+
+app.component = (name, component) => {
+    if (typeof component === 'function') {
+        component = defineAsyncComponent(component);
+    }
+    return originalComponent(name, component);
+};
+
+
+app.component('example-component', () => import('./components/ExampleComponent.vue').then(m => m.default));
 
 //demo
-Vue.component('demo-tab', require('./components/demo/Tab.vue').default);
+app.component('demo-tab', () => import('./components/demo/Tab.vue').then(m => m.default));
 
 //admission
-Vue.component('admission-list', require('./components/admission/List.vue').default);
-Vue.component('edit-admission-form', require('./components/admission/Edit.vue').default);
-Vue.component('add-admission', require('./components/admission/AdmissionTab.vue').default);
-Vue.component('select-standard', require('./components/admission/SelectStandard.vue').default);
-Vue.component('student-detail', require('./components/admission/StudentDetail.vue').default);
-Vue.component('academic-detail', require('./components/admission/AcademicDetail.vue').default);
-Vue.component('parent-detail', require('./components/admission/ParentDetail.vue').default);
-Vue.component('personal-detail', require('./components/admission/PersonalDetail.vue').default);
+app.component('admission-list', () => import('./components/admission/List.vue').then(m => m.default));
+app.component('edit-admission-form', () => import('./components/admission/Edit.vue').then(m => m.default));
+app.component('add-admission', () => import('./components/admission/AdmissionTab.vue').then(m => m.default));
+app.component('select-standard', () => import('./components/admission/SelectStandard.vue').then(m => m.default));
+app.component('student-detail', () => import('./components/admission/StudentDetail.vue').then(m => m.default));
+app.component('academic-detail', () => import('./components/admission/AcademicDetail.vue').then(m => m.default));
+app.component('parent-detail', () => import('./components/admission/ParentDetail.vue').then(m => m.default));
+app.component('personal-detail', () => import('./components/admission/PersonalDetail.vue').then(m => m.default));
 
 
 
 // classwall
 
 	//page
-	Vue.component('page-list', require('./components/classwall/page/List.vue').default);
-	Vue.component('create-page', require('./components/classwall/page/Create.vue').default);
-	Vue.component('edit-page', require('./components/classwall/page/Edit.vue').default);
-	Vue.component('show-page', require('./components/classwall/page/Show.vue').default);
-	Vue.component('page-tab', require('./components/classwall/page/tabs/pageTab.vue').default);
+	app.component('page-list', () => import('./components/classwall/page/List.vue').then(m => m.default));
+	app.component('create-page', () => import('./components/classwall/page/Create.vue').then(m => m.default));
+	app.component('edit-page', () => import('./components/classwall/page/Edit.vue').then(m => m.default));
+	app.component('show-page', () => import('./components/classwall/page/Show.vue').then(m => m.default));
+	app.component('page-tab', () => import('./components/classwall/page/tabs/pageTab.vue').then(m => m.default));
 
 	//post
-	Vue.component('post-list', require('./components/classwall/post/List.vue').default);
-	Vue.component('create-post', require('./components/classwall/post/Create.vue').default);
-	Vue.component('edit-post', require('./components/classwall/post/Edit.vue').default);
-	Vue.component('show-post', require('./components/classwall/post/Show.vue').default);
-	Vue.component('comment-list', require('./components/classwall/post/Comments.vue').default);
-	Vue.component('emoji', require('./components/classwall/post/Emoji.vue').default);
+	app.component('post-list', () => import('./components/classwall/post/List.vue').then(m => m.default));
+	app.component('create-post', () => import('./components/classwall/post/Create.vue').then(m => m.default));
+	app.component('edit-post', () => import('./components/classwall/post/Edit.vue').then(m => m.default));
+	app.component('show-post', () => import('./components/classwall/post/Show.vue').then(m => m.default));
+	app.component('comment-list', () => import('./components/classwall/post/Comments.vue').then(m => m.default));
+	app.component('emoji', () => import('./components/classwall/post/Emoji.vue').then(m => m.default));
 
 //notification
 
-Vue.component('notification-list', require('./components/notification/List.vue').default);
-Vue.component('notification', require('./components/notification/Show.vue').default);
+app.component('notification-list', () => import('./components/notification/List.vue').then(m => m.default));
+app.component('notification', () => import('./components/notification/Show.vue').then(m => m.default));
 
 //School Detail
-Vue.component('create-schooldetail', require('./components/schooldetail/Create.vue').default);
-Vue.component('edit-schooldetail', require('./components/schooldetail/Edit.vue').default);
+app.component('create-schooldetail', () => import('./components/schooldetail/Create.vue').then(m => m.default));
+app.component('edit-schooldetail', () => import('./components/schooldetail/Edit.vue').then(m => m.default));
 
 //student
-Vue.component('member-list', require('./components/student/List.vue').default);
-Vue.component('profile-tab', require('./components/student/profile/ProfileTab.vue').default);
-Vue.component('search-filter', require('./components/student/Filter.vue').default);
-Vue.component('create-member', require('./components/student/Create.vue').default);
-Vue.component('edit-member', require('./components/student/Edit.vue').default);
-Vue.component('create-medical-history', require('./components/student/CreateMedicalHistory.vue').default);
+app.component('member-list', () => import('./components/student/List.vue').then(m => m.default));
+app.component('profile-tab', () => import('./components/student/profile/ProfileTab.vue').then(m => m.default));
+app.component('search-filter', () => import('./components/student/Filter.vue').then(m => m.default));
+app.component('create-member', () => import('./components/student/Create.vue').then(m => m.default));
+app.component('edit-member', () => import('./components/student/Edit.vue').then(m => m.default));
+app.component('create-medical-history', () => import('./components/student/CreateMedicalHistory.vue').then(m => m.default));
 
-Vue.component('change-password-student', require('./components/student/ChangePassword.vue').default);
+app.component('change-password-student', () => import('./components/student/ChangePassword.vue').then(m => m.default));
 
 //Bulletin
-Vue.component('create-bulletin', require('./components/bulletin/Create.vue').default);
+app.component('create-bulletin', () => import('./components/bulletin/Create.vue').then(m => m.default));
 
 
 
 
 
 //parent
-Vue.component('parent-list', require('./components/parent/List.vue').default);
-Vue.component('parent-search-filter', require('./components/parent/Filter.vue').default);
-Vue.component('create-parent', require('./components/parent/Create.vue').default);
-Vue.component('edit-parent', require('./components/parent/Edit.vue').default);
-Vue.component('profile-tab-parent', require('./components/parent/profile/ProfileTab.vue').default);
+app.component('parent-list', () => import('./components/parent/List.vue').then(m => m.default));
+app.component('parent-search-filter', () => import('./components/parent/Filter.vue').then(m => m.default));
+app.component('create-parent', () => import('./components/parent/Create.vue').then(m => m.default));
+app.component('edit-parent', () => import('./components/parent/Edit.vue').then(m => m.default));
+app.component('profile-tab-parent', () => import('./components/parent/profile/ProfileTab.vue').then(m => m.default));
 
 //teacher
-Vue.component('teacher-list', require('./components/teacher/List.vue').default);
-Vue.component('teacher-filter', require('./components/teacher/Filter.vue').default);
-Vue.component('create-teacher', require('./components/teacher/Create.vue').default);
-Vue.component('profile-tab-teacher', require('./components/teacher/profile/ProfileTab.vue').default);
-Vue.component('edit-teacher', require('./components/teacher/Edit.vue').default);
-Vue.component('address-tab', require('./components/teacher/Address.vue').default);
-Vue.component('notes-tab', require('./components/teacher/Notes.vue').default);
-Vue.component('add-tab-teacher', require('./components/teacher/addTab.vue').default);
+app.component('teacher-list', () => import('./components/teacher/List.vue').then(m => m.default));
+app.component('teacher-filter', () => import('./components/teacher/Filter.vue').then(m => m.default));
+app.component('create-teacher', () => import('./components/teacher/Create.vue').then(m => m.default));
+app.component('profile-tab-teacher', () => import('./components/teacher/profile/ProfileTab.vue').then(m => m.default));
+app.component('edit-teacher', () => import('./components/teacher/Edit.vue').then(m => m.default));
+app.component('address-tab', () => import('./components/teacher/Address.vue').then(m => m.default));
+app.component('notes-tab', () => import('./components/teacher/Notes.vue').then(m => m.default));
+app.component('add-tab-teacher', () => import('./components/teacher/addTab.vue').then(m => m.default));
 
-Vue.component('change-password-teacher', require('./components/teacher/ChangePassword.vue').default);
-Vue.component('change-avatar-teacher', require('./components/teacher/ChangeAvatar.vue').default);
+app.component('change-password-teacher', () => import('./components/teacher/ChangePassword.vue').then(m => m.default));
+app.component('change-avatar-teacher', () => import('./components/teacher/ChangeAvatar.vue').then(m => m.default));
 
 //Staff
-Vue.component('staff-list', require('./components/staff/List.vue').default);
-Vue.component('staff-filter', require('./components/staff/Filter.vue').default);
+app.component('staff-list', () => import('./components/staff/List.vue').then(m => m.default));
+app.component('staff-filter', () => import('./components/staff/Filter.vue').then(m => m.default));
 
 //promotion
-Vue.component('create-promotion', require('./components/promotion/Create.vue').default);
+app.component('create-promotion', () => import('./components/promotion/Create.vue').then(m => m.default));
 
 //attendance
-Vue.component('create-attendance', require('./components/attendance/Create.vue').default);
-Vue.component('create-staff-attendance', require('./components/attendance/staff/Create.vue').default);
+app.component('create-attendance', () => import('./components/attendance/Create.vue').then(m => m.default));
+app.component('create-staff-attendance', () => import('./components/attendance/staff/Create.vue').then(m => m.default));
 
 
 
 //discipline
-Vue.component('create-discipline', require('./components/discipline/Create.vue').default);
-Vue.component('edit-discipline', require('./components/discipline/Edit.vue').default);
+app.component('create-discipline', () => import('./components/discipline/Create.vue').then(m => m.default));
+app.component('edit-discipline', () => import('./components/discipline/Edit.vue').then(m => m.default));
 
 //academic
-Vue.component('standard-setup', require('./components/settings/StandardSetup.vue').default);
-Vue.component('class-tab', require('./components/academic/class/classTab.vue').default);
-Vue.component('create-class', require('./components/academic/Create1.vue').default);
-Vue.component('edit-class', require('./components/academic/Edit.vue').default);
-Vue.component('standardfilter', require('./components/academic/Filter.vue').default);
+app.component('standard-setup', () => import('./components/settings/StandardSetup.vue').then(m => m.default));
+app.component('class-tab', () => import('./components/academic/class/classTab.vue').then(m => m.default));
+app.component('create-class', () => import('./components/academic/Create1.vue').then(m => m.default));
+app.component('edit-class', () => import('./components/academic/Edit.vue').then(m => m.default));
+app.component('standardfilter', () => import('./components/academic/Filter.vue').then(m => m.default));
 
 //academic year
-Vue.component('list-academic-year', require('./components/academicyear/List.vue').default);
-Vue.component('create-academic-year', require('./components/academicyear/Create.vue').default);
-Vue.component('edit-academic-year', require('./components/academicyear/Edit.vue').default);
+app.component('list-academic-year', () => import('./components/academicyear/List.vue').then(m => m.default));
+app.component('create-academic-year', () => import('./components/academicyear/Create.vue').then(m => m.default));
+app.component('edit-academic-year', () => import('./components/academicyear/Edit.vue').then(m => m.default));
 
 //holiday
-Vue.component('add-holiday', require('./components/academic/holiday/Create.vue').default);
-Vue.component('holiday-list', require('./components/academic/holiday/List.vue').default);
+app.component('add-holiday', () => import('./components/academic/holiday/Create.vue').then(m => m.default));
+app.component('holiday-list', () => import('./components/academic/holiday/List.vue').then(m => m.default));
 
 //subject
-Vue.component('add-subjects', require('./components/subject/Create.vue').default);
-Vue.component('edit-subjects', require('./components/subject/Edit.vue').default);
+app.component('add-subjects', () => import('./components/subject/Create.vue').then(m => m.default));
+app.component('edit-subjects', () => import('./components/subject/Edit.vue').then(m => m.default));
 
 
 
 //Homework
-Vue.component('create-homework', require('./components/homework/Create.vue').default);
-Vue.component('edit-homework', require('./components/homework/Edit.vue').default);
-Vue.component('show-homework', require('./components/homework/Show.vue').default);
-Vue.component('home-work-list', require('./components/homework/List.vue').default);
-Vue.component('list-tab-homework', require('./components/homework/approvedhomework/listTab.vue').default);
+app.component('create-homework', () => import('./components/homework/Create.vue').then(m => m.default));
+app.component('edit-homework', () => import('./components/homework/Edit.vue').then(m => m.default));
+app.component('show-homework', () => import('./components/homework/Show.vue').then(m => m.default));
+app.component('home-work-list', () => import('./components/homework/List.vue').then(m => m.default));
+app.component('list-tab-homework', () => import('./components/homework/approvedhomework/listTab.vue').then(m => m.default));
 
 //Notice Board
-Vue.component('create-circular', require('./components/noticeboard/Create.vue').default);
-Vue.component('edit-circular', require('./components/noticeboard/Edit.vue').default);
-Vue.component('notice-board-list', require('./components/noticeboard/List.vue').default);
+app.component('create-circular', () => import('./components/noticeboard/Create.vue').then(m => m.default));
+app.component('edit-circular', () => import('./components/noticeboard/Edit.vue').then(m => m.default));
+app.component('notice-board-list', () => import('./components/noticeboard/List.vue').then(m => m.default));
 
 
 
@@ -152,199 +171,219 @@ Vue.component('notice-board-list', require('./components/noticeboard/List.vue').
 
 
 //assignment-teacher
-Vue.component('create-assignment', require('./components/assignment/teacher/Create.vue').default);
-Vue.component('edit-assignment', require('./components/assignment/teacher/Edit.vue').default);
-Vue.component('student-assignment-list', require('./components/assignment/teacher/StudentAssignmentList.vue').default);
+app.component('create-assignment', () => import('./components/assignment/teacher/Create.vue').then(m => m.default));
+app.component('edit-assignment', () => import('./components/assignment/teacher/Edit.vue').then(m => m.default));
+app.component('student-assignment-list', () => import('./components/assignment/teacher/StudentAssignmentList.vue').then(m => m.default));
 
 //assignment
-Vue.component('assignment-list', require('./components/assignment/List.vue').default);
-Vue.component('list-tab-assignment', require('./components/assignment/approvedassignment/listTab.vue').default);
+app.component('assignment-list', () => import('./components/assignment/List.vue').then(m => m.default));
+app.component('list-tab-assignment', () => import('./components/assignment/approvedassignment/listTab.vue').then(m => m.default));
 
 //student assignment
-Vue.component('assignment-list-student', require('./components/assignment/student/List.vue').default);
-Vue.component('attachment-assignment', require('./components/assignment/student/Attachment.vue').default);
+app.component('assignment-list-student', () => import('./components/assignment/student/List.vue').then(m => m.default));
+app.component('attachment-assignment', () => import('./components/assignment/student/Attachment.vue').then(m => m.default));
 
 
 //student homework
-Vue.component('homework-list', require('./components/homework/student/List.vue').default);
-Vue.component('attachment-homework', require('./components/homework/student/Attachment.vue').default);
+app.component('homework-list', () => import('./components/homework/student/List.vue').then(m => m.default));
+app.component('attachment-homework', () => import('./components/homework/student/Attachment.vue').then(m => m.default));
 
 //lesson-plan
-Vue.component('lesson-plan-list', require('./components/lessonplan/List.vue').default);
-Vue.component('approve-lesson-plan', require('./components/lessonplan/Approve.vue').default);
-Vue.component('list-tab-lesson', require('./components/lessonplan/listTab.vue').default);
-Vue.component('add-tab-lesson', require('./components/lessonplan/addTab.vue').default);
+app.component('lesson-plan-list', () => import('./components/lessonplan/List.vue').then(m => m.default));
+app.component('approve-lesson-plan', () => import('./components/lessonplan/Approve.vue').then(m => m.default));
+app.component('list-tab-lesson', () => import('./components/lessonplan/listTab.vue').then(m => m.default));
+app.component('add-tab-lesson', () => import('./components/lessonplan/addTab.vue').then(m => m.default));
 
 
 //leave application
-Vue.component('leave-teacher-list', require('./components/leave/teacher/List.vue').default);
-Vue.component('create-leave', require('./components/leave/teacher/Create.vue').default);
-Vue.component('edit-leave', require('./components/leave/teacher/Edit.vue').default);
-Vue.component('approve-leave', require('./components/leave/teacher/Approve.vue').default);
-Vue.component('pending-count', require('./components/leave/teacher/PendingCount.vue').default);
+app.component('leave-teacher-list', () => import('./components/leave/teacher/List.vue').then(m => m.default));
+app.component('create-leave', () => import('./components/leave/teacher/Create.vue').then(m => m.default));
+app.component('edit-leave', () => import('./components/leave/teacher/Edit.vue').then(m => m.default));
+app.component('approve-leave', () => import('./components/leave/teacher/Approve.vue').then(m => m.default));
+app.component('pending-count', () => import('./components/leave/teacher/PendingCount.vue').then(m => m.default));
 
 //student leave application
-Vue.component('student-leave-tab', require('./components/leave/student/listTab.vue').default);
-Vue.component('student-leave-list', require('./components/leave/student/List.vue').default);
-Vue.component('approve-student-leave', require('./components/leave/student/Approve.vue').default);
+app.component('student-leave-tab', () => import('./components/leave/student/listTab.vue').then(m => m.default));
+app.component('student-leave-list', () => import('./components/leave/student/List.vue').then(m => m.default));
+app.component('approve-student-leave', () => import('./components/leave/student/Approve.vue').then(m => m.default));
+
+//reception leave application
+app.component('reception-leave-list', () => import('./components/leave/reception/List.vue').then(m => m.default));
+app.component('reception-create-leave', () => import('./components/leave/reception/Create.vue').then(m => m.default));
+app.component('reception-edit-leave', () => import('./components/leave/reception/Edit.vue').then(m => m.default));
 
 //absentees
-Vue.component('absentees-student', require('./components/dashboard/StudentAttendance.vue').default);
-Vue.component('absentees-staff', require('./components/dashboard/StaffAttendance.vue').default);
+app.component('absentees-student', () => import('./components/dashboard/StudentAttendance.vue').then(m => m.default));
+app.component('absentees-staff', () => import('./components/dashboard/StaffAttendance.vue').then(m => m.default));
 
 //visitor Log
-Vue.component('add-visitor-log', require('./components/visitorlog/Create.vue').default);
-Vue.component('list-visitor-log', require('./components/visitorlog/List.vue').default);
-Vue.component('edit-visitor-log', require('./components/visitorlog/Edit.vue').default);
+app.component('add-visitor-log', () => import('./components/visitorlog/Create.vue').then(m => m.default));
+app.component('list-visitor-log', () => import('./components/visitorlog/List.vue').then(m => m.default));
+app.component('edit-visitor-log', () => import('./components/visitorlog/Edit.vue').then(m => m.default));
 
 //call Log
-Vue.component('add-call-log', require('./components/calllog/Create.vue').default);
-Vue.component('list-call-log', require('./components/calllog/List.vue').default);
-Vue.component('edit-call-log', require('./components/calllog/Edit.vue').default);
+app.component('add-call-log', () => import('./components/calllog/Create.vue').then(m => m.default));
+app.component('list-call-log', () => import('./components/calllog/List.vue').then(m => m.default));
+app.component('edit-call-log', () => import('./components/calllog/Edit.vue').then(m => m.default));
 
 
 //postal Log
-Vue.component('add-postal-record', require('./components/postalrecord/Create.vue').default);
-Vue.component('list-postal-record', require('./components/postalrecord/List.vue').default);
-Vue.component('edit-postal-record', require('./components/postalrecord/Edit.vue').default);
+app.component('add-postal-record', () => import('./components/postalrecord/Create.vue').then(m => m.default));
+app.component('list-postal-record', () => import('./components/postalrecord/List.vue').then(m => m.default));
+app.component('edit-postal-record', () => import('./components/postalrecord/Edit.vue').then(m => m.default));
 
 //visitor Log
-Vue.component('add-teacher-visitor-log', require('./components/teacher/visitorlog/Create.vue').default);
-Vue.component('list-teacher-visitor-log', require('./components/teacher/visitorlog/List.vue').default);
-Vue.component('edit-teacher-visitor-log', require('./components/teacher/visitorlog/Edit.vue').default);
+app.component('add-teacher-visitor-log', () => import('./components/teacher/visitorlog/Create.vue').then(m => m.default));
+app.component('list-teacher-visitor-log', () => import('./components/teacher/visitorlog/List.vue').then(m => m.default));
+app.component('edit-teacher-visitor-log', () => import('./components/teacher/visitorlog/Edit.vue').then(m => m.default));
 
 //call Log
-Vue.component('add-teacher-call-log', require('./components/teacher/calllog/Create.vue').default);
-Vue.component('list-teacher-call-log', require('./components/teacher/calllog/List.vue').default);
-Vue.component('edit-teacher-call-log', require('./components/teacher/calllog/Edit.vue').default);
+app.component('add-teacher-call-log', () => import('./components/teacher/calllog/Create.vue').then(m => m.default));
+app.component('list-teacher-call-log', () => import('./components/teacher/calllog/List.vue').then(m => m.default));
+app.component('edit-teacher-call-log', () => import('./components/teacher/calllog/Edit.vue').then(m => m.default));
 
 
 //postal Log
-Vue.component('add-teacher-postal-record', require('./components/teacher/postalrecord/Create.vue').default);
-Vue.component('list-teacher-postal-record', require('./components/teacher/postalrecord/List.vue').default);
-Vue.component('edit-teacher-postal-record', require('./components/teacher/postalrecord/Edit.vue').default);
+app.component('add-teacher-postal-record', () => import('./components/teacher/postalrecord/Create.vue').then(m => m.default));
+app.component('list-teacher-postal-record', () => import('./components/teacher/postalrecord/List.vue').then(m => m.default));
+app.component('edit-teacher-postal-record', () => import('./components/teacher/postalrecord/Edit.vue').then(m => m.default));
 
 
 
 
 //dashboard
-Vue.component('birthday', require('./components/dashboard/Birthday.vue').default);
-Vue.component('view-birthday', require('./components/dashboard/ViewBirthday.vue').default);
-Vue.component('birthday-teacher', require('./components/dashboard/BirthdayTeacher.vue').default);
-Vue.component('view-birthday-teacher', require('./components/dashboard/ViewBirthdayTeacher.vue').default);
-Vue.component('work-anniversary', require('./components/dashboard/WorkAnniversary.vue').default);
-Vue.component('view-work-anniversary', require('./components/dashboard/ViewWorkAnniversary.vue').default);
-Vue.component('dashboard-timetable-teacher', require('./components/dashboard/Timetable.vue').default);
+app.component('birthday', () => import('./components/dashboard/Birthday.vue').then(m => m.default));
+app.component('view-birthday', () => import('./components/dashboard/ViewBirthday.vue').then(m => m.default));
+app.component('birthday-teacher', () => import('./components/dashboard/BirthdayTeacher.vue').then(m => m.default));
+app.component('view-birthday-teacher', () => import('./components/dashboard/ViewBirthdayTeacher.vue').then(m => m.default));
+app.component('work-anniversary', () => import('./components/dashboard/WorkAnniversary.vue').then(m => m.default));
+app.component('view-work-anniversary', () => import('./components/dashboard/ViewWorkAnniversary.vue').then(m => m.default));
+app.component('dashboard-timetable-teacher', () => import('./components/dashboard/Timetable.vue').then(m => m.default));
 
 //Event
-Vue.component('create-event', require('./components/event/Create.vue').default);
-Vue.component('edit-event', require('./components/event/Edit.vue').default);
-Vue.component('show-event', require('./components/event/show.vue').default);
-Vue.component('event-popup', require('./components/event/Popup.vue').default);
-Vue.component('event-tab', require('./components/event/details/EventTab.vue').default);
+app.component('create-event', () => import('./components/event/Create.vue').then(m => m.default));
+app.component('edit-event', () => import('./components/event/Edit.vue').then(m => m.default));
+app.component('show-event', () => import('./components/event/show.vue').then(m => m.default));
+app.component('event-popup', () => import('./components/event/Popup.vue').then(m => m.default));
+app.component('event-tab', () => import('./components/event/details/EventTab.vue').then(m => m.default));
 
 //Edit Userprofile
-Vue.component('edit-profile', require('./components/admin/EditProfile.vue').default);
-Vue.component('change-password', require('./components/admin/ChangePassword.vue').default);
-Vue.component('change-avatar', require('./components/admin/ChangeAvatar.vue').default);
-Vue.component('change-credential', require('./components/admin/ChangeCredential.vue').default);
+app.component('edit-profile', () => import('./components/admin/EditProfile.vue').then(m => m.default));
+app.component('change-password', () => import('./components/admin/ChangePassword.vue').then(m => m.default));
+app.component('change-avatar', () => import('./components/admin/ChangeAvatar.vue').then(m => m.default));
+app.component('change-credential', () => import('./components/admin/ChangeCredential.vue').then(m => m.default));
 
-Vue.component('showimage', require('./components/event/details/ShowImage.vue').default);
-//Vue.component('galleryimage', require('./components/event/details/GalleryImage.vue').default);
+app.component('showimage', () => import('./components/event/details/ShowImage.vue').then(m => m.default));
+//app.component('galleryimage', () => import('./components/event/details/GalleryImage.vue').then(m => m.default));
 
 //Contact
-Vue.component('contact', require('./components/contact.vue').default);
+app.component('contact', () => import('./components/contact.vue').then(m => m.default));
 
-Vue.component('event', require('./components/dashboard/Event.vue').default);
+app.component('event', () => import('./components/dashboard/Event.vue').then(m => m.default));
 
 //library
 
 
 //custom-export
-Vue.component('student-export', require('./components/export/Student.vue').default);
-Vue.component('teacher-export', require('./components/export/Teacher.vue').default);
-Vue.component('staff-export', require('./components/export/Staff.vue').default);
+app.component('student-export', () => import('./components/export/Student.vue').then(m => m.default));
+app.component('teacher-export', () => import('./components/export/Teacher.vue').then(m => m.default));
+app.component('staff-export', () => import('./components/export/Staff.vue').then(m => m.default));
 
 //books
-Vue.component('add-book', require('./components/book/Create.vue').default);
-Vue.component('edit-book', require('./components/book/Edit.vue').default);
-Vue.component('edit-bookcategory', require('./components/bookcategory/Edit.vue').default);
+app.component('add-book', () => import('./components/book/Create.vue').then(m => m.default));
+app.component('edit-book', () => import('./components/book/Edit.vue').then(m => m.default));
+app.component('edit-bookcategory', () => import('./components/bookcategory/Edit.vue').then(m => m.default));
 
 //telephone directory
-Vue.component('add-phone-number', require('./components/telephonedirectory/Create.vue').default);
-Vue.component('edit-phone-number', require('./components/telephonedirectory/Edit.vue').default);
-Vue.component('list-phone-number', require('./components/telephonedirectory/List.vue').default);
+app.component('add-phone-number', () => import('./components/telephonedirectory/Create.vue').then(m => m.default));
+app.component('edit-phone-number', () => import('./components/telephonedirectory/Edit.vue').then(m => m.default));
+app.component('list-phone-number', () => import('./components/telephonedirectory/List.vue').then(m => m.default));
 
 
 
 //Payroll
-Vue.component('payroll-template', require('./components/accountant/payroll/template/List.vue').default);
-Vue.component('create-template', require('./components/accountant/payroll/template/Create.vue').default);
-Vue.component('edit-template', require('./components/accountant/payroll/template/Edit.vue').default);
-Vue.component('payroll-salary', require('./components/accountant/payroll/salary/List.vue').default);
-Vue.component('create-salary', require('./components/accountant/payroll/salary/Create.vue').default);
-Vue.component('edit-salary', require('./components/accountant/payroll/salary/Edit.vue').default);
-Vue.component('payroll-list', require('./components/accountant/payroll/payslip/List.vue').default);
-Vue.component('create-payroll', require('./components/accountant/payroll/payslip/Create.vue').default);
-Vue.component('edit-payroll', require('./components/accountant/payroll/payslip/Edit.vue').default);
-Vue.component('transaction-list', require('./components/accountant/payroll/transaction/List.vue').default);
-Vue.component('create-transaction', require('./components/accountant/payroll/transaction/Create.vue').default);
-Vue.component('edit-transaction', require('./components/accountant/payroll/transaction/Edit.vue').default);
+app.component('payroll-template', () => import('./components/accountant/payroll/template/List.vue').then(m => m.default));
+app.component('create-template', () => import('./components/accountant/payroll/template/Create.vue').then(m => m.default));
+app.component('edit-template', () => import('./components/accountant/payroll/template/Edit.vue').then(m => m.default));
+app.component('payroll-salary', () => import('./components/accountant/payroll/salary/List.vue').then(m => m.default));
+app.component('create-salary', () => import('./components/accountant/payroll/salary/Create.vue').then(m => m.default));
+app.component('edit-salary', () => import('./components/accountant/payroll/salary/Edit.vue').then(m => m.default));
+app.component('payroll-list', () => import('./components/accountant/payroll/payslip/List.vue').then(m => m.default));
+app.component('create-payroll', () => import('./components/accountant/payroll/payslip/Create.vue').then(m => m.default));
+app.component('edit-payroll', () => import('./components/accountant/payroll/payslip/Edit.vue').then(m => m.default));
+app.component('transaction-list', () => import('./components/accountant/payroll/transaction/List.vue').then(m => m.default));
+app.component('create-transaction', () => import('./components/accountant/payroll/transaction/Create.vue').then(m => m.default));
+app.component('edit-transaction', () => import('./components/accountant/payroll/transaction/Edit.vue').then(m => m.default));
 
-Vue.component('teacher-payroll-list', require('./components/payroll/teacher/payslip/List.vue').default);
-Vue.component('teacher-transaction-list', require('./components/payroll/teacher/transaction/List.vue').default);
-Vue.component('payroll-search-filter', require('./components/accountant/PayrollFilter.vue').default);
+app.component('teacher-payroll-list', () => import('./components/payroll/teacher/payslip/List.vue').then(m => m.default));
+app.component('teacher-transaction-list', () => import('./components/payroll/teacher/transaction/List.vue').then(m => m.default));
+app.component('payroll-search-filter', () => import('./components/accountant/PayrollFilter.vue').then(m => m.default));
 
 //Emergency Message
 
-Vue.component('emergency-message', require('./components/emergency/Create.vue').default);
+app.component('emergency-message', () => import('./components/emergency/Create.vue').then(m => m.default));
 
 //booklending
-Vue.component('add-booklending', require('./components/booklending/Create.vue').default);
-Vue.component('edit-booklending', require('./components/booklending/Edit.vue').default);
+app.component('add-booklending', () => import('./components/booklending/Create.vue').then(m => m.default));
+app.component('edit-booklending', () => import('./components/booklending/Edit.vue').then(m => m.default));
 
 //student library avtivity
-Vue.component('list-lentbook', require('./components/booklending/List.vue').default);
+app.component('list-lentbook', () => import('./components/booklending/List.vue').then(m => m.default));
 
 //to do list
-Vue.component('create-todo', require('./components/todolist/Create.vue').default);
-Vue.component('edit-todo', require('./components/todolist/Edit.vue').default);
-Vue.component('list-todo', require('./components/todolist/List.vue').default);
+app.component('create-todo', () => import('./components/todolist/Create.vue').then(m => m.default));
+app.component('edit-todo', () => import('./components/todolist/Edit.vue').then(m => m.default));
+app.component('list-todo', () => import('./components/todolist/List.vue').then(m => m.default));
 
 //dashboard to do 
-Vue.component('list-task-tab',require('./components/todolist/listTab.vue').default);
-Vue.component('dashboard-task',require('./components/dashboard/Task.vue').default);
+app.component('list-task-tab', () => import('./components/todolist/listTab.vue').then(m => m.default));
+app.component('dashboard-task', () => import('./components/dashboard/Task.vue').then(m => m.default));
 
 //student task
-Vue.component('add-student-task', require('./components/studenttask/List.vue').default);
-Vue.component('add-student-task-popup', require('./components/studenttask/Create.vue').default);
+app.component('add-student-task', () => import('./components/studenttask/List.vue').then(m => m.default));
+app.component('add-student-task-popup', () => import('./components/studenttask/Create.vue').then(m => m.default));
 
 
 //report
-Vue.component('stock-search-filter', require('./components/report/StockFilter.vue').default);
+app.component('stock-search-filter', () => import('./components/report/StockFilter.vue').then(m => m.default));
 
 
 //feed
-Vue.component('add-post', require('./components/feed/Create.vue').default);
-Vue.component('show-feed', require('./components/feed/ShowFeed.vue').default);
-Vue.component('slider-image', require('./components/feed/slider.vue').default);
+app.component('add-post', () => import('./components/feed/Create.vue').then(m => m.default));
+app.component('show-feed', () => import('./components/feed/ShowFeed.vue').then(m => m.default));
+app.component('slider-image', () => import('./components/feed/slider.vue').then(m => m.default));
 
 
 // home slider
-Vue.component('homeslider', require('./components/Slider.vue').default);
-Vue.component('nav-bar', require('./components/Navigation.vue').default);
+app.component('homeslider', () => import('./components/Slider.vue').then(m => m.default));
+app.component('nav-bar', () => import('./components/Navigation.vue').then(m => m.default));
+
+//new
+
+app.component('teacherlist-lentbook', () => import('./components/booklending/TeacherList.vue').then(m => m.default));
+
+//Library cards 
+app.component('librarymembersearch-filter', () => import('./components/librarycard/Filter.vue').then(m => m.default));
+app.component('librarymember-list', () => import('./components/librarycard/List.vue').then(m => m.default));
+app.component('libraryteachersearch-filter', () => import('./components/librarycard/TeacherFilter.vue').then(m => m.default));
+app.component('libraryteacher-list', () => import('./components/librarycard/TeacherList.vue').then(m => m.default));
+app.component('librarystaff-list', () => import('./components/librarycard/StaffList.vue').then(m => m.default));
+app.component('librarystaff-filter', () => import('./components/librarycard/StaffFilter.vue').then(m => m.default));
 
 
 
+import Paginate from 'vuejs-paginate-next'
+app.component('paginate', Paginate)
 
+// // Plugins used by leave and noticeboard components (registered globally for Vue 3)
+// import 'vue-flash-message/dist/vue-flash-message.min.css';
+// import VueFlashMessage from 'vue-flash-message';
+// app.use(VueFlashMessage);
 
-export const bus = new Vue();
-import VueSwal from 'vue-swal';
-Vue.use(VueSwal);
+// import VueQuillEditor from 'vue-quill-editor';
+// import 'quill/dist/quill.core.css';
+// import 'quill/dist/quill.snow.css';
+// import 'quill/dist/quill.bubble.css';
+// app.use(VueQuillEditor);
 
-const app = new Vue({
-    el: '#app'
-});
-
-import Paginate from 'vuejs-paginate'
-Vue.component('paginate', Paginate);
+app.mount('#app');

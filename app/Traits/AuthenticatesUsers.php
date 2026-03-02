@@ -1,4 +1,7 @@
 <?php
+/**
+ * Handles user authentication workflow including validation, throttling, and responses.
+ */
 
 namespace App\Traits;
 
@@ -9,19 +12,11 @@ use App\Traits\RedirectsUsers;
 use Illuminate\Http\Request;
 use App\Models\School;
 use App\Models\User;
-use App\Models\Userprofile;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 
 trait AuthenticatesUsers
 {
     use RedirectsUsers, ThrottlesLogins;
-
-    /**
-     * Show the application's login form.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    
 
     /**
      * Handle a login request to the application.
@@ -59,139 +54,92 @@ trait AuthenticatesUsers
     /**
      * Validate the user login request.
      *
+     * Registers custom validators:
+     * - checkschool: Validates that the school is active
+     * - checkusers: Validates that the user exists
+     * - checkactive: Validates that the user is not suspended (inactive status)
+     * - checkexit: Validates that the user has not exited (exit status)
+     *
      * @param  \Illuminate\Http\Request  $request
      * @return void
-*/
+     */
     protected function validateLogin(Request $request)
-    { //dump($request);
+    {
+        /**
+         * Validator: checkschool
+         * Ensures the user's school is active (status = 1).
+         * SuperAdmins (usergroup_id == 1) bypass school checks.
+         *
+         * @param string $attribute The attribute being validated
+         * @param string $value The value being validated
+         * @param array $parameters Additional parameters
+         * @param \Illuminate\Validation\Validator $validator The validator instance
+         * @return bool True if school is active or user is superadmin
+         */
+        Validator::extend('checkschool', function ($attribute, $value, $parameters, $validator) {
+            $users = User::orWhere('email', request('email'))
+                ->orWhere('mobile_no', request('email'))
+                ->orWhere('name', request('email'))
+                ->orWhere('registration_number', request('email'))
+                ->first();
 
-        Validator::extend('checkschool', function ($attribute, $value, $parameters, $validator) 
-        {
-           
-           $users = User::orWhere('email', request('email'))->orWhere('mobile_no', request('email'))->orWhere('name', request('email'))->orWhere('registration_number',request('email'))->first();
-
-//dump($users);
-            if($users->usergroup_id == 1)
-            {
+            if ($users->usergroup_id == 1) {
                 return TRUE;
             }
 
+            $school = School::IsActive($users->school_id)->exists();
+            return $school == TRUE;
+        }, 'Invalid Credentials. You are not in this school');
 
-          
-            else
-            { 
-                $school = School::IsActive($users->school_id)->exists();
-                //dump($school);
-                if($school == FALSE)
-                { 
-                    return FALSE;
-                }
-                else
-                {
-                    return TRUE;
-                }  
-            }    
-        },'Invalid Credentials.You are not in this school');
-
-        Validator::extend('checkusers', function ($attribute, $value, $parameters, $validator) 
-        {
+        /**
+         * Validator: checkusers
+         * Validates that the user exists in the system.
+         *
+         * @param string $attribute The attribute being validated
+         * @param string $value The value being validated
+         * @param array $parameters Additional parameters
+         * @param \Illuminate\Validation\Validator $validator The validator instance
+         * @return bool True if user exists
+         */
+        Validator::extend('checkusers', function ($attribute, $value, $parameters, $validator) {
             $users = User::where('email', request('email'))->with('userprofile')->first();
-            if($users==null)
-            { 
-                return FALSE;
-            }
-            else
-            {
-                return TRUE;
-            }       
-        },'Invalid Credentials');
-       
-        Validator::extend('checkactive', function ($attribute, $value, $parameters, $validator) 
-        {
-            $users = User::where('email', request('email'))->with('userprofile')->first();
-            if($users->userprofile->status=="inactive")
-            { 
-                return FALSE;
-            }
-            else
-            {
-                return TRUE;
-            }
-        },'You are suspended by site admin');
+            return $users != null;
+        }, 'Invalid Credentials');
 
-        Validator::extend('checkexit', function ($attribute, $value, $parameters, $validator) 
-        {
+        /**
+         * Validator: checkactive
+         * Validates that the user's profile status is not 'inactive' (suspended).
+         *
+         * @param string $attribute The attribute being validated
+         * @param string $value The value being validated
+         * @param array $parameters Additional parameters
+         * @param \Illuminate\Validation\Validator $validator The validator instance
+         * @return bool True if user is active
+         */
+        Validator::extend('checkactive', function ($attribute, $value, $parameters, $validator) {
             $users = User::where('email', request('email'))->with('userprofile')->first();
-            if($users->userprofile->status=="exit")
-            { 
-                return FALSE;
-            }
-            else
-            {
-                return TRUE;
-            }
-        },'You have exited this school');
-       
-        Validator::extend('checkstatus', function ($attribute, $value, $parameters, $validator) 
-        {
-            $user = User::where('email', request('email'))->with(['userprofile','alumniprofile'])->first();
-            if(count($user)>0)
-            {
-                if($user->usergroup_id==1)
-                {
-                    return TRUE;
-                }
-                elseif($user->usergroup_id==3)
-                {
-                    return TRUE;
-                }
-                elseif($user->usergroup_id==4)
-                { 
-                    return TRUE;
-                }
-                elseif ($user->usergroup_id==5)
-                { 
-                    if(\Config::get('settings.login_status')==1)
-                    return TRUE;
-                }
-                elseif ($user->usergroup_id==6)
-                { 
-                    return TRUE;
-                }
-                elseif($user->usergroup_id==8)
-                { 
-                    return TRUE;
-                }
-                elseif($user->usergroup_id==9)
-                { 
-                    return TRUE;
-                }
-                elseif($user->usergroup_id==10)
-                { 
-                    return TRUE;
-                }
-                elseif($user->usergroup_id==11)
-                { 
-                    return TRUE;
-                }
-                elseif($user->usergroup_id==12)
-                { 
-                    return TRUE;
-                }
-                return FALSE;
-            }
-            return FALSE;   
-        },'Invalid Credentials');
+            return $users->userprofile->status != 'inactive';
+        }, 'You are suspended by site admin');
 
-         $this->validate($request,[
-            $this->username() => 'required|string',
+        /**
+         * Validator: checkexit
+         * Validates that the user's profile status is not 'exit' (no longer works in school).
+         *
+         * @param string $attribute The attribute being validated
+         * @param string $value The value being validated
+         * @param array $parameters Additional parameters
+         * @param \Illuminate\Validation\Validator $validator The validator instance
+         * @return bool True if user status is not 'exit'
+         */
+        Validator::extend('checkexit', function ($attribute, $value, $parameters, $validator) {
+            $users = User::where('email', request('email'))->with('userprofile')->first();
+            return $users->userprofile->status != 'exit';
+        }, 'You have exited this school');
+
+        $this->validate($request, [
+            $this->username() => 'required|string|checkactive|checkexit',
             'password' => 'bail|required|string|checkschool',
         ]);
-
-        $messages=[];
-        $rules=[];
-        $this->validate($request,$rules,$messages);
-         
     }
 
     /**
@@ -217,8 +165,6 @@ trait AuthenticatesUsers
     {
         return $request->only($this->username(), 'password');
     }
-
-  
 
     /**
      * Send the response after the user was authenticated.
@@ -266,7 +212,10 @@ trait AuthenticatesUsers
     /**
      * Get the login username to be used by the controller.
      *
-     * @return string
+     * Supports flexible login: users can login with either email or registration_number.
+     * Validates the input to determine which field to use.
+     *
+     * @return string The field name ('email' or 'registration_number')
      */
     public function username()
     {

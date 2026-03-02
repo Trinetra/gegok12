@@ -36,6 +36,12 @@ use App\Models\Exam;
 use App\Models\User;
 use Carbon\Carbon;
 
+/**
+ * Events controller for accountant area.
+ *
+ * Handles calendar/event listing, repetition logic and event details used
+ * by the accountant dashboard.
+ */
 class EventsController extends Controller
 {
     use SendPushNotification;
@@ -44,13 +50,21 @@ class EventsController extends Controller
     use LogActivity;
     use Common;
 
-     public function __construct()
+    /**
+     * EventsController constructor.
+     */
+    public function __construct()
     {
         $this->academic_year=SiteHelper::getAcademicYear(Auth::user()->school_id);
         //$this->academic_year=$this->academic_year->id;
     }
 
-    function index()
+    /**
+     * Render calendar index with events JSON for the accountant.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function index()
     {
       //
       $school_id      =   Auth::user()->school_id;
@@ -80,6 +94,13 @@ class EventsController extends Controller
       return view('accountant.events.index',['events'=>$events , 'count'=>$count , 'subscription'=>$subscription]);
     }
 
+    /**
+     * Return standard list used by the events UI.
+     *
+     * @return array{
+     *     standardlist: \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * }
+     */
     public function list()
     {
       $standard   =   StandardLink::with('standard','section')->where('school_id',Auth::user()->school_id)->get();
@@ -91,18 +112,18 @@ class EventsController extends Controller
 
       return $array;
     }
-
-    /**dd
-     * @param Request $request
-     * @return $this|\Illuminate\Http\RedirectResponse
-     */
   
     /**
      * @param $facility
      * @param $asset
      * @return string
      */
-    function events()
+    /**
+     * Build and return expanded events (including repeats) for calendar consumption.
+     *
+     * @return array<int, array>
+     */
+    public function events()
     {
       //
       $school_id      =   Auth::user()->school_id;
@@ -163,12 +184,14 @@ class EventsController extends Controller
     }
 
     /**
-     * @param $event
-     * @param $start
-     * @param $end
+     * Normalize an event into array structure used by calendar output.
+     *
+     * @param  \App\Models\Events  $event
+     * @param  \Carbon\Carbon  $start
+     * @param  \Carbon\Carbon  $end
      * @return array
      */
-    function getEvent($event,$start,$end)
+    public function getEvent($event, $start, $end)
     {
       $repeats_class='repeatsclass';
       if($event->repeats==1)
@@ -196,12 +219,14 @@ class EventsController extends Controller
             'repeats_class'=> $repeats_class,  
       );
     }
+
     /**
-     * single day task
-     * @param $event
-     * @return array
+     * Single day task wrapper.
+     *
+     * @param  \App\Models\Events  $event
+     * @return array<int, array>
      */
-    function getDayTask($event)
+    public function getDayTask($event)
     {
         $end   = Carbon::parse($event->end_date);
         $start = Carbon::parse($event->start_date);
@@ -211,12 +236,12 @@ class EventsController extends Controller
     }
 
     /**
-     * repeating tasks even (n) days. Note if you can even put 7 days to make them weekly.
+     * Repeating tasks every N days.
      *
-     * @param $event
-     * @return array
+     * @param  \App\Models\Events  $event
+     * @return array<int, array>
      */
-    function getDailyTasks($event)
+    public function getDailyTasks($event)
     {
         $end   = Carbon::parse($event->end_date);
         $start = Carbon::parse($event->start_date);
@@ -237,11 +262,12 @@ class EventsController extends Controller
     }
 
     /**
-     * Weekly events repeating every (n) weeks
-     * @param $event
-     * @return array
+     * Repeating tasks every N weeks.
+     *
+     * @param  \App\Models\Events  $event
+     * @return array<int, array>
      */
-    function getWeeklyTasks($event)
+    public function getWeeklyTasks($event)
     {
 
         $end   = Carbon::parse($event->end_date);
@@ -264,12 +290,14 @@ class EventsController extends Controller
 
     }
 
+
     /**
-     * Monthly events repeating every (n) months
-     * @param $event
-     * @return array
+     * Repeating tasks every N months.
+     *
+     * @param  \App\Models\Events  $event
+     * @return array<int, array>
      */
-    function getMonthlyTasks($event)
+    public function getMonthlyTasks($event)
     {
         $end   = Carbon::parse($event->end_date);
         $start = Carbon::parse($event->start_date);
@@ -292,13 +320,14 @@ class EventsController extends Controller
 
     }
 
+
     /**
-     * yearly repeating events repeats every (n) years
+     * Repeating tasks every N years.
      *
-     * @param $event
-     * @return array
+     * @param  \App\Models\Events  $event
+     * @return array<int, array>
      */
-    function getYearlyTasks($event)
+    public function getYearlyTasks($event)
     {
         $end   = Carbon::parse($event->end_date);
         $start = Carbon::parse($event->start_date);
@@ -320,7 +349,13 @@ class EventsController extends Controller
         return $events;
     }
 
-    function show($id)
+    /**
+     * Show a single event detail view.
+     *
+     * @param  int  $id
+     * @return \Illuminate\View\View
+     */
+    public function show($id)
     {
       $event = Events::where('id',$id)->first();
 
@@ -353,21 +388,37 @@ class EventsController extends Controller
       } */
     }
 
-    function showdetails($id)
+    /**
+     * Return event details as API resource collection.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function showdetails($id)
     {
-      $event = Events::where([['id',$id],['school_id',Auth::user()->school_id]])->get();
-      $event = ShowEventResource::collection($event);
-      return $event;
+        $event = Events::where([['id', $id], ['school_id', Auth::user()->school_id]])->get();
+        return ShowEventResource::collection($event);
     }
 
+    /**
+     * Return gallery images for an event as a resource collection.
+     *
+     * @param  int  $event_id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function showimage($event_id)
-    { 
-      $event = EventGallery::where([['event_id',$event_id],['school_id',Auth::user()->school_id]])->get();
-        
-      $event = ShowEventGalleryResource::collection($event);
-      return $event;
+    {
+        $event = EventGallery::where([['event_id', $event_id], ['school_id', Auth::user()->school_id]])->get();
+        return ShowEventGalleryResource::collection($event);
     }
 
+    /**
+     * Return event details array if authorized.
+     *
+     * @param  int  $id
+     * @return array|
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+     */
     public function details($id)
     {
       $event=Events::where('id',$id)->first();

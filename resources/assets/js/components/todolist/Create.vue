@@ -65,7 +65,10 @@
                                 <input class="w-5 h-5" type="checkbox" v-model="selected" :value="user['id']" @click="selectedCount(user['id'],$event,'student')">
                                 <label></label>
                             </div>
-                            <div class="flex p-2 active w-full" :id="user['id']">
+                            <div 
+                              class="flex p-2 w-full"
+                              :class="selected.includes(user.id) ? 'student_selected' : ''"
+                            >
                                 <div class="px-2">
                                     <h2 class="font-bold text-base text-gray-700">{{ user['name'] }}</h2>
                                     <p>{{ user['class'] }}</p>
@@ -117,7 +120,10 @@
                                 <input class="w-5 h-5" type="checkbox" v-model="teachers" :value="user['id']" @click="selectedCount(user['id'],$event,'teacher')">
                                 <label></label>
                             </div>
-                            <div class="flex p-2 active w-full" :id="user['id']">
+                            <div 
+                              class="flex p-2 w-full"
+                              :class="teachers.includes(user.id) ? 'student_selected' : ''"
+                            >
                                 <div class="px-2">
                                     <h2 class="font-bold text-base text-gray-700">{{ user.fullname }}</h2>
                                     <p>{{ user.designation }}</p>
@@ -173,10 +179,15 @@
                     </div>
                     <div class="mb-2 w-full lg:w-1/2 md:w-1/2 relative">
                     <div class="flex items-center">
-                        <datetime format="DD-MM-YYYY h:i:s" name="task_date" v-model="task_date" class="w-full rounded" id="task_date"></datetime>
-                        <div class="absolute right-0">
-                            <svg id="Capa_1" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current text-gray-500 mx-2"><g><path d="m144 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m467 65h-36v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-36c-24.813 0-45 20.187-45 45v332c0 24.813 20.187 45 45 45h422c24.813 0 45-20.187 45-45 0-9.682 0-323.575 0-332 0-24.813-20.187-45-45-45zm-437 45c0-8.271 6.729-15 15-15h36v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h36c8.271 0 15 6.729 15 15v59h-452zm437 347h-422c-8.271 0-15-6.729-15-15v-243h452v243c0 8.271-6.729 15-15 15z"></path></g></svg>
-                        </div>
+                        <VueDatePicker
+                          v-model="task_date"
+                          format="dd-MM-yyyy HH:mm:ss"
+                          model-type="format"
+                          :enable-time-picker="true"
+                          :is-24="true"
+                          :auto-apply="true"
+                          input-class-name="w-full rounded"
+                        />
                     </div>
                      <span v-if="errors.task_date" class="text-red-500 text-xs font-semibold">{{ errors.task_date[0] }}</span>
                     </div>
@@ -209,10 +220,15 @@
                     </div>
                     <div class="mb-2 w-full lg:w-1/2 md:w-1/2 relative">
                         <div class="flex items-center">
-                            <datetime format="DD-MM-YYYY h:i:s" name="reminder_date" v-model="reminder_date" class="w-full rounded" id="reminder_date"></datetime>
-                            <div class="absolute right-0">
-                                <svg id="Capa_1" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current text-gray-500 mx-2"><g><path d="m144 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m467 65h-36v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-36c-24.813 0-45 20.187-45 45v332c0 24.813 20.187 45 45 45h422c24.813 0 45-20.187 45-45 0-9.682 0-323.575 0-332 0-24.813-20.187-45-45-45zm-437 45c0-8.271 6.729-15 15-15h36v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h36c8.271 0 15 6.729 15 15v59h-452zm437 347h-422c-8.271 0-15-6.729-15-15v-243h452v243c0 8.271-6.729 15-15 15z"></path></g></svg>
-                            </div>
+                            <VueDatePicker
+                              v-model="reminder_date"
+                              format="dd-MM-yyyy HH:mm:ss"
+                              model-type="format"
+                              :enable-time-picker="true"
+                              :is-24="true"
+                              :auto-apply="true"
+                              input-class-name="w-full rounded"
+                            />
                         </div>
                         <span v-if="errors.reminder_date" class="text-red-500 text-xs font-semibold">{{ errors.reminder_date[0] }}</span>
                     </div>
@@ -228,10 +244,11 @@
 </template>
 
 <script>
-    import datetime from 'vuejs-datetimepicker';
+    import { VueDatePicker } from '@vuepic/vue-datepicker'
+    import '@vuepic/vue-datepicker/dist/main.css'
     export default {
         props:['url','searchquery','mode','hidecolumns'],
-        components:{ datetime },
+        components:{ VueDatePicker },
         data () {
             return {
                 tasks:[],
@@ -243,11 +260,9 @@
                 reminder_date:'',
                 selected: [],
                 selectedUsers:[],
-                selectedUsersCount:0,
                 allSelected: false,
                 noneSelected:false,
                 selectedTeachers:[],
-                selectedTeachersCount:0,
                 allSelectedTeacher: false,
                 noneSelectedTeacher:false,
                 teachers:[],
@@ -265,6 +280,15 @@
                 param:{},
                 errors:[],
                 success:null,
+            }
+        },
+
+        computed: {
+            selectedUsersCount() {
+                return this.selected.length;
+            },
+            selectedTeachersCount() {
+                return this.teachers.length;
             }
         },
 
@@ -361,145 +385,48 @@
                 return a.href ;
             },
 
-            selectAll(e,type) 
-            { 
-                var selected = [];
-                var selectedUsers = [];
-                var teachers = [];
-                var selectedTeachers = [];
-                if (e.target.checked) 
-                {
-                    $('.member-list').addClass('student_selected');
-                    if(type == 'student')
-                    {
-                        if(this.allSelected == false) 
-                        {
-                            this.studentlist.forEach(function (user) 
-                            {
-                                selectedUsers.push(user.id);
-                                selected.push(user.id);
-                            });
-                            this.selected = selected; 
-                            this.selectedUsers = selectedUsers; 
-                            this.selectedUsersCount = selected.length;
-                            this.allSelected = true;
-                        }
-                    }
-                    else if(type == 'teacher')
-                    {
-                        if(this.allSelectedTeacher == false) 
-                        {
-                            this.teacherlist.forEach(function (user) 
-                            {
-                                selectedTeachers.push(user.id);
-                                teachers.push(user.id);
-                            });
-                            this.teachers = teachers; 
-                            this.selectedTeachers = selectedTeachers; 
-                            this.selectedTeachersCount = teachers.length;
-                            this.allSelectedTeacher = true;
-                        }
+            selectAll(e, type) {
+                if (type === 'student') {
+                    if (e.target.checked) {
+                        this.selected = this.studentlist.map(user => user.id);
+                        this.selectedUsers = [...this.selected];
+                    } else {
+                        this.selected = [];
+                        this.selectedUsers = [];
                     }
                 }
-                else
-                {
-                    $('.member-list').removeClass('student_selected');
-                    if(type == 'student')
-                    {
-                        this.studentlist.forEach(function (user) 
-                        {
-                            selected.splice(user.id);
-                            selectedUsers.splice(user.id);
-                        });
-                        this.selected = selected; 
-                        this.selectedUsers = selectedUsers;
-                        this.selectedUsersCount = selected.length;
-                        this.noneSelected = false;
+
+                if (type === 'teacher') {
+                    if (e.target.checked) {
+                        this.teachers = this.teacherlist.map(user => user.id);
+                        this.selectedTeachers = [...this.teachers];
+                    } else {
+                        this.teachers = [];
+                        this.selectedTeachers = [];
                     }
-                    else if(type == 'teacher')
-                    {
-                        this.teacherlist.forEach(function (user) 
-                        {
-                            teachers.splice(user.id);
-                            selectedTeachers.splice(user.id);
-                        });
-                        this.teachers = teachers; 
-                        this.selectedTeachers = selectedTeachers;
-                        this.selectedTeachersCount = teachers.length;
-                        this.noneSelectedTeacher = false;
+                }
+            },
+            selectNone(e, type) {
+                if (e.target.checked) {
+                    if (type === 'student') {
+                        this.selected = [];
+                        this.selectedUsers = [];
+                    }
+
+                    if (type === 'teacher') {
+                        this.teachers = [];
+                        this.selectedTeachers = [];
                     }
                 }
             },
 
-            selectNone(e,type) 
-            { 
-                var selected = [];
-                var selectedUsers = [];
-                var teachers = [];
-                var selectedTeachers = [];
-                if (e.target.checked) 
-                {
-                    $('.member-list').removeClass('student_selected');
-                    if(type == 'student')
-                    {
-                        this.studentlist.forEach(function (user) 
-                        {
-                            selected.splice(user.id);
-                            selectedUsers.splice(user.id);
-                        });
-                        this.selected = selected;
-                        this.selectedUsers = selectedUsers;
-                        this.selectedUsersCount = selected.length;
-                        this.noneSelected = false;
-                    }
-                    else if(type == 'teacher')
-                    {
-                        this.teacherlist.forEach(function (user) 
-                        {
-                            teachers.splice(user.id);
-                            selectedTeachers.splice(user.id);
-                        });
-                        this.teachers = teachers;
-                        this.selectedTeachers = selectedTeachers;
-                        this.selectedTeachersCount = teachers.length;
-                        this.noneSelectedTeacher = false;
-                    }
+            selectedCount(id, e, type) {
+                if (type === 'student') {
+                    this.selectedUsers = [...this.selected];
                 }
-            },
 
-            selectedCount(id,e,type) 
-            { 
-                if(type == 'student')
-                {
-                    if (e.target.checked) 
-                    {
-                        this.selectedUsersCount++;
-                        this.selectedUsers.push(id);
-                        $('#'+id).addClass('student_selected');
-                    }
-                    else
-                    {
-                        this.selectedUsersCount--;
-                        //this.selectedUsers.splice(id);
-                        this.removeUser(id,this.selectedUsers);
-                        $('#'+id).removeClass('student_selected');
-                    }
-                }
-                else if(type == 'teacher')
-                {
-                    if (e.target.checked) 
-                    {
-                        this.selectedTeachersCount++;
-                        this.selectedTeachers.push(id);
-                        $('#'+id).addClass('student_selected');
-                    }
-                    else
-                    {
-                        this.selectedTeachersCount--;
-                        //this.selectedUsers.splice(id);
-                        this.removeUser(id,this.selectedTeachers);
-                        $('#'+id).removeClass('student_selected');
-                    }
+                if (type === 'teacher') {
+                    this.selectedTeachers = [...this.teachers];
                 }
             },
 
@@ -532,11 +459,11 @@
                     assignee:this.assignee,
                     standardLink_id:this.standardLink_id,
                     selected:this.selected, 
-                    selectedUsers:this.selectedUsers,
-                    selectedUsersCount:this.selectedUsersCount,
+                    selectedUsers:this.selected,
+                    selectedUsersCount: this.selected.length,
                     teachers:this.teachers,
-                    selectedTeachers:this.selectedTeachers,
-                    selectedTeachersCount:this.selectedTeachersCount,
+                    selectedTeachers: this.teachers,
+                    selectedTeachersCount: this.teachers.length,
                     title:this.title,
                     to_do_list:this.to_do_list,
                     task_date:this.task_date,

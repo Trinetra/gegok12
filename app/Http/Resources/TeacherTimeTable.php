@@ -30,10 +30,7 @@ class TeacherTimeTable extends JsonResource
         if(class_exists('Gegok12\Timetable\Models\Timetable'))
         {
             $timetables = \Gegok12\Timetable\Models\Timetable::where([['school_id',$school_id],['academic_year_id',$academic_year->id]])->whereIn('standardLink_id',$array['standardLink'])->get();
-        }
-        else{
-            $timetables = Timetable::where([['school_id',$school_id],['academic_year_id',$academic_year->id]])->whereIn('standardLink_id',$array['standardLink'])->get();
-        }
+        
         
         foreach ($timetables as $timetable) 
         {   
@@ -69,5 +66,6 @@ class TeacherTimeTable extends JsonResource
         }
 
         return $common;
+        }
     }
 }

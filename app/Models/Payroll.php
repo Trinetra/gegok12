@@ -7,28 +7,75 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Users\TeacherUser;
 use Carbon\Carbon;
+
+/**
+ * Class Payroll
+ *
+ * Model for managing staff payroll records.
+ *
+ * @property int $id
+ * @property int $school_id
+ * @property string $payrollno
+ * @property int $staff_id
+ * @property int $salary_id
+ * @property \DateTime $start_date
+ * @property \DateTime $end_date
+ * @property int $status
+ * @property string $comments
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @property \DateTime $deleted_at
+ * @property-read \App\Models\User $user
+ * @property-read \App\Models\Salary $salary
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\PayslipItem[] $payslipitems
+ * @property-read \App\Models\PayrollTransaction $transaction
+ * @mixin \Eloquent
+ */
 class Payroll extends Model
 {
   use SoftDeletes;
+  use HasFactory;
 
     protected $fillable = ['school_id' , 'payrollno','staff_id','salary_id','start_date','end_date','status','comments'];
 
+  /**
+   * Get the staff user associated with this payroll.
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+   */
   public function user()
     {
-         return $this->belongsTo(User::class,'staff_id');
+         return $this->belongsTo(TeacherUser::class,'staff_id');
     }
 
+    /**
+     * Get the salary associated with this payroll.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function salary()
     {
          return $this->belongsTo(Salary::class,'salary_id');
     }
 
+  /**
+   * Get the payslip items for this payroll.
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\HasMany
+   */
   public function payslipitems()
     {
         return $this->hasMany(PayslipItem::class, 'payroll_id', 'id');
     }
 
+  /**
+   * Get the transaction record for this payroll.
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\HasOne
+   */
   public function transaction()
     {
         return $this->hasOne(PayrollTransaction::class,'payroll_id');
@@ -38,7 +85,7 @@ class Payroll extends Model
    {
      if(count($this->payslipitems)!=0 )
         {
-          
+
          $earning=$this->payslipitems()->whereHas('salaryitem', function($query) {
             $query->whereHas('templateitem',function($query){
               $query->whereHas('payrollitem',function($query){
@@ -57,7 +104,7 @@ class Payroll extends Model
 
     if(count($this->payslipitems)!=0 )
         {
-          
+
           $deduction=$this->payslipitems()->whereHas('salaryitem', function($query) {
             $query->whereHas('templateitem',function($query){
               $query->whereHas('payrollitem',function($query){
@@ -69,7 +116,7 @@ class Payroll extends Model
            return round($deduction);
         }
         return 0;
-    
+
    }
 
    public function salarypercentage()
@@ -101,7 +148,7 @@ class Payroll extends Model
            return round($total);
         }
         return 0;
-    
+
    }
 
     public function scopeByDate($query,$start_date,$end_date)
@@ -129,7 +176,7 @@ class Payroll extends Model
 
     public function getLeaveDays($id,$start_date,$end_date)
     {
-     
+
     /*  $leave=TeacherLeaveApplication::where('user_id',$id)->where('from_date','>=',$start_date)->where('to_date','<=',$end_date)->first();*/
      $days=0;
      $leave=TeacherLeaveApplication::where('user_id',$id)->where([['from_date','>=',$start_date],['status','approved']])->first();
@@ -152,7 +199,7 @@ class Payroll extends Model
 
      public function getTotalDays()
     {
-     
+
       $from_date=date('Y-m-d H:i:s',strtotime($this->start_date));
       $to_date=date('Y-m-d H:i:s',strtotime($this->end_date));
 
@@ -164,7 +211,7 @@ class Payroll extends Model
 
      public function getDaySalary()
     {
-     
+
       return round($this->salary->gross_salary/$this->getTotalDays());
 
     }

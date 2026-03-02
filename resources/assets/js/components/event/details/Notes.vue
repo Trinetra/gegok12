@@ -34,7 +34,7 @@
   
      <div class="w-1/2 mx-4 ">
     <div class="form-group">
-      <textarea rows = "5" cols = "50" id="addnotes"  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" v-model="notes" placeholder="Add a note" @keyup.enter="addTask()">
+      <textarea rows = "5" cols = "50" id="addnotes"  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-0" v-model="notes" placeholder="Add a note" @keyup.enter="addTask()">
             Enter your name
          </textarea>
           <span v-if="errors.notes"><small class="text-red">{{errors.notes[0]}}</small></span>
@@ -187,7 +187,7 @@
         created(){
           this.getallnotes();
     
-          bus.$on("dataProfileTab", data => {
+          bus.on("dataProfileTab", data => {
           if(data!='')
             {
               this.profile_tab=data;                   

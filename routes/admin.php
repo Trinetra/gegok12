@@ -747,6 +747,24 @@ Route::get( '/emergency', 'SendEmergencyMessageController@create');
 Route::post( '/emergency/send', 'SendEmergencyMessageController@store');
 Route::post( '/student/shift', 'SendMessageController@shift' );
 
+//new add 
+Route::get( '/teacher/show/libraryactivity/{name}', 'TeacherShowController@showBookLent' );
+
+// Show single Bus Pass 
+Route::post('student/buspass', 'StudentDetailsController@create');
+Route::get('student/showbuspass/show/{name}', 'StudentDetailsController@showbus');
+Route::get('student/buspass/showprint/{name}', 'StudentDetailsController@showprint_buspass');
+
+//Teacher ID Card 
+Route::get( '/teacher/id-card', 'TeacherListController@idcard' );
+Route::get( '/teacher/id-card-print', 'TeacherListController@printidcard' );
+Route::get( '/teacher/id-card/{name}', 'TeacherShowController@showidcard' );
+Route::get( '/teacher/show-idcardprint/{name}', 'TeacherShowController@showprintidcard' );
+//Non-Teacher ID Card 
+Route::get( '/staffs/id-card', 'StaffController@idcard' );
+Route::get( '/staffs/id-card-print', 'StaffController@printidcard' );
+Route::get( '/staffs/id-card/{name}', 'StaffController@showidcard' );
+Route::get( '/staffs/show-idcardprint/{name}', 'StaffController@showprintidcard' );
 
 //Addons
 
@@ -754,9 +772,78 @@ Route::get('/addon', function () {
     return view('admin.addon.index');
 });
 
-Route::get('/addon/{name}/detail', function () {
-    return view('admin.addon.detail');
+Route::get('/addon/{slug}/detail', function ($slug) {
+    return view('admin.addon.detail',compact('slug'));
 });
 
+Route::get('/payment/razorpay/checkout', function () {
+    return view('admin.addon.razorpay');
+});
 
+Route::get('/purchase/addon/histories', function () {
+    return view('admin.addon.purchase-history');
+});
+   //Setting
+
+  //City
+   Route::get('setting/cities', function () {
+        return view('admin.setting.cities');
+    })->name('superadmin.setting.cities');
+
+   Route::get('setting/city/create', function () {
+        return view('admin.setting.cityform');
+    })->name('admin.setting.cities.create');
+
+   Route::get('setting/city/update/{id}', function ($id) {
+        return view('admin.setting.cityform', compact('id'));
+    })->name('admin.setting.cities.update');
+
+   Route::get('setting/city/detail/{id}', function ($id) {
+        return view('admin.setting.citydetail',compact('id'));
+    })->name('admin.setting.city.detail');
+
+   //Country
+   Route::get('setting/countries', function () {
+        return view('admin.setting.countries');
+    })->name('admin.setting.countries');
+
+   Route::get('setting/country/create', function () {
+   	    $id='';
+        return view('admin.setting.countryform',compact('id'));
+    })->name('admin.setting.countries.create');
+
+    Route::get('setting/country/update/{id}', function ($id) {
+        return view('admin.setting.countryform', compact('id'));
+    })->name('admin.setting.countries.update');
+
+    Route::get('setting/country/detail/{id}', function ($id) {
+        return view('admin.setting.countrydetail',compact('id'));
+    })->name('admin.setting.countries.detail');
+
+    //State
+    Route::get('setting/states', function () {
+        return view('admin.setting.states');
+    })->name('admin.setting.states');
+
+    Route::get('setting/state/create', function () {
+    	$id='';
+        return view('admin.setting.stateform', compact('id'));
+    })->name('admin.setting.states.create');
+
+    Route::get('setting/state/update/{id}', function ($id) {
+        return view('admin.setting.stateform', compact('id'));
+    })->name('admin.setting.states.update');
+
+    Route::get('setting/state/detail/{id}', function ($id) {
+        return view('admin.setting.statedetail',compact('id'));
+    })->name('admin.setting.states.detail');
+
+    // sms
+    Route::get('setting/smstemplates', function () {
+        return view('admin.setting.smstemplates');
+    })->name('admin.setting.smstemplate');
+
+    Route::get('setting/smstemplate/{id}/update', function ($id) {
+        return view('admin.setting.edit_smstemplate',compact('id'));
+    })->name('admin.setting.smstemplate.update');
 

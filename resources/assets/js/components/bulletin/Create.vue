@@ -9,7 +9,7 @@
                     </div>
                     <div class="w-full lg:w-2/5 my-2">
                         <input type="text" class="tw-form-control w-full" placeholder="Enter name of Magazine" :maxlength="max" id="name" v-model="name">
-                        <div class="text-gray-700 text-xs my-1" v-text="(max - name.length)+'/'+max" style="text-align: right"></div>             
+                        <div class="text-gray-700 text-xs my-1" v-text="(max - name.length)+'/'+max" style="text-align: right"></div>
                     </div>
                     <span v-if="errors.name" class="text-red-500 text-xs font-semibold">{{ errors.name[0] }}</span>
                 </div>
@@ -17,7 +17,7 @@
 
             <div class="my-5">
                 <div class="">
-                    <div class="w-full lg:w-1/4"> 
+                    <div class="w-full lg:w-1/4">
                         <label for="year" class="tw-form-label">Select Year</label>
                     </div>
                     <div class="my-2 w-full lg:w-2/5">
@@ -33,7 +33,7 @@
             <div class="my-5">
                 <div class="">
                     <div class="w-full lg:w-1/4">
-                        <label for="cover_image" v-model="cover_image" class="tw-form-label">Upload Cover Image</label>
+                        <label for="cover_image" class="tw-form-label">Upload Cover Image</label>
                     </div>
                     <div class="w-full lg:w-2/5 my-2">
                         <input type="file" name="cover_image" @change="OnImageSelected" id="cover_image" class="tw-form-control w-full">
@@ -45,7 +45,7 @@
             <div class="my-5">
                 <div class="">
                     <div class="w-full lg:w-1/4">
-                        <label for="bulletin_file" v-model="bulletin_file" class="tw-form-label">Upload Magazine File</label>
+                        <label for="bulletin_file" class="tw-form-label">Upload Magazine File</label>
                     </div>
                     <div class="w-full lg:w-2/5 my-2">
                         <input type="file" name="bulletin_file" @change="OnFileSelected" id="bulletin_file" class="tw-form-control w-full">
@@ -60,10 +60,9 @@
             </div>
         </div>
 
-        <div v-if="parseInt(this.count) > parseInt(this.no_of_bulletins)">
-            <a href="/pricing"> 
-                <button type="submit" class="no-underline text-white px-4 my-3 mx-1 flex items-center custom-green py-1 justify-center">Upgrade Plan to Add More Magazines</button>
-            </a>
+        <div v-if="parseInt(this.count) > parseInt(this.no_of_bulletins)" class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+            <p class="font-semibold">Magazine limit reached</p>
+            <p class="text-sm">Please contact your administrator to increase the magazine limit.</p>
         </div>
     </div>
 </template>
@@ -86,27 +85,27 @@
                 success:null,
             }
         },
-        
+
         methods:
         {
             resetForm()
             {
-                window.location.reload();     
-            }, 
+                window.location.reload();
+            },
 
             checkForm()
             {
                 this.errors=[];
-                this.success=null; 
+                this.success=null;
 
                 let formData=new FormData();
 
-                formData.append('name',this.name);                
-                formData.append('year',this.year);                   
-                formData.append('cover_image',this.cover_image);                   
-                formData.append('bulletin_file',this.bulletin_file);          
-              
-                axios.post('/admin/magazine/create',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {     
+                formData.append('name',this.name);
+                formData.append('year',this.year);
+                formData.append('cover_image',this.cover_image);
+                formData.append('bulletin_file',this.bulletin_file);
+
+                axios.post('/admin/magazine/create',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {
                     this.success = response.data.success;
                     this.resetForm();
                 }).catch(error => {
@@ -128,7 +127,7 @@
             {
                 axios.get('/admin/magazine/getDate').then(response => {
                     this.bulletin = response.data;
-                    this.setData();   
+                    this.setData();
                 });
             },
 

@@ -6,9 +6,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * Class LibraryCard
+ *
+ * Model for managing library card issuance and tracking.
+ *
+ * @property int $id
+ * @property int $school_id
+ * @property int $user_id
+ * @property string $library_card_no
+ * @property int $book_limit
+ * @property int $status
+ * @property \DateTime|null $expiry_date
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @mixin \Eloquent
+ */
 class LibraryCard extends Model
 {
+  use HasFactory;
+
      protected $table = 'library_card';
 
        protected $fillable = [

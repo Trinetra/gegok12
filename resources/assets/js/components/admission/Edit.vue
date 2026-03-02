@@ -33,7 +33,7 @@
                         </div>     
                     </div>
 
-                    <div class="tw-form-group w-full lg:w-3/4 md:w-3/4" v-if="this.application_status=='Approved'">
+                    <div class="tw-form-group w-full lg:w-3/4 md:w-3/4" v-if="gfeeEnabled && this.application_status=='Approved'">
                         <div class="lg:mr-8 md:mr-8">
                             <div class="mb-2">
                                 <label for="fee_group_id" class="tw-form-label">Fee Type</label>
@@ -48,7 +48,7 @@
                         </div>     
                     </div>
 
-                    <div class="tw-form-group w-full lg:w-3/4 md:w-3/4" v-if="this.application_status=='Approved'">
+                    <div class="tw-form-group w-full lg:w-3/4 md:w-3/4" v-if="gfeeEnabled && this.application_status=='Approved'">
                         <div class="lg:mr-8 md:mr-8">
                             <div class="mb-2">
                                 <label for="payment_status" class="tw-form-label">Admission Fee</label>
@@ -90,8 +90,12 @@
                 paymentlist:[{id:'paid' , name:'Paid'} , {id:'not_paid' , name:'Not Paid'}],
                 errors:[],
                 success:null,
+                gfeeEnabled: false,
             }
         },
+        mounted() {
+              this.gfeeEnabled = window.AppConfig?.gfee_enabled ?? false;
+            },
         
         methods:
         {

@@ -64,7 +64,7 @@
     created()
     {    
       this.getData();   
-      bus.$on("type", data => {
+      bus.on("type", data => {
         if(data!='')
         {
           this.type=data;                   

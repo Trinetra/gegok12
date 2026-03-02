@@ -10,62 +10,28 @@ class PlansTableSeeder extends Seeder
     /**
      * Run the database seeds.
      *
+     * For open-source single school version, we create one unlimited plan
+     *
      * @return void
      */
     public function run()
     {
-        //
+        // Single unlimited plan for open-source version
         DB::table('plans')->insert([
-          
-            'cycle'             => '30',
-            'name'              => 'standard',
-            'display_name'      => 'STANDARD',
-            'amount'            => '2000',
-            'no_of_members'     => '500',
-            'no_of_events'      => '10',
-            'no_of_folders'     => '10',
-            'no_of_files'       => '10',
-            'no_of_videos'      => '10',
-            'no_of_bulletins'   => '10',
-            'no_of_groups'      => '10',
+            'cycle'             => '36500', // 100 years
+            'name'              => 'unlimited',
+            'display_name'      => 'UNLIMITED',
+            'amount'            => '0',
+            'no_of_members'     => '999999',
+            'no_of_events'      => '999999',
+            'no_of_folders'     => '999999',
+            'no_of_files'       => '999999',
+            'no_of_videos'      => '999999',
+            'no_of_bulletins'   => '999999',
+            'no_of_groups'      => '999999',
+            'is_active'         => 1,
             'created_at'        => date("Y-m-d H:i:s"),
-            'updated_at'        => date("Y-m-d H:i:s"), 
-
+            'updated_at'        => date("Y-m-d H:i:s"),
         ]);
-         DB::table('plans')->insert([
-          
-            'cycle'             => '60',
-            'name'              => 'extended',
-            'display_name'      => 'EXTENDED',
-            'amount'            => '5000',
-            'no_of_members'     => '2000',
-            'no_of_events'      => '30',
-            'no_of_folders'     => '30',
-            'no_of_files'       => '30',
-            'no_of_videos'      => '30',
-            'no_of_bulletins'   => '30',
-            'no_of_groups'      => '30',
-            'created_at'        => date("Y-m-d H:i:s"),
-            'updated_at'        => date("Y-m-d H:i:s"), 
-
-        ]);
-         DB::table('plans')->insert([
-          
-            'cycle'             => '90',
-            'name'              => 'premium',
-            'display_name'      => 'PREMIUM',
-            'amount'            => '15000',
-            'no_of_members'     => '3000',
-            'no_of_events'      => '50',
-            'no_of_folders'     => '50',
-            'no_of_files'       => '50',
-            'no_of_videos'      => '50',
-            'no_of_bulletins'   => '50',
-            'no_of_groups'      => '50',
-            'created_at'        => date("Y-m-d H:i:s"),
-            'updated_at'        => date("Y-m-d H:i:s"), 
-
-        ]);
-
     }
 }

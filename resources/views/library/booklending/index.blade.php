@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.library.layout')
 
 @section('content')
@@ -19,7 +18,7 @@
             </div>
          </div>
    </div>
-          <form method="GET" action="{{ url('/library/bookscategory/index') }}" role="search" enctype="multipart/form-data">
+          <form method="GET" action="{{ url('/library/booklending/index') }}" role="search" enctype="multipart/form-data">
 
 
           <div class="w-1/2 lg:w-1/6 ml-auto mb-2">

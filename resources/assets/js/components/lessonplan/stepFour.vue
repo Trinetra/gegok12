@@ -34,24 +34,20 @@
         </div>
         <!--end-->
 
-        <portal-target name="submit-btn"></portal-target>
-        <portal to="submit-btn">
+        <div id="submit-btn"></div>
+        <Teleport to="#submit-btn">
             <div class="my-6">
                 <a href="#" id="submit-btn" class="btn btn-reset bg-gray-100 text-gray-700 border rounded px-3 py-1 mr-3 text-sm font-medium" @click="setTab('3')">Back</a>
                 <a href="#" class="btn btn-submit blue-bg text-white rounded px-3 py-1 mr-3 text-sm font-medium" @click="submitForm()">Submit</a>
                 <a href="#" class="btn btn-reset bg-gray-100 text-gray-700 border rounded px-3 py-1 mr-3 text-sm font-medium" @click="resetForm()" v-if="this.type == 'add'">Reset</a>
                 <input type="submit" class="hidden" id="submit_btn" value="Submit"> 
             </div>
-        </portal>
+        </Teleport>
     </div>
 </template>
 
 <script>
     import { bus } from "../../app";
-    import VueQuillEditor from 'vue-quill-editor'
-    import 'quill/dist/quill.core.css' // import styles
-    import 'quill/dist/quill.snow.css' // for snow theme
-    import 'quill/dist/quill.bubble.css' // for bubble theme
 
     export default {
         props:['url' , 'type' , 'id'],
@@ -62,16 +58,6 @@
                 profile_tab:'',
                 modification:'',
                 notes:'',
-                option:{
-                  theme: 'snow',
-                  modules: {
-                    toolbar: [
-                      ['bold', 'italic', 'underline'],
-                      [{ 'list': 'ordered' }, { 'list': 'bullet' }]
-                    ]
-                  },
-                  placeholder: '', 
-                },
                 errors:[],
                 success:null,
             }
@@ -103,7 +89,7 @@
             setTab(val)
             {
                 this.profile_tab=val;
-                bus.$emit("dataProfileTab", this.profile_tab);
+                bus.emit("dataProfileTab", this.profile_tab);
             },
 
             resetForm()
@@ -145,19 +131,19 @@
         created()
         {
             this.getData();
-            bus.$on("dataProfileTab", data => {
+            bus.on("dataProfileTab", data => {
                 if(data!='')
                 {
                     this.profile_tab=data;                   
                 }
             });
-            bus.$on("lessonId", data => {
+            bus.on("lessonId", data => {
                 if(data!='')
                 {
                     this.lesson_id=data;                   
                 }
             });
-            bus.$on("message", data => {
+            bus.on("message", data => {
                 if(data!='')
                 {
                     this.success=data;                   

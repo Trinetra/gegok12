@@ -29,6 +29,8 @@ class Teacher extends JsonResource
             'sub_designation'   =>  $details['sub_designation'],
             'date_of_birth'     =>  date('d M Y',strtotime($this->userprofile->date_of_birth)),
             'status'            =>  $this->status,
+            'librarycard_number'        => $this->librarycard->library_card_no,
+            'book_limit' => $this->librarycard->book_limit,
         ];
     }
 }

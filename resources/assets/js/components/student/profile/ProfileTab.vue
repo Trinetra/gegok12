@@ -52,7 +52,7 @@
       </li>
 
     </ul>
-    <portal to="profile">
+    <Teleport to="#profile">
       <myprofile :url="this.url" :name="this.name" :mode="mode"></myprofile>
       <timeline :url="this.url" :name="this.name" :mode="mode"></timeline>
       <family :url="this.url" :name="this.name" :mode="mode"></family>
@@ -63,19 +63,18 @@
       <attendances :url="this.url" :name="this.name" :mode="mode"></attendances>
       <medicalHistory :url="this.url" :name="this.name" :mode="mode"></medicalHistory>
             <fees :url="this.url" :name="this.name" :mode="mode"></fees>
-            <leaveHistory :url="this.url" :name="this.name"></leaveHistory>
-             <bankdetails :url="this.url" :name="this.name"></bankdetails>
-    </portal>
-    <portal to="notes">
+            <leaveHistory :url="this.url" :name="this.name" :mode="mode"></leaveHistory>
+             <bankdetails :url="this.url" :name="this.name" :mode="mode"></bankdetails>
+    </Teleport>
+    <Teleport to="#notes">
       <div class="px-3 overflow-x-scroll lg:overflow-x-auto md:overflow-x-auto py-3" v-bind:class="[this.profile_tab==6?'block' :'hidden']">
         <notes :url="this.url" :entity_id="this.entity_id" entity_name="user" :school_id="this.school_id"></notes>
       </div>    
-    </portal>
+    </Teleport>
   </div>
 </template>
 
 <script>
-  import PortalVue from "portal-vue";
   import { bus } from "../../../app";
   import notes from '../../notes';
   import myprofile from './myprofile';
@@ -124,15 +123,15 @@
       setProfileTab(val)
       {
         this.profile_tab=val;
-        bus.$emit("dataProfileTab", this.profile_tab);
+        bus.emit("dataProfileTab", this.profile_tab);
       }
     },
 
     created()
     {
-      bus.$emit("dataProfileTab", this.profile_tab);
+      bus.emit("dataProfileTab", this.profile_tab);
        
-      bus.$on("dataProfileTab", data => {
+      bus.on("dataProfileTab", data => {
         if(data!='')
         {
           this.profile_tab=data;                   

@@ -1,43 +1,62 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
 namespace Database\Factories;
 
 use App\Models\ParentProfile;
 use App\Models\Qualification;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(ParentProfile::class, function (Faker $faker) {
-	
-	$qualification 		= Qualification::where('status',1)->where('type','!=','teacher')->pluck('id')->toArray();
-	$qualification_id 	= $faker->randomElement($qualification);
+class ParentProfileFactory extends Factory
+{
+    protected $model = ParentProfile::class;
 
-	$profession = $faker->randomElement(['business','central_government_employee','private','home_maker','state_government_employee','others']);
+    public function definition()
+    {
+        $qualification = Qualification::where('status', 1)
+            ->where('type', '!=', 'teacher')
+            ->pluck('id')
+            ->toArray();
 
-	if($profession != 'home_maker')
-	{
-		$sub_occupation = $faker->jobTitle;
+        $qualification_id = $this->faker->randomElement($qualification);
 
-		$designation = $faker->jobTitle;
+        $profession = $this->faker->randomElement([
+            'business',
+            'central_government_employee',
+            'private',
+            'home_maker',
+            'state_government_employee',
+            'others'
+        ]);
 
-		$organization_name = $faker->company;
+        // default values for home_maker
+        $sub_occupation   = null;
+        $designation      = null;
+        $organization_name = null;
+        $official_address = null;
+        $annual_income    = null;
 
-    	$official_address = $faker->randomElement(['Bangalore' , 'Chennai' , 'Hyderabad' , 'Mumbai' , 'Thiruvananthapuram']);
+        // if not home_maker, fill work details
+        if ($profession !== 'home_maker') {
+            $sub_occupation    = $this->faker->jobTitle;
+            $designation       = $this->faker->jobTitle;
+            $organization_name = $this->faker->company;
+            $official_address  = $this->faker->randomElement([
+                'Bangalore', 'Chennai', 'Hyderabad', 'Mumbai', 'Thiruvananthapuram'
+            ]);
+            $annual_income     = $this->faker->numerify('#######');
+        }
 
-    	$annual_income = $faker->randomNumber($nbDigits = 7, $strict = false);
-	}
+        $relation = $this->faker->randomElement(['father', 'mother', 'guardian']);
 
-    $relation = $faker->randomElement(['father' , 'mother' , 'guardian']);
-
-    return [
-        //
-    	'qualification_id'	=>	$qualification_id,
-    	'profession'		=>	$profession,
-    	'sub_occupation'	=>	$sub_occupation,
-    	'designation'		=>	$designation,
-    	'organization_name'	=>	$organization_name,
-    	'official_address'	=>	$official_address,
-    	'relation'			=>	$relation,
-    	'annual_income'		=>	$annual_income,
-    ];
-});
+        return [
+            'qualification_id'  => $qualification_id,
+            'profession'        => $profession,
+            'sub_occupation'    => $sub_occupation,
+            'designation'       => $designation,
+            'organization_name' => $organization_name,
+            'official_address'  => $official_address,
+            'relation'          => $relation,
+            'annual_income'     => $annual_income
+        ];
+    }
+}

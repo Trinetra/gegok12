@@ -21,7 +21,7 @@ class CreateConversationsTable extends Migration
             $table->foreign('user_one')->references('id')->on('users');
             $table->integer('user_two')->unsigned();
             $table->foreign('user_two')->references('id')->on('users');
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

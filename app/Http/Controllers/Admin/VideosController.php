@@ -26,6 +26,9 @@ use App\Models\Audio;
 use Exception;
 use Log;
 
+/**
+ * Controller for managing media files (videos, audio, images) in the admin panel.
+ */
 class VideosController extends Controller
 {
     //use HasMediaTrait;
@@ -33,6 +36,11 @@ class VideosController extends Controller
     use LogActivity;
     use Common;
 
+    /**
+     * Show media file dashboard counts.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
     public function index()
     {
         $count = Video::where('school_id',Auth::user()->school_id)->count();
@@ -40,6 +48,13 @@ class VideosController extends Controller
         return view('/admin/mediafiles/index',[ 'count' => $count  ]);
     }
 
+    /**
+     * List files of a specific type for the authenticated school.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $type
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function list(Request $request, $type)
     {
         //
@@ -64,6 +79,11 @@ class VideosController extends Controller
         return $files;    
     }
 
+    /**
+     * Fetch available standard links for the authenticated school.
+     *
+     * @return mixed
+     */
     public function standardlist()
     {
       $standardLinks = SiteHelper::getStandardLinkList(Auth::user()->school_id);
@@ -87,6 +107,12 @@ class VideosController extends Controller
         return view('/admin/mediafiles/create1',[ 'count' => $count , 'subscription' => $subscription,'standardLinks' => $standardLinks ]);
     }
 
+    /**
+     * Persist raw audio recording data for later association.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return void
+     */
     public function save(Request $request)
     {
         try
@@ -103,6 +129,12 @@ class VideosController extends Controller
         }
     }
 
+    /**
+     * Persist raw video recording data for later association.
+     *
+     * @param \App\Http\Requests\VideoRequest $request
+     * @return void
+     */
     public function videostore(VideoRequest $request)
     {
         try
@@ -120,6 +152,12 @@ class VideosController extends Controller
         }
     }
 
+    /**
+     * Store an uploaded image as a media record.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return void
+     */
     public function storeimage(Request $request)
     {
          $bigfolder = Auth::user()->school->slug.'/files/large';
@@ -173,7 +211,7 @@ class VideosController extends Controller
                      
                         $video->save(); 
 
-                        $media=$video->addMedia($file)->toMediaCollection('images', env('FILESYSTEM_DRIVER'));
+                        $media=$video->addMedia($file)->toMediaCollection('images', env('FILESYSTEM_DISK'));
                        
                         $thumb=$media->getPath('thumb');
                         $path = $this->uploadFile($thumb,$file);
@@ -268,6 +306,11 @@ class VideosController extends Controller
         }
     }
 
+    /**
+     * Return all media files across schools (likely for API usage).
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function view()
     {
         //
@@ -277,6 +320,12 @@ class VideosController extends Controller
         return $videos;
     }
 
+    /**
+     * Show a media file's viewers list.
+     *
+     * @param int $id
+     * @return \Illuminate\Contracts\View\View
+     */
     public function viewers($id)
     {
         $video = Video::where('id',$id)->first();
@@ -286,6 +335,12 @@ class VideosController extends Controller
         return view('/admin/mediafiles/view',['video' => $video,'viewers' => $viewers]); 
     }
 
+    /**
+     * Display edit form for a media file belonging to the authenticated school.
+     *
+     * @param int $id
+     * @return \Illuminate\Contracts\View\View
+     */
     public function edit($id)
     {
         $videos = Video::where('id',$id)->where('school_id',Auth::user()->school_id)->first();
@@ -295,6 +350,13 @@ class VideosController extends Controller
         return view('/admin/mediafiles/edit',['videos'=>$videos,'standardLinks'=>$standardLinks]);  
     }
 
+    /**
+     * Update an existing media file.
+     *
+     * @param \App\Http\Requests\MediafileUpdateRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|null
+     */
     public function update(MediafileUpdateRequest $request,$id)
     {
         $video = Video::where('id',$id)->first();
@@ -323,7 +385,7 @@ class VideosController extends Controller
                             $video->url             = $pathToImage;
                          
                             $video->save(); 
-                            $media=$video->addMedia($file)->toMediaCollection('images', env('FILESYSTEM_DRIVER'));
+                            $media=$video->addMedia($file)->toMediaCollection('images', env('FILESYSTEM_DISK'));
                            
                             $thumb=$media->getPath('thumb');
                             $video->thumb_file=$thumb;
@@ -426,6 +488,12 @@ class VideosController extends Controller
         }
     }
 
+    /**
+     * Show a single media file along with derived URLs and thumbnail.
+     *
+     * @param int $id
+     * @return array
+     */
     public function show($id)
     {
         //
@@ -467,11 +535,17 @@ class VideosController extends Controller
         return $videos;
     }
 
+    /**
+     * Download a media file attachment.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
     public function downloadattachments($id)
     {
         $video = Video::where('id', $id)->where('school_id',Auth::user()->school_id)->first();
         $file=$video->url;
-        $path=$this->getFilePathforDownload(env('FILESYSTEM_DRIVER'),$file);
+        $path=$this->getFilePathforDownload(env('FILESYSTEM_DISK'),$file);
         $name='Media'.'_'.$video->name.'.jpg';
         $headers = [
             'Content-Disposition' => 'attachment; filename="'. $name.'"',
@@ -492,6 +566,12 @@ class VideosController extends Controller
         return \Response::make($path, 200, $headers);
     }
 
+    /**
+     * Delete a media file if the user is authorized.
+     *
+     * @param int $id
+     * @return array|\Symfony\Component\HttpFoundation\Response|void
+     */
     public function destroy($id)
     {
         try

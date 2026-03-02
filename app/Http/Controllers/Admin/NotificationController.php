@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Resources\Notification as NotificationResource;
@@ -15,14 +16,25 @@ use Notification;
 use Exception;
 use Log;
 
+/**
+ * Class NotificationController
+ *
+ * Handles notification listing, reading, and summary display
+ * for authenticated admin users.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class NotificationController extends Controller
 {
     //
 
     /**
-     * Fetches the notifications.
+     * Fetch all read and unread notifications for the logged-in user.
      *
-     * @return \Illuminate\Http\Response
+     * Returns notifications grouped as read and unread using
+     * API resource transformation.
+     *
+     * @return array|null
      */
     public function indexList()
     {
@@ -30,16 +42,23 @@ class NotificationController extends Controller
         {
             $array = [];
 
-            $unreadNotifications = \DB::table('notifications')->where('notifiable_id',Auth::id())->whereNull('read_at')->get();
-            
+            $unreadNotifications = \DB::table('notifications')
+                ->where('notifiable_id', Auth::id())
+                ->whereNull('read_at')
+                ->get();
+
             $unreadNotifications = NotificationResource::collection($unreadNotifications);
 
-            $readNotifications = \DB::table('notifications')->where('notifiable_id',Auth::id())->whereNotNull('read_at')->orderBy('read_at','ASC')->get();
-            
+            $readNotifications = \DB::table('notifications')
+                ->where('notifiable_id', Auth::id())
+                ->whereNotNull('read_at')
+                ->orderBy('read_at', 'ASC')
+                ->get();
+
             $readNotifications = NotificationResource::collection($readNotifications);
 
-            $array['read_list']     = $readNotifications;
-            $array['unread_list']   = $unreadNotifications;
+            $array['read_list']   = $readNotifications;
+            $array['unread_list'] = $unreadNotifications;
 
             return $array;
         }
@@ -50,17 +69,25 @@ class NotificationController extends Controller
         }
     }
 
+    /**
+     * Display notification index page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
-    	//
-    	return view('/admin/notification/index');
+        //
+        return view('/admin/notification/index');
     }
 
     /**
-     * Mark the notification as read.
-     * 
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Mark notification(s) as read.
+     *
+     * Marks a single notification or all notifications
+     * as read based on request input.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array|null
      */
     public function store(Request $request)
     {
@@ -68,73 +95,89 @@ class NotificationController extends Controller
         {
             if(Auth::user())
             {
-                if($request->notification_id!='all')
+                if($request->notification_id != 'all')
                 {
-                	\DB::table('notifications')->where('id', $request->notification_id)->where('notifiable_id',Auth::id())->whereNull('read_at')->update(['read_at' => Carbon::now()]);
+                    \DB::table('notifications')
+                        ->where('id', $request->notification_id)
+                        ->where('notifiable_id', Auth::id())
+                        ->whereNull('read_at')
+                        ->update(['read_at' => Carbon::now()]);
 
-      				$res['success'] = "Notification Read Successfully";
-        			return $res;
+                    $res['success'] = "Notification Read Successfully";
+                    return $res;
                 }
                 else
                 {
-                    \DB::table('notifications')->where('notifiable_id',Auth::id())->whereNull('read_at')->update(['read_at' => Carbon::now()]);
+                    \DB::table('notifications')
+                        ->where('notifiable_id', Auth::id())
+                        ->whereNull('read_at')
+                        ->update(['read_at' => Carbon::now()]);
 
                     $res['success'] = "All Notifications Read Successfully";
                     return $res;
                 }
-        	}
+            }
         }
-      	catch(Exception $e)
-      	{
+        catch(Exception $e)
+        {
             Log::info($e->getMessage());
-        	//dd($e->getMessage());
-      	}
-    } 
+            //dd($e->getMessage());
+        }
+    }
 
     /**
-     * Fetches the notifications.
+     * Fetch latest unread notifications summary.
      *
-     * @return \Illuminate\Http\Response
+     * Returns unread notification count and the latest
+     * five unread notifications with formatted data.
+     *
+     * @return array|null
      */
     public function showList()
     {
         try
         {
-        	$array=[];
+            $array = [];
+
             if(Auth::user())
             {
-              	$array['count']=count(Auth::user()->unreadNotifications);
-              	$notifications= Auth::user()->unreadNotifications->take(5);
-              	$i=0;
-             	foreach ($notifications as $notification)
+                $array['count'] = count(Auth::user()->unreadNotifications);
+                $notifications  = Auth::user()->unreadNotifications->take(5);
+
+                $i = 0;
+                foreach ($notifications as $notification)
                 {
-                    $val='';
-                    if((count($notification->data)>0) && (isset($notification->data['data'])))
+                    $val  = '';
+                    $type = null;
+
+                    if ((count($notification->data) > 0) && (isset($notification->data['data'])))
                     {
-                        if(count((array)$notification->data['data']) > 1)
+                        if (count((array)$notification->data['data']) > 1)
                         {
-                            $val = $notification->data['data']['data'];
+                            $val  = $notification->data['data']['data'];
                             $type = $notification->data['data']['type'];
                         }
                         else
                         {
-                            $val = $notification->data['data'];
+                            $val  = $notification->data['data'];
                             $type = null;
                         }
                     }
-                    $array['list'][$i]['notification_id']=$notification['id'];                  
-                    $array['list'][$i]['data']=$val;
-                    $array['list'][$i]['type']=$type;
-                    $array['list'][$i]['date']=$notification->created_at->diffForHumans();
+
+                    $array['list'][$i]['notification_id'] = $notification['id'];
+                    $array['list'][$i]['data']            = $val;
+                    $array['list'][$i]['type']            = $type;
+                    $array['list'][$i]['date']            = $notification->created_at->diffForHumans();
                     $i++;
                 }
             }
-        	return $array;
+
+            return $array;
         }
-      	catch(Exception $e)
-      	{
-        	Log::info($e->getMessage());
+        catch(Exception $e)
+        {
+            Log::info($e->getMessage());
             //dd($e->getMessage());
-      	}
+        }
     }
 }

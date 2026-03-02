@@ -10,6 +10,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ActivityLog;
 
+/**
+ * Class ActivityLogController
+ *
+ * Controller for displaying activity logs for the authenticated admin user.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class ActivityLogController extends Controller
 {
     /**

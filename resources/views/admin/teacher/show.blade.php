@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.admin.layout')
 
 @section('content')
@@ -160,8 +159,12 @@
                         @if($user->userprofile->usergroup_id=='8')
                          <a href="{{ url('/library/'.$user->id.'/impersonate') }}" target="_blank" class="capitalize text-white blue-bg rounded px-2 py-1 ml-2 font-medium">Login as Librarian</a>
                          @else
-                        <a href="{{ url('/teacher/'.$user->id.'/impersonate') }}" target="_blank" class="capitalize text-white bg-purple-500 rounded px-2 py-1 ml-2 font-medium">Login as Teacher</a>
+                        <a href="{{ url('/teacher/'.$user->id.'/impersonate') }}" target="_blank" class="capitalize text-white bg-purple-500 rounded px-2 py-1 mx-2 font-medium">Login as Teacher</a>
                         @endif
+
+                        <a href="{{url('/admin/teacher/id-card/'.$user->name)}}" title="ID CARD" class="text-white text-xs flex items-center blue-bg rounded p-1" id="ID CARD">
+                            <span class="mx-1">Id Card</span>
+                        </a>
                         
                     </div>
                 </div>
@@ -172,7 +175,7 @@
                 <div class="bg-white shadow my-5">
                     <profile-tab-teacher url="{{url('/')}}"  entity_id="{{ $user->id }}" school_id="{{ $user->school_id }}" name="{{$user->name}}" mode="teacher"></profile-tab-teacher>
                    
-                    <portal-target name="teacherprofile"></portal-target>
+                    <div id="teacherprofile"></div>
                 </div>
             </div>
         </div>

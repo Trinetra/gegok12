@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 
     <div class="px-1 dashboard-task">
       <div class="bg-white px-3 py-2 my-2">
@@ -47,7 +46,7 @@
  
 <!-- list tab -->
 <list-task-tab url="{{ url('/') }}" mode="accountant"></list-task-tab>
-<portal-target name="list_task"></portal-target>
+<div id="list_task"></div>
             <!-- ***** -->
             <!-- ***** -->
 

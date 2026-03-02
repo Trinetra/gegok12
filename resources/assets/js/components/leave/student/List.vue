@@ -165,7 +165,7 @@
         created()
         {        
             this.getData();  
-            bus.$on("statusTab", data => {
+            bus.on("statusTab", data => {
                 if(data!='')
                 {
                     this.status=data;

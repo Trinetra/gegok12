@@ -63,18 +63,21 @@ class TaskController extends Controller
      */
     public function list(Request $request)
     {
-        $array = [];
+        // $array = [];
 
-        $array['task_date'] = date('Y-m-d');
+        // $array['task_date'] = date('Y-m-d');
         
-        return $array;
+        // return $array;
+        $tasks = []; 
+
+        return response()->json($tasks);
     }
 
     public function changestatus(Request $request)
     {
         try
         {
-            if( count($request->selectedTaskCount) > 0 )
+            if($request->selectedTaskCount > 0 )
             {
                 foreach ($request->task_completed as $task_id) 
                 {

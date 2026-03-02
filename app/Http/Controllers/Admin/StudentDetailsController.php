@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\StudentParentLink;
 use App\Models\StudentAcademic;
 use Illuminate\Http\Request;
-use App\Schoolplus\Student;
+use App\Schoolplus\StudentFacade as Student;
 use App\Helpers\SiteHelper;
 use App\Traits\LogActivity;
 use App\Models\ActivityLog;
@@ -37,7 +37,19 @@ use App\Models\Mark;
 use App\Models\Fee;
 use Exception;
 use Log;
+use Redirect;
+use PDF;
+use App\Models\Standard;
 
+/**
+ * Class StudentDetailsController
+ *
+ * Handles student-related detailed views such as
+ * profile, relations, attendance, marks, fees,
+ * medical history, activities, and reports.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class StudentDetailsController extends Controller
 {
     //
@@ -45,10 +57,10 @@ class StudentDetailsController extends Controller
     use Common;
 
     /**
-     * Display the specified resource.
+     * Show student basic details.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param string $name
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function showDetails($name)
     {
@@ -61,10 +73,10 @@ class StudentDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show parent relations of a student.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param string $name
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function showRelations($name)
     {
@@ -77,10 +89,10 @@ class StudentDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show siblings of a student.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param string $name
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function showSiblings($name)
     {
@@ -93,7 +105,13 @@ class StudentDetailsController extends Controller
         $siblings = SiblingListResource::collection($siblings);
         return $siblings;
     }
-
+    
+    /**
+     * Show activity logs where student is subject.
+     *
+     * @param string $name
+     * @return mixed
+     */
     public function showActivity($name)
     {
         //
@@ -111,7 +129,13 @@ class StudentDetailsController extends Controller
             abort(403);
         } 
     }
-
+    
+    /**
+     * Show activity logs where student is causer.
+     *
+     * @param string $name
+     * @return mixed
+     */
     public function showActivityLog($name)
     {
         //
@@ -131,10 +155,10 @@ class StudentDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show student discipline records.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param string $name
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function showDisciplines($name)
     {
@@ -147,10 +171,10 @@ class StudentDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show student attendance records.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param string $name
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function showAttendance($name)
     {
@@ -163,10 +187,10 @@ class StudentDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show student medical history.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param string $name
+     * @return array
      */
     public function showMedicalHistory($name)
     {
@@ -190,14 +214,15 @@ class StudentDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show student fee details.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param string $name
+     * @return mixed
      */
     public function showFees($name)
     {
         //
+        $feepayments=[];
         $student = User::where('name', $name)->first();
 
         $school_id = Auth::user()->school_id;
@@ -209,17 +234,10 @@ class StudentDetailsController extends Controller
 
             $fees = \Gegok12\Fee\Models\Fee::where([['school_id',$school_id],['academic_year_id',$academic_year->id]])->where('standardLink_id',$student->studentAcademicLatest->standardLink_id)->orWhere('standardLink_id',null)->orderBy('start_date','DESC')->paginate(5);
         }
-        else{
-            $fees = Fee::where([['school_id',$school_id],['academic_year_id',$academic_year->id]])->where('standardLink_id',$student->studentAcademicLatest->standardLink_id)->orWhere('standardLink_id',null)->orderBy('start_date','DESC')->paginate(5);
-        }
         
         if(class_exists('Gegok12\Fee\Http\Resources\UserFees'))
         {
             $feepayments = \Gegok12\Fee\Http\Resources\UserFees::collection($fees);
-        }
-        else
-        {
-            $feepayments = UserFeesResource::collection($fees);
         }
 
          
@@ -227,10 +245,10 @@ class StudentDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display create medical history form.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param string $name
+     * @return \Illuminate\View\View
      */
     public function createMedicalHistory($name)
     {
@@ -241,10 +259,11 @@ class StudentDetailsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Store or update student medical history.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param MedicalHistoryRequest $request
+     * @param string $name
+     * @return array|null
      */
     public function addMedicalHistory(MedicalHistoryRequest $request,$name)
     {
@@ -286,7 +305,13 @@ class StudentDetailsController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    
+    /**
+     * Display books lent to a student.
+     *
+     * @param string $name Student name
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function showBookLent($name)
     {
         //
@@ -297,6 +322,12 @@ class StudentDetailsController extends Controller
         return $lent;
     }
 
+    /**
+     * Display student profile page with parent details.
+     *
+     * @param string $name Student name
+     * @return \Illuminate\View\View
+     */
     public function show($name)
     {
         // 
@@ -322,9 +353,10 @@ class StudentDetailsController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display student marks for a specific exam.
      *
-     * @return \Illuminate\Http\Response
+     * @param string $name Student name
+     * @return mixed
      */
     public function showmark($name)
     {
@@ -334,7 +366,13 @@ class StudentDetailsController extends Controller
 
        return  Student::getStudentMark($studentId,$examId);
     }
-
+    
+    /**
+     * Display all exam marks of a student.
+     *
+     * @param string $name Student name
+     * @return mixed
+     */
     public function showAllMark($name)
     {
         $users = User::where('name', $name)->first();
@@ -343,7 +381,13 @@ class StudentDetailsController extends Controller
 
         return  Student::getAllMarks($studentId);
     }
-
+    
+    /**
+     * Compare marks between two latest exams for a student.
+     *
+     * @param string $name Student name
+     * @return \Illuminate\View\View
+     */
     public function compareMarks($name)
     {
         try
@@ -390,9 +434,15 @@ class StudentDetailsController extends Controller
         }
     } 
 
-
+    /**
+     * Display student marks graph for all exams.
+     *
+     * @param string $name Student name
+     * @return \Illuminate\View\View
+     */
     public function marksGraph($name)
     {
+
         $school_id      =   Auth::user()->school_id;
         $academic_year  =   SiteHelper::getAcademicYear($school_id);
         $users=User::with('studentAcademic')->where('name',$name)->get();
@@ -407,10 +457,8 @@ class StudentDetailsController extends Controller
             $examss=\Gegok12\Exam\Models\Exam::where('standard_id',$standardId)->get();
 
         }
-        else
-        {
-            $examss=Exam::where('standard_id',$standardId)->get();
-
+        else{
+            return back();
         }
          
           //dd($subjects);
@@ -423,9 +471,6 @@ class StudentDetailsController extends Controller
             {
                 $exam_result=\Gegok12\Exam\Models\Mark::where('user_id',$studentId)->where('exam_id',$exam->id);
             }
-            else{
-                $exam_result=Mark::where('user_id',$studentId)->where('exam_id',$exam->id);
-            }
            
            $exam_marks=$exam_result->pluck('obtained_marks')->toArray();
            $exam_avg=$exam_result->avg('obtained_marks');
@@ -437,10 +482,6 @@ class StudentDetailsController extends Controller
             if(class_exists('Gegok12\Exam\Models\Mark'))
             {
                 $markings=\Gegok12\Exam\Models\Mark::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['standard_id',$standardId],['exam_id',$exam->id],['subject_id',$seller->subject_id]])->first();
-            }
-            else
-            {
-                $markings=Mark::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['standard_id',$standardId],['exam_id',$exam->id],['subject_id',$seller->subject_id]])->first();
             }
             
 
@@ -460,5 +501,63 @@ class StudentDetailsController extends Controller
          $finas=array_merge($subjects_array,$data);
 
           return view('/admin/exammark/markgraph' , ['subjects'=>$finas,'user'=>$users[0]]);
+    }
+    /**
+     * Enable bus pass for selected students.
+     *
+     * @return \Illuminate\Http\RedirectResponse|null
+     */
+    public function create()
+    {
+
+        try {
+
+            foreach ($request->selectedUsers as $user) {
+            $studentAcademic = StudentAcademic::where('user_id',$user)->first();
+            $studentAcademic->bus_pass ="yes";
+            $studentAcademic->update();
+        }
+            
+           return Redirect::to('admin/student/buspass/show');
+        } catch (Exception $e) {
+            Log::info($e->getMessage());
+            
+        } 
+        
+    }
+    /**
+     * Display bus pass details for a student.
+     *
+     * @param string $name Student name
+     * @return \Illuminate\View\View
+     */
+      public function showbus($name)
+    {
+
+     
+        $studentlist=StudentAcademic::where('bus_pass', 'yes')->first();
+        $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+        $user = User::where('name',$name)->first();
+
+        return view('admin.buspass.show-bus_pass',compact('user','academic'));
+        
+    }
+    /**
+     * Print student bus pass as PDF.
+     *
+     * @param string $name Student name
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function showprint_buspass($name)
+    {
+
+        $studentlist=StudentAcademic::where('bus_pass', 'yes')->get();
+        $academic = SiteHelper::getAcademicYear(Auth::user()->school_id);
+        $student = User::where('name',$name)->first();
+
+        $pdf = PDF::loadView('admin/buspass/showprint', compact('student','academic'));
+ 
+        return $pdf->stream('buspass.pdf', array('Attachment'=>0)); 
+        
     }
 }

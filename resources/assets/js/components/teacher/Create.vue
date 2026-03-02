@@ -62,7 +62,12 @@
           <div class="mb-2">
             <select class="tw-form-control w-full" id="designation" v-model="designation" name="designation" >
               <option value="" disabled>Select Designation</option>
-              <option value="" v-for="designation in designationlist" v-bind:value="designation.id">{{ designation.name }}</option>
+              <option
+                v-for="designation in designationlist"
+                :key="designation.id"
+                :value="designation.id">
+                {{ designation.name }}
+              </option>
             </select>
           </div>
           <span v-if="errors.designation" class="text-red-500 text-xs font-semibold">{{errors.designation[0]}}</span>
@@ -176,24 +181,67 @@
         </div>
       </div>
 
-      <div class="tw-form-group w-full lg:w-1/3">
-        <div class="lg:mr-8 md:mr-8">
-          <div class="mb-2">
-            <label for="avatar" class="tw-form-label">Avatar</label>
-          </div>
-          <div class="mb-2 flex">
-            <!-- <input type="file" name="avatar" @change="OnFileSelected" id="avatar" class="tw-form-control w-full"> -->
-            <div class="" v-if="avatar != ''">
-              <img :src="avatar" style="width: 100px;height: 100px;" @load="uploadImage">
-            </div>
-            <div class="" v-else>
-              <img :src='url+"/uploads/user/avatar/default-user.jpg"' style="width: 100px;height: 100px;">
-            </div>
-            <VueImageUploadCroppie :defaultImage.sync="avatar" :height="100" :width="100" :trans="trans"></VueImageUploadCroppie>
-          </div>
-          <span v-if="errors.avatar" class="text-red-500 text-xs font-semibold">{{errors.avatar[0]}}</span>
+      <!-- Avatar -->
+<div class="tw-form-group w-full lg:w-1/3">
+  <div class="lg:mr-8 md:mr-8">
+    <div class="mb-2">
+      <label class="tw-form-label">Avatar</label>
+    </div>
+
+    <!-- Compact Preview + Button -->
+    <div class="flex items-center space-x-4">
+
+      <!-- Preview -->
+      <img
+        :src="croppedImage || avatar || url + '/uploads/user/avatar/default-user.jpg'"
+        class="rounded-full border shadow-sm"
+        style="width:80px;height:80px;object-fit:cover;"
+      />
+
+      <!-- Upload Button -->
+      <label class="cursor-pointer bg-gray-300 text-white text-xs px-3 py-2 rounded shadow hover:bg-gray-400 hover:text-black transition ml-2">
+        Choose
+        <input type="file" class="hidden" @change="onFileChange">
+      </label>
+
+    </div>
+
+    <!-- Cropper Modal -->
+    <div v-if="image" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white p-4 rounded shadow-lg w-80">
+
+        <Cropper
+          :src="image"
+          :stencil-props="{ aspectRatio: 1 }"
+          style="width:100%;height:250px;"
+          @change="onCrop"
+        />
+
+        <div class="flex justify-end mt-3 space-x-2">
+          <button
+            class="px-3 py-1 text-sm bg-gray-400 text-white rounded"
+            @click="image=null"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="px-3 py-1 text-sm bg-green-600 text-white rounded"
+            @click="saveCropped"
+          >
+            Save
+          </button>
         </div>
+
       </div>
+    </div>
+
+  </div>
+
+  <span v-if="errors.avatar" class="text-red-500 text-xs font-semibold">
+    {{ errors.avatar[0] }}
+  </span>
+</div>
 
       <div class="tw-form-group w-full lg:w-1/3">
         <div class="lg:mr-8 md:mr-8">
@@ -271,12 +319,12 @@
 
 <script> 
   import { bus } from "../../app";
-  import PortalVue from "portal-vue";
-  import VueImageUploadCroppi from 'vue-image-upload-croppie'
+  import { Cropper } from 'vue-advanced-cropper'
+  import 'vue-advanced-cropper/dist/style.css'
   export default {
     components: 
     { 
-      VueImageUploadCroppi,
+      Cropper,
     },
     props:['url','staff'],
     data(){
@@ -298,6 +346,8 @@
         sub_designation:'',
         job_type:'',
         avatar:'',
+        image: null,
+        croppedImage: null,
         marital_status:'',
         reporting_to:'',
         interested_in:'',
@@ -358,7 +408,7 @@
       setProfileTab(val)
       {
         this.profile_tab=val;
-        bus.$emit("dataProfileTab", this.profile_tab);
+        bus.emit("dataProfileTab", this.profile_tab);
       },
 
       resetForm()
@@ -387,7 +437,9 @@
 
         let formData = new FormData(); 
 
-        formData.append('avatar',this.avatar);
+        if (this.croppedImage) {
+          formData.append('avatar', this.croppedImage);
+        }
 
         axios.post('/admin/teacher/add/validationAvatar',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {
           //this.success = response.data.success; 
@@ -433,12 +485,30 @@
       {
         this.avatar = event.target.files[0];
       },
+
+      onFileChange(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        this.image = URL.createObjectURL(file);
+      },
+
+      onCrop({ canvas }) {
+        this.croppedImage = canvas.toDataURL();
+      },
+      saveCropped() {
+        if (!this.croppedImage) return;
+
+        this.avatar = this.croppedImage;
+        this.uploadImage();
+        this.image = null; // close modal
+      },
     },
       
     created()
     {
       this.getData(); 
-      bus.$on("dataProfileTab", data => {
+      bus.on("dataProfileTab", data => {
         if(data!='')
         {
           this.profile_tab=data;                   

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @component('mail::message')
 {{-- Greeting --}}
 @if (! empty($greeting))

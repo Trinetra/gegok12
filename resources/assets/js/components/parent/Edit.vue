@@ -153,15 +153,32 @@
         </div>
       </div>
 
-      <portal-target name="edit_official_address"></portal-target>
+      <div class="flex flex-col lg:flex-row md:flex-row">
+        <!-- Address -->
+        <div class="tw-form-group w-full lg:w-1/2 md:w-1/2">
+            <input type="text"
+                   v-model="official_address"
+                   id="official_address"
+                   class="tw-form-control w-full">
+            <a href="#" @click.prevent="codeAddress">Search</a>
+        </div>
 
-      <portal-target name="submit-btn"></portal-target>
-      <portal to="submit-btn">
+        <!-- Map -->
+        <div class="tw-form-group w-full lg:w-1/2 md:w-1/2">
+            <div id="map_canvas"
+                 class="tw-form-control w-full"
+                 style="height:250px;"></div>
+        </div>
+
+        <input type="hidden" v-model="latitude" name="latitude">
+        <input type="hidden" v-model="longitude" name="longitude">
+    </div>
+
+      
         <div class="my-6">
           <a href="#" dusk="submit-btn" class="btn btn-primary submit-btn" @click="submitForm()">Submit</a>
           <input type="submit" class="hidden" id="submit-btn">
         </div>
-      </portal>
     </div>
   </div>
 </template>
@@ -193,10 +210,85 @@ export default {
       professions:[{num:'business' , name:'Business'} , {num:'central_government_employee' , name:'Central Government Employee'} , {num:'private' , name:'Private'} , {num:'home_maker' , name:'Home Maker'} , {num:'state_government_employee' , name:'State Government Employee'} , {num:'others' , name:'Others'} ],
       errors:[],
       success:null,
+      latitude:'',
+      longitude:'',
+      official_address:'',
+      map:null,
+      marker:null,
+      geocoder:null,
     }
   },
+
+  mounted() {
+      this.initMap();
+  },
+
     methods:
     {
+      initMap() {
+                const defaultLat = 9.9252007;
+                const defaultLng = 78.1197754;
+
+                const center = new google.maps.LatLng(defaultLat, defaultLng);
+
+                this.map = new google.maps.Map(
+                    document.getElementById("map_canvas"),
+                    {
+                        zoom: 15,
+                        center: center
+                    }
+                );
+
+                this.marker = new google.maps.Marker({
+                    position: center,
+                    map: this.map,
+                    draggable: true
+                });
+
+                this.latitude = defaultLat;
+                this.longitude = defaultLng;
+
+                this.geocoder = new google.maps.Geocoder();
+
+                google.maps.event.addListener(this.marker, 'mouseup', (event) => {
+                    this.latitude = event.latLng.lat();
+                    this.longitude = event.latLng.lng();
+                });
+
+                const autocomplete = new google.maps.places.Autocomplete(
+                    document.getElementById("official_address")
+                );
+
+                autocomplete.addListener("place_changed", () => {
+                    const place = autocomplete.getPlace();
+                    if (!place.geometry) return;
+
+                    const lat = place.geometry.location.lat();
+                    const lng = place.geometry.location.lng();
+                    this.updateLocation(lat, lng);
+                });
+            },
+
+            updateLocation(lat, lng) {
+                const latLng = new google.maps.LatLng(lat, lng);
+                this.latitude = lat;
+                this.longitude = lng;
+                this.map.setCenter(latLng);
+                this.marker.setPosition(latLng);
+            },
+
+            codeAddress() {
+                this.geocoder.geocode(
+                    { address: this.official_address },
+                    (results, status) => {
+                        if (status === "OK") {
+                            const lat = results[0].geometry.location.lat();
+                            const lng = results[0].geometry.location.lng();
+                            this.updateLocation(lat, lng);
+                        }
+                    }
+                );
+            },
       getData()
       {
         axios.get('/admin/parent/editlist/'+this.name).then(response => {
@@ -219,6 +311,7 @@ export default {
           this.organization_name  = this.user.organization_name;
           this.annual_income      = this.user.annual_income;
           this.relation           = this.user.relation;
+          this.official_address   = this.user.official_address;
           if(Object.keys(this.user.qualification_id).length > 0)
           {
             this.inputs             = this.user.qualification_id;
@@ -244,6 +337,7 @@ export default {
         formData.append('relation',this.relation);  
         formData.append('annual_income',this.annual_income);
         formData.append('count',this.inputs.length);
+        formData.append('official_address',this.official_address);
 
         for(let i=0; i<this.inputs.length;i++)
         { 

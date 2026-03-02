@@ -6,15 +6,30 @@
 namespace App\Http\Controllers\Accountant;
 
 use App\Http\Resources\Notice as NoticeResource;
+use App\Http\Resources\StandardLink as StandardLinkResource; //new
+use App\Http\Resources\backgroundImagesResource;  //new
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Models\BackgroundImage; //new
 use Illuminate\Http\Request;
+use App\Models\StandardLink;
 use App\Models\NoticeBoard;
 use App\Helpers\SiteHelper;
 
+/**
+ * Notice board controller for accountant.
+ *
+ * Handles listing and rendering of notices for the accountant dashboard.
+ */
 class NoticeBoardController extends Controller
 {
 
+    /**
+     * Return active (or optionally expired) notices as a resource collection.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function showList(Request $request)
     {
         //
@@ -31,8 +46,12 @@ class NoticeBoardController extends Controller
             { 
                 $notices = $notices->where('standardLink_id',$request->standardLink_id);
             }
+            if($request->search != '')
+            { 
+                $notices = $notices->where('title','LIKE','%'.$request->search.'%')->orWhere('description','LIKE','%'.$request->search.'%');
+            }
         }
-        $notices = $notices->get();
+        $notices = $notices->paginate(10);
         $notices = NoticeResource::collection($notices);
         
         return $notices;
@@ -49,4 +68,20 @@ class NoticeBoardController extends Controller
 
         return view('/accountant/noticeboard/index' ,['query' => $query]);
     }
+    //new 
+    public function list()
+    {
+        //
+        $standardLink = StandardLink::with('standard','section')->where('school_id',Auth::user()->school_id)->get();
+        $backgroundimages=BackgroundImage::where('school_id',Auth::user()->school_id)->latest()->get();
+        $backgroundimages=backgroundImagesResource::collection($backgroundimages);
+        $standardLink = StandardLinkResource::collection($standardLink);
+
+        $array = [];
+
+        $array['standardLinklist']=$standardLink;
+        $array['backgroundimages']=$backgroundimages;
+        
+        return $array;
+    } 
 }

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <form method="POST" action="{{url('/admin/standardLink/update/'.$standardLink->id)}}" enctype="multipart/form-data">
   @csrf
   <div class="flex"> 

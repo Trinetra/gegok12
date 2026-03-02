@@ -26,7 +26,7 @@ class CreateSubjectsTable extends Migration
             $table->string('name');
             $table->string('code')->nullable();
             $table->enum('type',['core','elective','exam']);
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

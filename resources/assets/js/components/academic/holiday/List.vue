@@ -58,7 +58,22 @@
                                     <label for="date" class="tw-form-label">Date</label>
                                 </div>
                                 <div class="w-full lg:w-3/4">
-                                    <datetime format="YYYY-MM-DD" name="date" v-model="date" class="rounded w-full" id="date"></datetime>
+                                    <VueDatePicker
+                                        v-model="date"
+                                        :enable-time-picker="false"
+                                        :auto-apply="true"
+                                        model-type="string"
+                                        format="yyyy-MM-dd"
+                                        :clearable="true"
+                                        :action-row="{
+                                          showSelect: true,
+                                          showCancel: true
+                                        }"
+                                        :month-change-on-scroll="false"
+                                        :year-change-on-scroll="false"
+                                        placeholder="Select Date"
+                                        class="w-full custom-datepicker"
+                                    />
                                     <span v-if="errors.date" class="text-red-500 text-xs font-semibold">{{errors.date[0]}}</span>
                                 </div>
                             </div>
@@ -86,10 +101,11 @@
 </template>
 
 <script>
-    import datetime from 'vuejs-datetimepicker';
+    import { VueDatePicker } from '@vuepic/vue-datepicker'
+    import '@vuepic/vue-datepicker/dist/main.css'
     export default {
         props:['url','mode'],
-        components: { datetime},
+        components: { VueDatePicker },
         data () {
             return {
                 holidays:[],
@@ -269,4 +285,43 @@
         -webkit-transform: scale(1.1);
         transform: scale(1.1);
     }
+
+   /* Header background (orange like screenshot) */
+.custom-datepicker .dp__header {
+    background-color: #f25c05 !important;
+    color: white !important;
+}
+
+/* Month + Year text color */
+.custom-datepicker .dp__month_year_wrap {
+    color: white !important;
+}
+
+/* Navigation arrows */
+.custom-datepicker .dp__arrow_btn {
+    color: white !important;
+}
+
+/* Selected date */
+.custom-datepicker .dp__cell_selected {
+    background-color: #f25c05 !important;
+    color: white !important;
+}
+
+/* Hover date */
+.custom-datepicker .dp__cell:hover {
+    background-color: #ffe5d6 !important;
+}
+
+/* OK Button */
+.custom-datepicker .dp__action_select {
+    background-color: #f25c05 !important;
+    color: white !important;
+    border: none !important;
+}
+
+/* Clear Button */
+.custom-datepicker .dp__action_cancel {
+    color: #f25c05 !important;
+}
 </style>

@@ -16,7 +16,7 @@ class CreateAbsentReasonsTable extends Migration
         Schema::create('absent_reasons', function (Blueprint $table) {
             $table->increments('id');
             $table->text('title');
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

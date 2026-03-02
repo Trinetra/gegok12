@@ -134,30 +134,47 @@ class PostAddController extends Controller
      */
     public function attachment(Request $request)
     {
-        //
-        try
-        {
-            $post = Post::where('id',$request->post_id)->first();
-            $i =0;
-            $files = $request->file;
-            
-            if(count($files) > 0) 
-            {
-                $post->attachment_file = null;
-                $post->save();
-                $path = [];
-                foreach($files as $file) 
-                {
-                    $path[$i] = $this->uploadFile(Auth::user()->school->slug.'/posts/'.$request->post_id,$file); 
-                    $i++;     
+        try {
+
+            $post = Post::findOrFail($request->post_id);
+
+            if ($request->hasFile('file')) {
+
+                $files = $request->file('file');
+
+                // If single file, convert to array
+                if (!is_array($files)) {
+                    $files = [$files];
                 }
-                $post->attachment_file = $path; 
+
+                // Get existing attachments
+                $attachments = $post->attachment_file ?? [];
+
+                if (!is_array($attachments)) {
+                    $attachments = [];
+                }
+
+                foreach ($files as $file) {
+
+                    $path = $this->uploadFile(
+                        Auth::user()->school->slug . '/posts/' . $post->id,
+                        $file
+                    );
+
+                    $attachments[] = $path;
+                }
+
+                $post->attachment_file = $attachments;
                 $post->save();
             }
-        }
-        catch(Exception $e)
-        {
-            //dd($e->getMessage());
+
+            return response()->json(['success' => true]);
+
+        } catch (Exception $e) {
+
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }

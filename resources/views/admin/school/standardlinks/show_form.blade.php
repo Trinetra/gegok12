@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <div>
 
   <div class="relative flex flex-row lg:flex-row md:flex-row bg-white shadow border">
@@ -93,8 +92,8 @@
   </div>
   <div class="bg-white shadow border my-3">
     <class-tab url="{{url('/')}}" school_id="{{ $standardLink->school_id }}" id="{{ $standardLink->id }}" mode="admin" auth_id="{{ \Auth::id() }}"></class-tab>
-    <portal-target name="class"></portal-target>
-    <portal-target name="notes"></portal-target>
+    <div id="class"></div>
+    <div id="notes"></div>
   </div>
 </div>
 

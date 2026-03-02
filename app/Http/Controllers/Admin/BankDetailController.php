@@ -12,6 +12,14 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Exception;
 
+/**
+ * Class BankDetailController
+ *
+ * Controller for managing bank details for users (create, edit,
+ * update and retrieve transaction account information).
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class BankDetailController extends Controller
 {
     /**
@@ -25,6 +33,9 @@ class BankDetailController extends Controller
         $account = TransactionAccount::where('user_id',$user->id)->first();
 
         //$documents = UserDocumentResource::collection($documents);
+        if (!$account) {
+            $account= []; 
+        }
 
         return $account;
     }

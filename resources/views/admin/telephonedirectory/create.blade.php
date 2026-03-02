@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.admin.layout')
 
 @section('content')
@@ -10,6 +9,6 @@
       	<span class="mx-3">Add Phone Number</span>
     </h1>
     @include('partials.message')
-    <add-phone-number url="{{ url('/') }}"></add-phone-number>
+    <add-phone-number url="{{ url('/') }}" mode="admin"></add-phone-number>
 </div>
 @endsection

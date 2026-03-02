@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.student.layout')
 
 @section('content')
@@ -81,7 +80,7 @@
         @if($event->category!='exam')
             <div class="bg-white shadow my-5">
                 <event-tab url="{{ url('/') }}" id="{{ $event->id }}" event_id="{{ $event->event_id }}" entity_id="{{ $event->id }}" entity_name="event" school_id="{{ $event->school_id }}"></event-tab>
-                <portal-target name="events"></portal-target>
+                <div id="events"></div>
             </div>
         @endif
     </div>

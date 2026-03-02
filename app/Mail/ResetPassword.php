@@ -10,33 +10,51 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\MailTemplate;
 use App\Models\User;
 
+/**
+ * ResetPassword
+ *
+ * Mailable class for sending password reset confirmation emails.
+ * Contains a password reset link that users must click to create a new password.
+ *
+ * @package App\Mail
+ */
 class ResetPassword extends Mailable implements ShouldQueue
 {
    use Queueable, SerializesModels;
+   
    /**
-    * The token instance.
+    * The password reset token
     *
-    * @var Token
+    * @var string
     */
    protected $token;
+   
    /**
-    * The userdetails instance.
+    * The user instance
     *
-    * @var userdetails
+    * @var User
     */
    protected $userdetails;
+   
    /**
     * Create a new message instance.
     *
+    * @param User $userdetails The user requesting password reset
+    * @param string $token The password reset token
     * @return void
     */
    public function __construct(User $userdetails, $token)
    {
+       $this->queue='emails';
        $this->userdetails = $userdetails;
        $this->token = $token;
    }
+   
    /**
     * Build the message.
+    *
+    * Generates a password reset URL from the token and replaces
+    * template placeholders with user details and reset link.
     *
     * @return $this
     */

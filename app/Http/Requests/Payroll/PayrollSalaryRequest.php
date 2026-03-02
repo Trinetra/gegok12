@@ -3,11 +3,11 @@
 namespace App\Http\Requests\Payroll;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Salary;
 use Throwable;
-
 
 
 class PayrollSalaryRequest extends FormRequest
@@ -32,30 +32,38 @@ class PayrollSalaryRequest extends FormRequest
        Validator::extend('checkformula', function ($attribute, $value, $parameters, $validator) 
         {
             $newArray=[];
-        foreach(json_decode(request('payrollskey'),true) as $k=>$v) {
-            foreach ($v as $key => $value) {
-                $newArray[0][$key] = $value;
+            foreach(json_decode(request('payrollskey'),true) as $k=>$v) 
+            {
+                foreach ($v as $key => $value) 
+                {
+                    $newArray[0][$key] = $value;
+                }
             }
-        }
-        //dd($newArray);
-        $total_amount = str_replace(array_keys($newArray[0]), $newArray[0], request($attribute));
-        if(!preg_match ("/^[0-9\s\+\-\*\/\(\)]+$/", $total_amount)){
-           return FALSE;
-        }
-        else{
-        
-          try {
-             eval('$amount_tot ='.$total_amount.";");
-             return true;
+
+            $total_amount = str_replace(array_keys($newArray[0]), $newArray[0], request($attribute));
+
+            if(!preg_match ("/^[0-9\s\+\-\*\/\(\)]+$/", $total_amount))
+            {
+               return FALSE;
+            }
+            else{
+            
+                try 
+                {
+                    $el = new ExpressionLanguage();
+
+                    $el->evaluate($total_amount);
+
+                    return true;
+                }
+                catch (Throwable $t) 
+                {
+                return FALSE;
               }
-          catch (Throwable $t) {
-            return FALSE;
-            //dd($t->getMessage());
-          }
-        
-        }
-           
-        });
+            
+            }
+               
+            });
        Validator::extend('checksalary', function ($attribute, $value, $parameters, $validator) 
         {
              $salary=Salary::where([['school_id',Auth::user()->school_id],['staff_id',$value]])->first();

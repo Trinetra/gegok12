@@ -18,7 +18,7 @@
                             <a href="#" @click="resetClass()" id="do-reset" class="text-sm border bg-gray-100 text-grey-darkest py-1 px-4">Reset</a>
                         </div>
                     </div>
-                    <div class="w-32 relative">
+                    <div class="w-32 relative" style="width: 12rem;">
                         <a href="#" class="text-sm rounded px-2 py-1 flex items-center whitespace-no-wrap justify-between btn btn-primary submit-btn w-full" @click="showeventlink()" id="show">
                             <span>Create Event</span>
                             <svg class="w-2 h-2 fill-current text-white" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" width="512px" height="512px" viewBox="0 0 451.847 451.847" style="enable-background:new 0 0 451.847 451.847;" xml:space="preserve"><g><g><path d="M225.923,354.706c-8.098,0-16.195-3.092-22.369-9.263L9.27,151.157c-12.359-12.359-12.359-32.397,0-44.751 c12.354-12.354,32.388-12.354,44.748,0l171.905,171.915l171.906-171.909c12.359-12.354,32.391-12.354,44.744,0 c12.365,12.354,12.365,32.392,0,44.751L248.292,345.449C242.115,351.621,234.018,354.706,225.923,354.706z" data-original="#000000" class="active-path" data-old_color="#000000" fill=""/></g></g> </svg>
@@ -205,7 +205,15 @@
                                                     <label class="input-group-addon tw-form-label">Start Date<span class="text-red-500">*</span></label>
                                                 </div>
                                                 <div class="w-full lg:w-3/4 md:w-3/4 text-sm">
-                                                    <datetime format="DD-MM-YYYY h:i:s" name="start_date" v-model="start_date" class="rounded w-full" id="start_date"></datetime>
+                                                    <VueDatePicker
+                                                      v-model="start_date"
+                                                      format="dd-MM-yyyy HH:mm:ss"
+                                                      model-type="format"
+                                                      :enable-time-picker="true"
+                                                      :is-24="true"
+                                                      :auto-apply="true"
+                                                      input-class-name="rounded w-full"
+                                                    />
                                                     <span v-if="errors.start_date" class="text-red-500 text-xs font-semibold">{{ errors.start_date[0] }}</span>
                                                 </div>
                                             </div>
@@ -217,7 +225,15 @@
                                                     <label class="input-group-addon tw-form-label">End Date<span class="text-red-500">*</span></label>
                                                 </div>
                                                 <div class="w-full lg:w-3/4 md:w-3/4 text-sm">
-                                                    <datetime format="DD-MM-YYYY h:i:s" v-model="end_date" class="w-full rounded" id="end_date"></datetime>
+                                                    <VueDatePicker
+                                                      v-model="end_date"
+                                                      format="dd-MM-yyyy HH:mm:ss"
+                                                      model-type="format"
+                                                      :enable-time-picker="true"
+                                                      :is-24="true"
+                                                      :auto-apply="true"
+                                                      input-class-name="w-full rounded"
+                                                    />
                                                     <span v-if="errors.end_date" class="text-red-500 text-xs font-semibold">{{ errors.end_date[0] }}</span>
                                                 </div>
                                             </div>
@@ -246,10 +262,11 @@
 </template>
 
 <script>
-    import datetime from 'vuejs-datetimepicker';
+    import { VueDatePicker } from '@vuepic/vue-datepicker'
+    import '@vuepic/vue-datepicker/dist/main.css'
     export default {
         props:['url','count','no_of_events','standard'],
-        components: { datetime },
+        components: { VueDatePicker },
         data() {
             return {
                 event:[],

@@ -28,7 +28,7 @@ class CreateClassTeacherLinksTable extends Migration
             $table->integer('no_of_periods')->nullable();
             $table->integer('remaining_periods')->nullable();
             $table->string('subject_type')->nullable();
-            $table->boolean('status')->default('1');
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

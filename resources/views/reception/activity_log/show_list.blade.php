@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <div>
     <h1 class="admin-h1 my-3">Activity Log</h1>
 </div>

@@ -22,6 +22,17 @@ use Log;
  */
 trait SendMessageProcess
 {
+    /**
+     * Send or schedule a message to a parent with push notification support.
+     *
+     * @param object $data Request payload containing subject, message, and optional execution time
+     * @param int $school_id School identifier
+     * @param string $admin_email Sender email address
+     * @param \App\Models\User $parent Parent user receiving the message
+     * @param \App\Models\User $admin Admin user performing the action
+     * @param \App\Models\User $student Student associated with the parent
+     * @return void
+     */
     public function selectSendMessage($data , $school_id , $admin_email , $parent , $admin , $student)
     { 
         try

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <portal to="parent_index">
+        <Teleport to="#parent_index">
             <div class="flex flex-wrap lg:flex-row justify-between my-3">
                 <div class="">
                     <h1 class="admin-h1 my-3">Parents</h1>
@@ -14,9 +14,9 @@
                     </div>
                 </div>
             </div>
-        </portal>
-        <vue-good-table  :columns="columns" :rows="rows" @on-column-filter="onColumnFilter" @on-page-change="onPageChange" :paginationOptions="{ enabled: true , perPageDropdownEnabled: false }" :totalRows="totalRecords" :isLoading="isLoading" mode="remote"> 
-            <template slot="table-row" slot-scope="props">
+        </Teleport>
+        <vue-good-table  :columns="columns" :rows="rows" @column-filter="onColumnFilter" @page-change="onPageChange" :paginationOptions="{ enabled: true , perPageDropdownEnabled: false }" :totalRows="totalRecords" :isLoading="isLoading" mode="remote"> 
+            <template #table-row="props">
                 <div v-if="props.column.field == 'action'" class="w-full flex justify-between">
                     <p v-bind:class="[props.row.count==0?'hidden':'block']">
                         <a :href=props.row.editurl class="block btn px-2 py-1 bg-blue-600 text-white rounded text-sm">Edit</a>
@@ -41,8 +41,8 @@
 
 <script>
 
-    import 'vue-good-table/dist/vue-good-table.css'
-    import { VueGoodTable } from 'vue-good-table';
+    import { VueGoodTable } from 'vue-good-table-next'
+    import 'vue-good-table-next/dist/vue-good-table-next.css'
     export default {
         props:['url' , 'searchquery'],
         components: {
@@ -63,7 +63,7 @@
                         filterOptions: {
                             enabled: true,
                             placeholder: "Search",
-                            filterFn: this.myFunc,
+                            // filterFn: this.myFunc,
                         }
                     },
                     {
@@ -72,7 +72,7 @@
                         filterOptions: {
                             enabled: true,
                             placeholder: "Search",
-                            filterFn: this.myFunc,
+                            // filterFn: this.myFunc,
                         }
                     },
                     {
@@ -81,7 +81,7 @@
                         filterOptions: {
                             enabled: true,
                             placeholder: "Search",
-                            filterFn: this.myFunc,
+                            // filterFn: this.myFunc,
                         }
                     },
                     {
@@ -120,8 +120,20 @@
                 });
             },
 
+            onColumnFilter(params) {
+
+              const filters = params.columnFilters || {}
+
+              this.fullname = filters.fullname || ''
+              this.mobile_no = filters.mobile_no || ''
+              this.student_name = filters['children.fullname'] || ''
+
+              this.page = 1
+              this.getData()
+            },
+
     
-            onColumnFilter(params) 
+            onColumnFilterOld(params) 
             {
                 //console.log(params.columnFilters['fullname']);
 

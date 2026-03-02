@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Resources\Subscription as SubscriptionResource;
@@ -16,7 +17,15 @@ use App\Traits\LogActivity;
 use App\Traits\Common;
 use App\Models\Plan;
 
-
+/**
+ * Class PaymentController
+ *
+ * Handles subscription payment flow including payment initiation,
+ * payment response handling, subscription status updates,
+ * and activity logging.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class PaymentController extends Controller
 {
     use PaymentProcess;
@@ -24,74 +33,121 @@ class PaymentController extends Controller
     use Common;
 
     /**
-     * Display a listing of the resource.
+     * Display the payment page or success page based on subscription status.
      *
-     * @return \Illuminate\Http\Response
+     * Initiates the payment process for a selected plan if the
+     * subscription is pending, otherwise shows the success page.
+     *
+     * @param int $id Plan ID
+     * @return \Illuminate\View\View
      */
     public function index($id)
     {
         //
-        if(Gate::allows('payment',$id))
+        if (Gate::allows('payment', $id))
         {
-            $subscription = Subscription::with('plan')->where('user_id',Auth::user()->id)->first();
-            if($subscription->status == 'pending')
+            $subscription = Subscription::with('plan')
+                ->where('user_id', Auth::user()->id)
+                ->first();
+
+            if ($subscription->status == 'pending')
             {
-                $plan       =   Plan::where('id',$id)->first();
-                $key        =   "dyTv15Mu";
-                $txnid      =   "Txn12345678";
-                $amount     =   $plan->amount;
-                $pinfo      =   "Subscription_Amount";
-                $fname      =   $subscription->user->name;
-                $email      =   $subscription->user->email;
-                $mobile     =   $subscription->user->mobile_no;
-                $udf5       =   "BOLT_KIT_PHP7";
-                $udf1       =   $plan->id;
-                $salt       =   "kbwgdh7TaL";
-                $surl       =   url('/admin/payment/response');
-                $url        =   url('/admin/payment/index');
+                $plan       = Plan::where('id', $id)->first();
+                $key        = "dyTv15Mu";
+                $txnid      = "Txn12345678";
+                $amount     = $plan->amount;
+                $pinfo      = "Subscription_Amount";
+                $fname      = $subscription->user->name;
+                $email      = $subscription->user->email;
+                $mobile     = $subscription->user->mobile_no;
+                $udf5       = "BOLT_KIT_PHP7";
+                $udf1       = $plan->id;
+                $salt       = "kbwgdh7TaL";
+                $surl       = url('/admin/payment/response');
+                $url        = url('/admin/payment/index');
 
-                $hash       =   hash('sha512', $key.'|'.$txnid.'|'.$amount.'|'.$pinfo.'|'.$fname.'|'.$email.'|'.$udf1.'||||'.$udf5.'||||||'.$salt);
+                $hash = hash(
+                    'sha512',
+                    $key.'|'.$txnid.'|'.$amount.'|'.$pinfo.'|'.$fname.'|'.$email.'|'.$udf1.'||||'.$udf5.'||||||'.$salt
+                );
 
-                return view('/admin/payment/index',['key'=>$key , 'txnid'=>$txnid , 'amount'=>$amount , 'pinfo'=>$pinfo , 'fname'=>$fname , 'email'=>$email , 'udf5'=>$udf5 , 'salt'=>$salt , 'surl'=>$surl , 'url'=>$url , 'mobile'=>$mobile , 'hash' => $hash , 'subscription' => $subscription , 'udf1' => $udf1]);
+                return view('/admin/payment/index', [
+                    'key'          => $key,
+                    'txnid'        => $txnid,
+                    'amount'       => $amount,
+                    'pinfo'        => $pinfo,
+                    'fname'        => $fname,
+                    'email'        => $email,
+                    'udf5'         => $udf5,
+                    'salt'         => $salt,
+                    'surl'         => $surl,
+                    'url'          => $url,
+                    'mobile'       => $mobile,
+                    'hash'         => $hash,
+                    'subscription' => $subscription,
+                    'udf1'         => $udf1
+                ]);
             }
             else
             {
-                return view('/admin/payment/success',['subscription' => $subscription]);
+                return view('/admin/payment/success', ['subscription' => $subscription]);
             }
         }
-      else
-      {
-        abort(403);
-      } 
+        else
+        {
+            abort(403);
+        }
     }
 
+    /**
+     * Handle payment gateway response.
+     *
+     * Processes the payment response, updates subscription status,
+     * logs the payment activity, and displays the response page.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
     public function response(Request $request)
     {
-        $user_id    = Auth::id();
-        $school_id  = Auth::user()->school_id; 
-        $payment    = Subscription::where([['user_id',$user_id],['school_id',$school_id]])->first();
+        $user_id   = Auth::id();
+        $school_id = Auth::user()->school_id;
 
-        $this->PaymentProcess($request , $user_id , $school_id , $payment);
+        $payment = Subscription::where([
+            ['user_id', $user_id],
+            ['school_id', $school_id]
+        ])->first();
 
-        $message=('Payment Done Successfully');
+        $this->PaymentProcess($request, $user_id, $school_id, $payment);
 
-        $ip= $this->getRequestIP();
+        $message = 'Payment Done Successfully';
+
+        $ip = $this->getRequestIP();
         $this->doActivityLog(
-                $payment,
-                Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
-                LOGNAME_PAYMENT,
-                $message
-        ); 
+            $payment,
+            Auth::user(),
+            ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
+            LOGNAME_PAYMENT,
+            $message
+        );
 
         return view('/admin/payment/response');
     }
 
+    /**
+     * Get expired subscriptions.
+     *
+     * Returns a limited list of expired subscriptions
+     * formatted using a resource collection.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function Subscription()
     {
-        $subscription       = Subscription::where('status','expired')->get();
-        $subscription_list  = $subscription->take(5);
-        $subscriptions      = SubscriptionResource::collection($subscription_list);
+        $subscription      = Subscription::where('status', 'expired')->get();
+        $subscription_list = $subscription->take(5);
+
+        $subscriptions = SubscriptionResource::collection($subscription_list);
 
         return $subscriptions;
     }

@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.admin.layout')
 @section('content')
 <div class="w-full">
@@ -64,11 +63,10 @@
 </form>
 </div>
 @else
-    <a href="{{ url('/pricing') }}"> 
-        <button type="submit" class="no-underline text-white  px-4 my-3 mx-1 flex items-center custom-green py-1 justify-center">
-            Upgrade Plan to Add More Files
-        </button>
-    </a>
+    <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+        <p class="font-semibold">File limit reached</p>
+        <p class="text-sm">Please contact your administrator to increase the file limit.</p>
+    </div>
 @endif
 
 </div>
@@ -81,7 +79,7 @@
                <th class="text-left text-sm px-2 py-2 text-grey-darker">Name</th>
                <th class="text-left text-sm px-2 py-2 text-grey-darker">Description</th>
                <th class="text-left text-sm px-2 py-2 text-grey-darker">Path</th>
- 
+
          </tr>
          </thead>
          <tbody>
@@ -92,7 +90,7 @@
             <td>{{ $file->name }}</td>
             <td>{{ $file->description }}</td>
             <td><a href="{{ url('/admin/download/files/'.$file->id) }}" id="download">Download</a>
-            </td> 
+            </td>
           </tr>
          @endforeach
           </tbody>

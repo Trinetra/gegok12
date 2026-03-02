@@ -8,6 +8,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Resources\ParentDetail as ParentDetailResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\Users\TeacherUser;
 use App\Imports\HolidaysImport;
 use App\Traits\MemberProcess;
 use App\Models\PurchaseOrder;
@@ -30,13 +31,33 @@ use SplFileObject;
 use Exception;
 use Excel;
 use Log;
-
+/**
+ * Class ReportsController
+ *
+ * Handles all report-related operations such as:
+ * - Holidays import/export
+ * - Events reports
+ * - Subscription reports
+ * - Fee payment exports
+ * - Student and teacher birthday exports
+ * - Student status reports
+ * - Parent reports
+ * - Inventory stock, purchase, and sales reports
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class ReportsController extends Controller
 {
     use MemberProcess;
     use LogActivity;
     use Common;
-
+    
+    /**
+     * Display the reports dashboard.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function report(Request $request)
     {
         //
@@ -44,7 +65,12 @@ class ReportsController extends Controller
         
         return view("/admin/reports/reports",['query' => $query]);
     }
-
+    
+    /**
+     * Download holiday CSV sample format.
+     *
+     * @return void
+     */
     public function holidayFormat()
     {
         //
@@ -65,13 +91,22 @@ class ReportsController extends Controller
             $message
         );
     }
-
+    /**
+     * Show holiday import page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function holidayCreate()
     {
         //
         return view("/admin/reports/holidays");
     }
-
+    /**
+     * Import holidays from uploaded file.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|null
+     */
     public function holidayImport(Request $request)
     {
         //
@@ -106,7 +141,12 @@ class ReportsController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    /**
+     * Export holidays as CSV.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
     public function holidayExport(Request $request)
     {
         //
@@ -154,7 +194,11 @@ class ReportsController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    /**
+     * Display event reminder reports.
+     *
+     * @return \Illuminate\View\View
+     */
     public function eventReport()
     {
         //
@@ -164,9 +208,9 @@ class ReportsController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display subscription reports.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -181,9 +225,10 @@ class ReportsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Filter subscriptions by date range.
      *
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
     public function create(Request $request)
     {
@@ -197,10 +242,10 @@ class ReportsController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Show single subscription report.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function show($id)
     {
@@ -215,7 +260,12 @@ class ReportsController extends Controller
             abort(403);
         } 
     }
-
+    /**
+     * Export fee payment details.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
     public function exportFee(Request $request)
     {
         try
@@ -278,7 +328,12 @@ class ReportsController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    /**
+     * Export student or teacher birthday list.
+     *
+     * @param  string  $type
+     * @return void
+     */
     public function exportBirthday($type)
     {
         try
@@ -324,7 +379,7 @@ class ReportsController extends Controller
             }
             elseif($type == 'teacher')
             {
-                $users = User::with('userprofile')->where('school_id',Auth::user()->school_id)->ByRole(5)->get();    
+                $users = TeacherUser::with('userprofile')->where('school_id',Auth::user()->school_id)->ByRole(5)->get();    
                 $csv = Writer::createFromFileObject(new \SplTempFileObject());
 
                 if(count($users) > 0)
@@ -369,7 +424,15 @@ class ReportsController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    /**
+     * Export active students report as CSV.
+     *
+     * Filters active students based on request parameters (if provided)
+     * and exports their personal and academic details.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
     public function exportActiveStudents(Request $request)
     { 
         try
@@ -431,7 +494,14 @@ class ReportsController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    /**
+     * Export exited students report as CSV.
+     *
+     * Exports students who have exited the school.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
     public function exportExitStudents(Request $request)
     { 
         try
@@ -493,7 +563,12 @@ class ReportsController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    /**
+     * Export suspended students report as CSV.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
     public function exportSuspendedStudents(Request $request)
     {
         try
@@ -555,7 +630,12 @@ class ReportsController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    /**
+     * Export parent details report as CSV.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
     public function exportParent(Request $request)
     { 
         try 
@@ -625,7 +705,15 @@ class ReportsController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    
+    /**
+     * Export current inventory stock as CSV.
+     *
+     * Fetches product stock details from inventory module (if available)
+     * or from default product model and exports them.
+     *
+     * @return void
+     */
     public function currentstock()
     {
         try
@@ -680,7 +768,15 @@ class ReportsController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    /**
+     * Export monthly purchase report as CSV.
+     *
+     * Generates purchase report for the given month and year.
+     * Defaults to current month if not provided.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
     public function monthlypurchase(Request $request)
     {  
         try 
@@ -753,7 +849,15 @@ class ReportsController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    /**
+     * Export monthly sales report as CSV.
+     *
+     * Generates sales report for the selected month and year.
+     * Defaults to current month if parameters are missing.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
     public function monthlysales(Request $request)
     {
         try

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <portal to="memberdetail">
+    <Teleport to="#memberdetail">
       <div class="hide-menu absolute top-0" id="show-detail">
-        <div class="bg-white w-full lg:w-2/5 md:w-2/5 shadow-lg border border-r-0 member-detail z-40 right-0 fixed h-full overflow-y-auto">
+        <div class="bg-white w-full lg:w-2/5 md:w-2/5 shadow-lg border border-r-0 member-detail z-40 right-0 fixed h-full overflow-y-auto top-0">
           <a href="#" @click="disableform()" class="absolute right-0">
             <svg class="w-3 h-3 m-3 fill-current text-gray-700" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.001 512.001" style="enable-background:new 0 0 512.001 512.001;" xml:space="preserve"><g><g><path d="M284.286,256.002L506.143,34.144c7.811-7.811,7.811-20.475,0-28.285c-7.811-7.81-20.475-7.811-28.285,0L256,227.717 L34.143,5.859c-7.811-7.811-20.475-7.811-28.285,0c-7.81,7.811-7.811,20.475,0,28.285l221.857,221.857L5.858,477.859 c-7.811,7.811-7.811,20.475,0,28.285c3.905,3.905,9.024,5.857,14.143,5.857c5.119,0,10.237-1.952,14.143-5.857L256,284.287 l221.857,221.857c3.905,3.905,9.024,5.857,14.143,5.857s10.237-1.952,14.143-5.857c7.811-7.811,7.811-20.475,0-28.285 L284.286,256.002z"/></g></g></svg>
           </a>
@@ -51,14 +51,13 @@
           </div>
         </div>
       </div>
-    </portal>
+    </Teleport>
   </div>
 </template>
 
 <script>
 
   import { bus } from "../../app";
-  import PortalVue from "portal-vue";
   export default {
     props:['url'],
     data(){
@@ -73,7 +72,7 @@
     created() 
     {
       //
-      bus.$on("dataMemberName", data => {
+      bus.on("dataMemberName", data => {
         if(data!='')
         {//console.log(data);
           this.membername=data;  
@@ -81,7 +80,7 @@
         }
       });
 
-      bus.$on("datashowFilter", data => {
+      bus.on("datashowFilter", data => {
         if(data!='')
         {
           this.disableform();

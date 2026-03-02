@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.admin.layout')
 
 @section('content')
@@ -24,8 +23,8 @@
                         <h1 class="admin-h1 mb-5 flex items-center"> Student </h1>
                     </div>
                     <div class="w-full lg:w-2/4">
-                        <portal-target name="search"></portal-target>
-                        <portal-target name="memberfilter"></portal-target>
+                        <div id="search"></div>
+                        <div id="memberfilter"></div>
                     </div>
                     <div class="mx-2 relative flex items-center w-1/2 lg:justify-end">
                         <search-filter url="{{ url('/') }}" searchquery="{{ $query }}" type="report"></search-filter>
@@ -80,8 +79,8 @@
                         <h1 class="admin-h1 mb-5 flex items-center"> Parent </h1>
                     </div>
                     <div class="w-full lg:w-2/4">
-                        <portal-target name="parent_search"></portal-target>
-                        <portal-target name="parentfilter"></portal-target>
+                        <div id="parent_search"></div>
+                        <div id="parentfilter"></div>
                     </div>
                     <div class="mx-2 relative flex items-center w-1/2 lg:justify-end">
                         <parent-search-filter url="{{ url('/') }}" searchquery="{{ $query }}" mode="report"></parent-search-filter>
@@ -105,8 +104,8 @@
                         <h1 class="admin-h1 mb-5 flex items-center"> Stock History </h1>
                     </div>
                      <div class="w-full lg:w-2/4">
-                        <portal-target name="stock_search"></portal-target>
-                        <portal-target name="stockfilter"></portal-target>
+                        <div id="stock_search"></div>
+                        <div id="stockfilter"></div>
                     </div>
                     <div class="mx-2 relative flex items-center w-1/2 lg:justify-end">
                         <stock-search-filter url="{{ url('/') }}" searchquery="{{ $query }}"></stock-search-filter>

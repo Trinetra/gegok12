@@ -40,7 +40,14 @@ use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Log;
-
+/**
+ * Class EventsController
+ *
+ * Handles creation, update, approval, listing, calendar rendering,
+ * notifications, and recurring logic for school events.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class EventsController extends Controller
 {
     use SendPushNotification;
@@ -48,14 +55,19 @@ class EventsController extends Controller
     use EventProcess;
     use LogActivity;
     use Common;
-
+    /**
+     * Display the event calendar page.
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
     function index(Request $request)
     {
         //
         $school_id      =   Auth::user()->school_id;
         $academic_year  =   SiteHelper::getAcademicYear($school_id);
-        $events         =   Events::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['status','active']]);
-        $count          =   Events::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['category','!=','holidays'],['status','active']])->count();
+        $events         =   Events::where([['school_id',$school_id],['academic_year_id',$academic_year->id]]); //,['status','active']
+        $count          =   Events::where([['school_id',$school_id],['academic_year_id',$academic_year->id],['category','!=','holidays']])->count(); //,['status','active']
         $subscription   =   Subscription::where('school_id',$school_id)->first();
 
         if(count((array)\Request::getQueryString())>0)
@@ -93,6 +105,11 @@ class EventsController extends Controller
         return view('admin.events.index',['events'=>$events , 'count'=>$count , 'subscription'=>$subscription,'standard'=>$standard]);
     }
 
+    /**
+     * Fetch standard list and academic year range for event filters.
+     *
+     * @return array
+     */
     public function list()
     {
         $school = SchoolDetail::where('school_id',Auth::user()->school_id)->where('meta_key','date_of_establishment')->first();
@@ -113,9 +130,11 @@ class EventsController extends Controller
         return $array;
     }
 
-    /**dd
-     * @param Request $request
-     * @return $this|\Illuminate\Http\RedirectResponse
+    /**
+     * Store a newly created event.
+     *
+     * @param EventRequest $request
+     * @return array|null
      */
     function store(EventRequest $request)//Event
     {
@@ -242,7 +261,10 @@ class EventsController extends Controller
     }
 
     /**
-     * @param $id
+     * Fetch event data for editing.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     function edit($id)
     {
@@ -258,9 +280,11 @@ class EventsController extends Controller
     }
 
     /**
+     * Update an existing event.
+     *
      * @param Request $request
-     * @param $id
-     * @return $this|\Illuminate\Http\RedirectResponse
+     * @param int $id
+     * @return array|null
      */
     function update(Request $request, $id)
     {
@@ -369,7 +393,13 @@ class EventsController extends Controller
             //dd($e->getMessage());
         }
     }
-
+    
+    /**
+     * Approve an event and trigger notifications.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function eventapprove($id){
 
 
@@ -421,7 +451,13 @@ class EventsController extends Controller
         }
 
     }
-
+    /**
+     * Update event dates via calendar drag/drop.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return void
+     */
     function changeevent(Request $request, $id)
     {
         $event = Events::findOrFail($id);
@@ -436,7 +472,12 @@ class EventsController extends Controller
         $event->save();
         echo json_encode(['status' => 'Event has been update']);
     }
-
+    /**
+     * Delete an event.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|null
+     */
     public function destroy($id)
     {
         try
@@ -465,9 +506,9 @@ class EventsController extends Controller
     }
 
     /**
-     * @param $facility
-     * @param $asset
-     * @return string
+     * Fetch all events including repeated occurrences.
+     *
+     * @return array
      */
     function events()
     {
@@ -529,9 +570,11 @@ class EventsController extends Controller
     }
 
     /**
-     * @param $event
-     * @param $start
-     * @param $end
+     * Build a single calendar event structure.
+     *
+     * @param Events $event
+     * @param Carbon $start
+     * @param Carbon $end
      * @return array
      */
     function getEvent($event,$start,$end)
@@ -565,8 +608,9 @@ class EventsController extends Controller
     }
 
     /**
-     * single day task
-     * @param $event
+     * Get non-repeating single-day event.
+     *
+     * @param Events $event
      * @return array
      */
     function getDayTask($event)
@@ -579,9 +623,9 @@ class EventsController extends Controller
     }
 
     /**
-     * repeating tasks even (n) days. Note if you can even put 7 days to make them weekly.
+     * Generate daily repeating events.
      *
-     * @param $event
+     * @param Events $event
      * @return array
      */
     function getDailyTasks($event)
@@ -605,8 +649,9 @@ class EventsController extends Controller
     }
 
     /**
-     * Weekly events repeating every (n) weeks
-     * @param $event
+     * Generate weekly repeating events.
+     *
+     * @param Events $event
      * @return array
      */
     function getWeeklyTasks($event)
@@ -631,8 +676,9 @@ class EventsController extends Controller
     }
 
     /**
-     * Monthly events repeating every (n) months
-     * @param $event
+     * Generate monthly repeating events.
+     *
+     * @param Events $event
      * @return array
      */
     function getMonthlyTasks($event)
@@ -657,9 +703,9 @@ class EventsController extends Controller
     }
 
     /**
-     * yearly repeating events repeats every (n) years
+     * Generate yearly repeating events.
      *
-     * @param $event
+     * @param Events $event
      * @return array
      */
     function getYearlyTasks($event)
@@ -682,7 +728,12 @@ class EventsController extends Controller
         }
         return $events;
     }
-
+    /**
+     * Display event detail page.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
+     */ 
     function show($id)
     {
         $event = Events::where('id',$id)->first();
@@ -752,14 +803,24 @@ class EventsController extends Controller
             abort(403);
         } 
     }
-
+    /**
+     * Show event details as API resource.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     function showdetails($id)
     {
         $event = Events::where([['id',$id],['school_id',Auth::user()->school_id]])->get();
         $event = ShowEventResource::collection($event);
         return $event;
     }
-
+    /**
+     * Show event gallery images.
+     *
+     * @param int $event_id
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function showimage($event_id)
     { 
         $event = EventGallery::where([['event_id',$event_id],['school_id',Auth::user()->school_id]])->get();
@@ -767,7 +828,12 @@ class EventsController extends Controller
         $event = ShowEventGalleryResource::collection($event);
         return $event;
     }
-
+    /**
+     * Fetch event details for modal display with permission check.
+     *
+     * @param int $id
+     * @return array
+     */
     public function details($id)
     {
         $event=Events::where('id',$id)->first();

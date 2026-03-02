@@ -10,25 +10,27 @@
 
     <multiselect v-model="to" id="ajax" label="firstname" track-by="firstname" placeholder="Type to search" open-direction="bottom" :options="users" :custom-label="customLabel" :show-labels="true" :multiple="true" :searchable="true" :loading="isLoading" :internal-search="true" :clear-on-select="false" :close-on-select="false" :limit-text="limitText" :max-height="200" :show-no-results="true" :hide-selected="true" @search-change="asyncFind">
 
-        <template slot="tag" slot-scope="{ option, remove }">
+        <template #tag="{ option, remove }">
           <span class="custom__tag">
             <span>{{ (option.firstname) }}</span>
             <span class="custom__remove" @click="remove(option)">❌</span>
           </span>
         </template>
 
-        <template slot="clear" slot-scope="props">
+        <template #clear="props">
           <div class="multiselect__clear" v-if="to.length" @mousedown.prevent.stop="clearAll(props.search)"></div>
         </template>
         
-        <template slot="option" slot-scope="props">
+        <template #option="props">
           <!-- <img class="option__image w-10 h-10" :src="props.option.avatar"> -->
           <div class="option__desc">
             <span class="option__name">{{ props.option.firstname }} {{ props.option.lastname }}</span>
           </div>
         </template>
 
-        <span slot="noResult">Oops! No users found.</span>
+        <template #noResult>
+          Oops! No users found.
+        </template>
         
     </multiselect>
     <span v-if="errors.to" class="text-red-500 text-xs font-semibold">{{errors.to[0]}}</span>
@@ -60,8 +62,6 @@
 
 <script>
   import Multiselect from 'vue-multiselect'
-  // register globally
-  Vue.component('multiselect', Multiselect)
   export default {
     props:['url'],
   components: {
@@ -182,4 +182,4 @@
     margin-left: 5px;
   }
 </style>
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>

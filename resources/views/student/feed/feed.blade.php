@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.student.layout')
 @section('content')
 <h1 class="admin-h1 my-3">Feed</h1>
@@ -11,7 +10,9 @@
 		<ul class="list-reset leading-loose py-2">
 			<li class="py-1"><a href="{{url('/student/feeds?search=achievement')}}">Achivements / Kudos</a></li>
 			<li class="py-1"><a href="{{url('/student/feeds?search=birthday')}}" value="birthday">Birthdays</a></li>
+            @if(config('gexam.enabled', false))
 			<li class="py-1"><a href="{{url('/student/feeds?search=exam')}}" value="workanniversary">Exam</a></li>
+            @endif
 			<!-- <li class="py-1"><a href="{{url('/admin/feeds?search=teacher')}}" value="teacher">By Teacher / Staff</a></li>
 			<li class="py-1"><a href="{{url('/admin/feeds?search=student')}}" value="student">By Students</a></li> -->
 		</ul>
@@ -38,7 +39,7 @@
                                     @elseif($feed->tag=='Workanniversary')
                                         <img src="{{ $anniversary }}" class="w-full rounded h-64">
                                     @else
-                                        @if(count($feed->attachment_file)>0)
+                                        @if(count($feed->attachment_file ?? []) > 0)
                                             <slider-image url="{{ url('/') }}" id="{{ $feed->id }}" mode="student" left="{{ $leftarrow }}" right="{{ $rightarrow }}"></slider-image>
                                         @else
                                             <img src="{{ $feed->CoverPath }}" class="w-full rounded h-64">

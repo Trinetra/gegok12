@@ -99,7 +99,12 @@
           <div class="mb-2">
             <select class="tw-form-control w-full" id="blood_group" v-model="blood_group" name="blood_group">
               <option value="" disabled>Select Blood Group</option>
-              <option value="" v-for="blood_group in blood_groups" v-bind:value="blood_group.num">{{ blood_group.name }}</option>
+              <option 
+                  v-for="blood_group in blood_groups"
+                  :key="blood_group.num"
+                  :value="blood_group.num">
+                  {{ blood_group.name }}
+                </option>
             </select>
           </div>
           <span v-if="errors.blood_group" class="text-red-500 text-xs font-semibold">{{errors.blood_group[0]}}</span>
@@ -119,7 +124,11 @@
       </div>
     </div>
 
-    <portal-target name="address"></portal-target>
+     <GoogleMap
+  v-model:address="address"
+  v-model:latitude="latitude"
+  v-model:longitude="longitude"
+/>
 
     <div class="tw-form-group">
       <div class="flex flex-col lg:flex-row">
@@ -241,7 +250,12 @@
           <div class="mb-2">
             <select class="tw-form-control w-full" id="mode_of_transport" v-model="mode_of_transport" name="mode_of_transport">
               <option value="" disabled>Select Transport</option>
-              <option value="" v-for="transport in transportlist" v-bind:value="transport.id">{{ transport.name }}</option>
+              <option
+                v-for="transport in transportlist"
+                :key="transport.id"
+                :value="transport.id">
+                {{ transport.name }}
+              </option>
             </select>
           </div>
           <span v-if="errors.mode_of_transport" class="text-red-500 text-xs font-semibold">{{errors.mode_of_transport[0]}}</span>
@@ -457,7 +471,12 @@
           <div class="mb-2">
             <select class="tw-form-control w-full" id="standard" v-model="standard" name="standard">
               <option value="" disabled>Select Class</option>
-              <option value="" v-for="standardLink in standardLinklist" v-bind:value="standardLink.id">{{ standardLink.standard_section }}</option>
+              <option
+                  v-for="standardLink in standardLinklist"
+                  :key="standardLink.id"
+                  :value="standardLink.id">
+                  {{ standardLink.standard_section }}
+                </option>
             </select>
           </div>
           <span v-if="errors.standard" class="text-red-500 text-xs font-semibold">{{errors.standard[0]}}</span>
@@ -500,22 +519,23 @@
         </div> 
       </div>   
     </div>   
-
-    <portal-target name="submit-btn"></portal-target>
-    <portal to="submit-btn">
+    <Teleport to="#submit-btn">
       <div class="my-6">
         <a href="#" dusk="submit-btn" class="btn btn-primary submit-btn" @click="submitForm()">Submit</a>
         <a href="#" class="btn btn-reset reset-btn" @click="resetForm()">Reset</a>
-        <input type="submit" class="hidden" id="submit-btn">
+        <input type="submit" class="hidden" id="real-submit-btn">
       </div>
-    </portal>
+    </Teleport>
   </div>
 </template>
 
 <script> 
-import PortalVue from "portal-vue";
+  import GoogleMap from '../GoogleMap.vue'
 export default {
   props:['url'],
+  components: {
+            GoogleMap
+        },
 
   data(){
     return {
@@ -573,6 +593,7 @@ export default {
       siblinglist:[{id:'brother' , name:'Brother'} , {id:'sister' , name:'Sister'}],
       errors:[],
       success:null,
+      address:'',
     }
   },
   methods:
@@ -685,6 +706,9 @@ export default {
       formData.append('siblings_count',this.siblings_count);  
       formData.append('notes',this.notes);          
       formData.append('avatar',this.avatar);
+      formData.append('address', this.address);
+      formData.append('latitude', this.latitude);
+      formData.append('longitude', this.longitude);
 
       if(this.siblings == 'yes')
       {
@@ -729,7 +753,7 @@ export default {
       }
 
       axios.post('/admin/student/add/validationUser',formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {     
-        $('#submit-btn').click(); 
+        $('#real-submit-btn').click(); 
       }).catch(error => {
         this.errors = error.response.data.errors;
       });

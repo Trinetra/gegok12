@@ -9,25 +9,42 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\SendMail;
 use App\Models\MailTemplate;
 
+/**
+ * SendMessageMail
+ *
+ * Mailable class for sending custom mail messages with optional attachments.
+ * Supports templated messages with dynamic subject and content placeholders.
+ *
+ * @package App\Mail
+ */
 class SendMessageMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+    /**
+     * The send mail instance
+     *
+     * @var SendMail
+     */
     public $sendMail;
     
     /**
      * Create a new message instance.
      *
+     * @param SendMail $sendMail The send mail instance
      * @return void
      */
     public function __construct(SendMail $sendMail)
     {
-        //
+        $this->queue='emails';
         $this->sendMail = $sendMail;
     }
 
     /**
      * Build the message.
+     *
+     * Retrieves the send mail template, replaces placeholders with
+     * the message subject, content, user name, and attachments if present.
      *
      * @return $this
      */

@@ -15,7 +15,7 @@
     </div>
     <div>
       <!-- <teacherdetails :url="this.url"></teacherdetails>
-      <portal-target name="teacherdetail" ></portal-target> -->
+      <div id="teacherdetail"></div> -->
       <div class="my-8">
         <!-- <div class="w-full flex flex-wrap items-center justify-between mb-4">
           <div class="flex flex-wrap items-center text-sm">
@@ -39,9 +39,9 @@
             <a :href="url+'/admin/staff/show/'+user['name']">
             <div class="w-full lg:w-full md:w-full my-2 relative p-2">
               <div class="person-card  border rounded flex justify-between relative" v-bind:class="[user['status']=='active' ? 'bg-white': 'bg-red-300' ]">
-                <div class="flex-grow w-full flex p-2 cursor-pointer hover:shadow" :id="user['id']" >
+                <div class="grow w-full flex p-2 cursor-pointer hover:shadow" :id="user['id']" >
                   <img :src="user['avatar']" class="w-16 h-16">
-                  <div class="flex-grow px-2">
+                  <div class="grow px-2">
                     <h2 class="font-bold text-base text-gray-700">{{user['fullname']}}</h2>
                     <p class="text-sm">{{user['designation_name']}}</p>
                     <p v-if="birthday == 'true'">{{ user['date_of_birth'] }}</p>
@@ -104,8 +104,15 @@
                   <label for="executed_at" class="tw-form-label">Date Time</label>
               </div>
               <div class="w-full lg:w-3/4">
-                <datetime format="DD-MM-YYYY h:i:s" name="executed_at" v-model="executed_at" class="w-full rounded" id="executed_at">
-                </datetime>
+                <VueDatePicker
+                  v-model="executed_at"
+                  format="dd-MM-yyyy HH:mm:ss"
+                  model-type="format"
+                  :enable-time-picker="true"
+                  :is-24="true"
+                  :auto-apply="true"
+                  input-class-name="w-full rounded"
+                />
                 <span v-if="errors.executed_at" class="text-red-500 text-xs font-semibold">{{errors.executed_at[0]}}</span>
               </div>
             </div>
@@ -122,9 +129,10 @@
 <script>
 
   import { bus } from "../../app";
-  import PortalVue from "portal-vue";
+  
   //import teacherdetails from './Detail';
-  import datetime from 'vuejs-datetimepicker';
+  import { VueDatePicker } from '@vuepic/vue-datepicker'
+  import '@vuepic/vue-datepicker/dist/main.css'
   export default {
     props:['url','searchquery','letter','birthday'],
       data(){
@@ -182,7 +190,7 @@
     components:
     {
       //teacherdetails,
-      datetime,
+      VueDatePicker,
     },
 
     methods:
@@ -196,7 +204,7 @@
       {
         this.success=null;
         $('#show-detail').removeClass('hide-menu').addClass('block');
-        bus.$emit("dataMemberName", val);
+        bus.emit("dataMemberName", val);
       },
         
       sortMembers(name)

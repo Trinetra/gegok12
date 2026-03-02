@@ -9,30 +9,42 @@ use Illuminate\Mail\Mailable;
 use App\Models\MailTemplate;
 use App\Models\User;
 
+/**
+ * ChangePassword
+ *
+ * Mailable class for sending password change confirmation emails.
+ * Notifies users when their password has been successfully changed.
+ *
+ * @package App\Mail
+ */
 class ChangePassword extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     /**
-      * The userdetails instance.
-      *
-      * @var user
-      */
+     * The user instance
+     *
+     * @var User
+     */
     protected $user;
 
     /**
      * Create a new message instance.
      *
+     * @param User $user The user whose password was changed
      * @return void
      */
     public function __construct(User $user)
     {
-        //
+        $this->queue='emails';
         $this->user = $user;
     }
 
     /**
      * Build the message.
+     *
+     * Retrieves the password change template and replaces
+     * the placeholder with the user's full name.
      *
      * @return $this
      */

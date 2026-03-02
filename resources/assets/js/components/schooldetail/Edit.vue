@@ -108,7 +108,11 @@
                 </div>
             </div>
 
-            <portal-target name="edit_school_address"></portal-target>
+            <GoogleMap
+              v-model:address="address"
+              v-model:latitude="latitude"
+              v-model:longitude="longitude"
+            />
 
             <div class="flex flex-col lg:flex-row">
                 <div class="tw-form-group w-full lg:w-1/2">
@@ -237,35 +241,40 @@
                             <label for="admission_close_on" class="tw-form-label">Admission Closes On<span class="text-red-500">*</span></label>
                         </div>
                         <div class="mb-2 flex items-center relative">
-                            <datetime format="DD-MM-YYYY h:i:s" name="admission_close_on" v-model="admission_close_on" class="w-full rounded" id="admission_close_on"></datetime>
-                                <div class="absolute right-0">
-                                    <svg id="Capa_1" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current text-gray-500 mx-2"><g><path d="m144 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m144 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m272 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 249h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 313h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m400 377h-32c-8.284 0-15 6.716-15 15s6.716 15 15 15h32c8.284 0 15-6.716 15-15s-6.716-15-15-15z"></path><path d="m467 65h-36v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-130v-25c0-8.284-6.716-15-15-15s-15 6.716-15 15v25h-36c-24.813 0-45 20.187-45 45v332c0 24.813 20.187 45 45 45h422c24.813 0 45-20.187 45-45 0-9.682 0-323.575 0-332 0-24.813-20.187-45-45-45zm-437 45c0-8.271 6.729-15 15-15h36v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h130v25c0 8.284 6.716 15 15 15s15-6.716 15-15v-25h36c8.271 0 15 6.729 15 15v59h-452zm437 347h-422c-8.271 0-15-6.729-15-15v-243h452v243c0 8.271-6.729 15-15 15z"></path></g></svg>
-                                </div>
+                            <VueDatePicker
+                              v-model="admission_close_on"
+                              format="dd-MM-yyyy HH:mm:ss"
+                              model-type="format"
+                              :enable-time-picker="true"
+                              :is-24="true"
+                              :auto-apply="true"
+                              input-class-name="w-full rounded"
+                            />
                             </div>
                         <span v-if="errors.admission_close_on" class="text-red-500 text-xs font-semibold">{{errors.admission_close_on[0]}}</span>
                     </div>
                 </div>
             </div>
 
-            <portal-target name="submit-btn"></portal-target>
-            <portal to="submit-btn">
                 <div class="py-3">
                     <a href="#" dusk="submit-btn" class="btn btn-primary submit-btn" @click="updateDetails()">Submit</a>
                     <a href="#" class="btn btn-reset reset-btn" @click="resetForm()">Reset</a>
                     <input type="submit" class="hidden" id="submit-btn">
                 </div>
-            </portal>
         </div>
     </div>
 </template>
 
 
 <script>
-    import datetime from 'vuejs-datetimepicker';
+    import { VueDatePicker } from '@vuepic/vue-datepicker'
+    import '@vuepic/vue-datepicker/dist/main.css'
+    import GoogleMap from '../GoogleMap.vue'
     export default {
         props:['url','school_id'],
         components: {
-            datetime,
+            VueDatePicker,
+            GoogleMap
         },
         data(){
             return{
@@ -294,6 +303,7 @@
                 boardlist:[ {id:'stateboard' , name:'State Board'} , {id:'matric' , name:'Matriculation'} , {id:'cbse' , name:'CBSE'} , {id:'icse' , name:'ICSE'} , {id:'ib' , name:'IB'} ],
                 errors:[],
                 success:null,
+                address:'',
             }
         },
         
@@ -374,6 +384,7 @@
                 formData.append('admission_open',this.admission_open);
                 formData.append('admission_close_message',this.admission_close_message);
                 formData.append('admission_close_on',this.admission_close_on);
+                formData.append('address',this.address);
               
                 axios.post('/admin/schooldetails/update/validationUpdate/'+this.school_id,formData).then(response => {              
                     $('#submit-btn').click();

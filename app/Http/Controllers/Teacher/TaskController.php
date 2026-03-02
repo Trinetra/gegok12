@@ -23,6 +23,14 @@ use App\Models\User;
 use Exception;
 use Log;
 
+/**
+ * Class TaskController
+ *
+ * Handles teacher task (To-Do list) operations such as
+ * listing, creating, updating, snoozing, completing and deleting tasks.
+ *
+ * @package App\Http\Controllers\Teacher
+ */
 class TaskController extends Controller
 {
     use TodolistProcess;
@@ -30,9 +38,10 @@ class TaskController extends Controller
     use Common;
 
     /**
-     * Display a listing of the resource.
+     * Display task list grouped by task flag (API).
      *
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return \Illuminate\Support\Collection
      */
     public function showlist(Request $request)
     {
@@ -58,9 +67,12 @@ class TaskController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Get required data for task create form.
      *
-     * @return \Illuminate\Http\Response
+     * Includes standards, students, teachers and default task date.
+     *
+     * @param  Request  $request
+     * @return array
      */
     public function list(Request $request)
     {
@@ -70,22 +82,38 @@ class TaskController extends Controller
 
         $standardlink_subject_list = SiteHelper::getStandardSubjectList(Auth::user()->school_id,Auth::id());
         $array['standardlinks'] = $standardlink_subject_list['standardLinklist'];
+
         if($request->standardlink_id != null)
         {
-            $students = SiteHelper::getClassStudents(Auth::user()->school_id,$academic_year->id,$request->standardlink_id);
+            $students = SiteHelper::getClassStudents(
+                Auth::user()->school_id,
+                $academic_year->id,
+                $request->standardlink_id
+            );
+
             $array['students'] = StudentlistResource::collection($students);
         }
+        else
+        {
+            $array['students'] = [];
+        }
+
         $array['teachers']  = TeacherResource::collection($teachers);
         $array['task_date'] = date('Y-m-d');
-        
-        return $array;
-    }
 
+        return response()->json($array);
+    }
+    /**
+     * Mark selected tasks as completed.
+     *
+     * @param  Request  $request
+     * @return array|null
+     */
     public function changestatus(Request $request)
     {
         try
         {
-            if( count($request->selectedTaskCount) > 0 )
+            if( $request->selectedTaskCount > 0 ) // if( count($request->selectedTaskCount) > 0 )
             {
                 foreach ($request->task_completed as $task_id) 
                 {
@@ -117,19 +145,35 @@ class TaskController extends Controller
             dd($e->getMessage());
         }   
     }
-
+    
+    /**
+     * Display task list page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     { 
         $query = \Request::getQueryString();
         return view('/teacher/todolist/index',['query' => $query]);
     }
-
+    
+    /**
+     * Show task creation page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     { 
         $query = \Request::getQueryString();
         return view('/teacher/todolist/create',['query' => $query]);
     }
-
+    
+    /**
+     * Store a newly created task.
+     *
+     * @param  TaskRequest  $request
+     * @return array
+     */
     public function store(TaskRequest $request)
     {
         try 
@@ -162,10 +206,10 @@ class TaskController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show task details for viewing/editing (API).
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function show($id)
     {
@@ -219,10 +263,11 @@ class TaskController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Get task data for edit form (API).
      *
+     * @param  Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function editList(Request $request,$id)
     {
@@ -281,11 +326,11 @@ class TaskController extends Controller
         return $array;
     }
 
-    /**
-     * Show the form for editing the specified resource.
+     /**
+     * Show task edit page.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function edit($id)
     {
@@ -295,11 +340,11 @@ class TaskController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update an existing task.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  TaskRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function update(TaskRequest $request, $id)
     {
@@ -333,11 +378,11 @@ class TaskController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Snooze a task for configured duration.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function snooze(Request $request, $id)
     {
@@ -379,10 +424,10 @@ class TaskController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete a task.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function destroy($id)
     {
@@ -409,7 +454,7 @@ class TaskController extends Controller
         catch(Exception $e) 
         {
             Log::info($e->getMessage());
-            dd($e->getMessage());
+            // dd($e->getMessage());
         }
     }
 }

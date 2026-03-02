@@ -1,8 +1,10 @@
 <?php
+
 /**
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Resources\UserDocument as UserDocumentResource;
@@ -16,6 +18,14 @@ use App\Traits\Common;
 use App\Models\User;
 use Exception;
 
+/**
+ * Class DocumentsController
+ *
+ * Controller for managing user documents: listing, uploading,
+ * updating (versioning) and deleting documents.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class DocumentsController extends Controller
 {
     use LogActivity;
@@ -29,8 +39,11 @@ class DocumentsController extends Controller
     public function index($name)
     {
         //
-        $user = User::where('name',$name)->first();
-        $documents = Document::where('user_id',$user->id)->where('status',1)->get();
+        $user = User::where('name', $name)->first();
+        $documents = Document::where('user_id', $user->id)
+            ->where('status', 1)
+            ->orderby('id', 'desc')
+            ->get();
 
         $documents = UserDocumentResource::collection($documents);
 
@@ -43,18 +56,16 @@ class DocumentsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$name)
+    public function store(Request $request, $name)
     {
         //
-        try
-        {
-            $user = User::where('name',$name)->first();
+        try {
+            $user = User::where('name', $name)->first();
             $file = $request->file('attachment');
-            
-            if($file)
-            { 
-                $bigfolder=Auth::user()->school->slug.'/files/large';
-                $path = $this->uploadFile($bigfolder,$file); 
+
+            if ($file) {
+                $bigfolder = Auth::user()->school->slug . '/files/large';
+                $path = $this->uploadFile($bigfolder, $file);
             }
 
             $document = new Document;
@@ -67,25 +78,23 @@ class DocumentsController extends Controller
 
             $document->save();
 
-            $user->addMedia($file)->toMediaCollection('documents', env('FILESYSTEM_DRIVER'));
+            $user->addMedia($file)->toMediaCollection('documents', env('FILESYSTEM_DISK'));
 
-            $message=trans('messages.add_success_msg',['module' => 'Document']);
+            $message = trans('messages.add_success_msg', ['module' => 'Document']);
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $document,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_ADD_DOCUMENT,
                 $message
-            ); 
+            );
             $res['success'] = $message;
             return $res;
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             //dd($e->getMessage());
-        } 
+        }
     }
 
     /**
@@ -97,7 +106,7 @@ class DocumentsController extends Controller
     public function edit($id)
     {
         //
-        $document = Document::where('id',$id)->first();
+        $document = Document::where('id', $id)->first();
 
         $array = [];
 
@@ -117,16 +126,14 @@ class DocumentsController extends Controller
     public function update(Request $request, $name, $id)
     {
         //
-        try
-        {
-            $user = User::where('name',$name)->first();
+        try {
+            $user = User::where('name', $name)->first();
             $file = $request->file('attachment');
-            if($file)
-            { 
-                $bigfolder=Auth::user()->school->slug.'/files/large';
-                $path = $this->uploadFile($bigfolder,$file); 
+            if ($file) {
+                $bigfolder = Auth::user()->school->slug . '/files/large';
+                $path = $this->uploadFile($bigfolder, $file);
             }
-            $old_doc = Document::where('id',$id)->first();
+            $old_doc = Document::where('id', $id)->first();
 
             $old_doc->status = 0;
 
@@ -136,32 +143,30 @@ class DocumentsController extends Controller
 
             $document->school_id  = $user->school_id;
             $document->user_id    = $user->id;
-            $document->version    = $old_doc->version+1;
+            $document->version    = $old_doc->version + 1;
             $document->type       = $request->type;
             $document->name       = $request->title;
             $document->file_path  = $path;
 
             $document->save();
 
-            $user->addMedia($file)->toMediaCollection('documents', env('FILESYSTEM_DRIVER'));
+            $user->addMedia($file)->toMediaCollection('documents', env('FILESYSTEM_DISK'));
 
-            $message=trans('messages.update_success_msg',['module' => 'Document']);
+            $message = trans('messages.update_success_msg', ['module' => 'Document']);
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $document,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_EDIT_DOCUMENT,
                 $message
-            ); 
+            );
             $res['success'] = $message;
             return $res;
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             //dd($e->getMessage());
-        } 
+        }
     }
 
     /**
@@ -173,34 +178,28 @@ class DocumentsController extends Controller
     public function destroy($id)
     {
         //
-        try
-        {
-            $document = Document::where('id',$id)->first();
-            if(Gate::allows('document',$document))
-            {
+        try {
+            $document = Document::where('id', $id)->first();
+            if (Gate::allows('document', $document)) {
                 $document->delete();
 
-                $message=trans('messages.delete_success_msg',['module' => 'Document']);
+                $message = trans('messages.delete_success_msg', ['module' => 'Document']);
 
 
-                $ip= $this->getRequestIP();
+                $ip = $this->getRequestIP();
                 $this->doActivityLog(
                     $document,
                     Auth::user(),
-                    ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                    ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                     LOGNAME_DELETE_DOCUMENT,
                     $message
                 );
                 $res['success'] = $message;
                 return $res;
-            }
-            else
-            {
+            } else {
                 abort(403);
             }
-        }
-        catch(Exception $e)
-        {
+        } catch (Exception $e) {
             //dd($e->getMessage());
         }
     }

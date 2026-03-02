@@ -1,88 +1,98 @@
 <template>
-    <div class="relative">
-        <div class="modal-body">
-            <div class="flex flex-col lg:flex-row w-full lg:w-full">
-                <div class="tw-form-group w-full lg:w-full">
-                    <div class="lg:mr-8 md:mr-8">
-                        <div class="mb-2">
-                            <label for="attachment" class="tw-form-label">Attachment</label>
-                        </div>
-                        <div class="mb-2">
-                            <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"v-on:vdropzone-success="successMsg" v-on:vdropzone-sending="sendingEvent"></vue-dropzone>
-                            <a href="#" class="btn btn-reset reset-btn" @click="removeAllFiles()">Remove All Files</a> 
-                        </div>
-                        <span v-if="errors.attachment" class="text-red-500 text-xs font-semibold">{{ errors.attachment[0] }}</span>
-                    </div> 
-                </div>
-            </div>
+  <div class="relative">
+    <div class="modal-body">
 
-            <div class="my-6">
-                <a href="#" class="btn btn-submit blue-bg text-white rounded px-3 py-1 mr-3 text-sm font-medium" @click="submitForm()">Submit</a>
-            </div>
-        </div>
+      <div class="mb-2">
+        <label class="tw-form-label">Attachment</label>
+      </div>
+
+      <form
+        ref="dropzoneForm"
+        class="dropzone border border-dashed p-6 rounded"
+      ></form>
+
+      <button
+        type="button"
+        class="btn btn-reset reset-btn mt-2"
+        @click="removeAllFiles"
+      >
+        Remove All Files
+      </button>
+
+      <div class="my-6">
+        <button
+          type="button"
+          class="btn btn-submit blue-bg text-white rounded px-3 py-1"
+          @click="submitForm"
+        >
+          Submit
+        </button>
+      </div>
+
     </div>
+  </div>
 </template>
 
 <script>
-    import vue2Dropzone from 'vue2-dropzone'
-    import 'vue2-dropzone/dist/vue2Dropzone.min.css'
-    import { bus } from "../../../app";
-    export default {
-        props:['url' , 'id' , 'mode'],
-        components:{ 
-            vueDropzone: vue2Dropzone,
-        },
-        data () {
-            return {
-                errors:[],
-                success:null, 
-                dropzoneOptions: {
-                    url: this.url+'/student/assignment/add',
-                    method:'post',
-                    headers: {
-                        "X-CSRF-TOKEN": document.head.querySelector("[name=csrf-token]").content
-                    },
-                    addRemoveLinks:"true",
-                    maxFilesize: 8,
-                    paramName: "assignment_file", // The name that will be used to transfer the file
-                    parallelUploads: 6,
-                    maxFiles:6,
-                    uploadMultiple: true,
-                    acceptedFiles: ".jpg,.jpeg,.png",
-                    autoProcessQueue: false,
-                    maxThumbnailFilesize:2,
-                },
-                submitUrl:'',
-            }
-        },
+import Dropzone from "dropzone";
+import "dropzone/dist/dropzone.css";
 
-        methods:
-        {
-            submitForm() 
-            { 
-                this.$refs.myVueDropzone.processQueue();
-            },
+Dropzone.autoDiscover = false;
 
-            sendingEvent (file, xhr, formData) 
-            {
-                formData.append('assignment_id',this.id);                 
-            },
+export default {
+  props: ["url", "id"],
 
+  data() {
+    return {
+      myDropzone: null,
+    };
+  },
 
-            removeAllFiles() 
-            {
-                this.$refs.myVueDropzone.removeAllFiles();
-            },
+  mounted() {
+    this.myDropzone = new Dropzone(this.$refs.dropzoneForm, {
+      url: this.url + "/student/assignment/add",
+      method: "post",
+      headers: {
+        "X-CSRF-TOKEN":
+          document.head.querySelector("[name=csrf-token]").content,
+      },
+      paramName: "assignment_file",   // IMPORTANT
+      maxFilesize: 8,
+      maxFiles: 6,
+      parallelUploads: 6,
+      acceptedFiles: ".jpg,.jpeg,.png",
+      autoProcessQueue: false,
+      addRemoveLinks: true,
+    });
 
-            successMsg(file, response)
-            {
-                bus.$emit('success',response);
-            },
-        },
-  
-        created()
-        {   
-            //
-        }
+    this.myDropzone.on("sending", (file, xhr, formData) => {
+      formData.append("assignment_id", this.id);
+    });
+
+    this.myDropzone.on("queuecomplete", () => {
+      this.myDropzone.removeAllFiles();
+    });
+  },
+
+  beforeUnmount() {
+    if (this.myDropzone) {
+      this.myDropzone.destroy();
     }
+  },
+
+  methods: {
+    submitForm() {
+      if (!this.myDropzone.getAcceptedFiles().length) {
+        alert("Please select at least one file.");
+        return;
+      }
+
+      this.myDropzone.processQueue();
+    },
+
+    removeAllFiles() {
+      this.myDropzone.removeAllFiles(true);
+    },
+  },
+};
 </script>

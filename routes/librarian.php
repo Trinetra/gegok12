@@ -1,6 +1,8 @@
 <?php
 
 Route::get( '/dashboard', 'DashboardController@index' );
+Route::get( '/dashboard/tasklist/{task_flag}','DashboardController@list' );
+Route::get( '/dashboard/task/count','DashboardController@listCount' );
 //category
 Route::get( '/bookscategory/index', 'BookCategoryController@index' );
 Route::get( '/bookscategory/add', 'BookCategoryController@create' );
@@ -29,6 +31,7 @@ Route::get( '/booklending/show/{id}', 'BookLendingController@show' );
 Route::get( '/booklending/edit/{id}', 'BookLendingController@edit' );
 Route::post( '/booklending/update/{id}', 'BookLendingController@update' );
 Route::get( '/booklending/delete/{id}', 'BookLendingController@destroy' );
+Route::get( '/booklending/return', 'BookLendingController@bookreturn' );
 
 //holiday
 Route::get( '/holidays/list', 'HolidaysController@list' );
@@ -60,3 +63,17 @@ Route::get( '/activity', 'ActivityLogController@index' );
 
     //delete
     Route::get('/task/{id}/delete', 'TaskController@destroy');
+
+    //library card import teacher 
+    Route::get( '/import/library', 'LibraryImportController@create' );
+        Route::post( '/import/library', 'LibraryImportController@import' );
+        Route::get( '/students', 'StudentController@index' );
+            Route::get( '/students/find', 'StudentController@find' );
+            Route::get( '/downloadformat', 'LibraryImportController@downloadFormat' );
+    // Route::post( '/import/library', 'LibraryImportController@import' );
+    Route::get( '/teachers/find', 'TeacherListController@find' );
+    Route::get( '/teachers', 'TeacherListController@index' );
+    Route::get( '/staffs/find', 'StaffController@find');
+    Route::get( '/staffs', 'StaffController@index');
+
+

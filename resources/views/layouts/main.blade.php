@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -18,13 +17,15 @@
     <body class="antialiased">
         <div id="app" class="flex flex-col min-h-screen">
             @include('layouts.partials.home_navigation')
-            <main class="flex-grow">
+            <main class="grow">
                 @yield('content')
             </main>
             @include('layouts.partials.main-footer')
         </div>
         <!-- Scripts -->
-        <script src="{{ asset('js/app.js') }}"></script>
+        <script src="{{ mix('js/manifest.js') }}"></script>
+        <script src="{{ mix('js/vendor.js') }}"></script>
+        <script src="{{ mix('js/app.js') }}"></script>
         <script src="{{ asset('js/custom.js') }}" ></script>
         @stack('scripts')
         <script>

@@ -9,6 +9,13 @@ use App\Http\Controllers\Controller;
 use App\Traits\SettingProcess;
 use Illuminate\Http\Request;
 
+/**
+ * Class MaintenanceController
+ *
+ * Controller for maintenance mode and related site-status settings.
+ *
+ * @package App\Http\Controllers\Admin\Setting
+ */
 class MaintenanceController extends Controller
 {
     use SettingProcess;

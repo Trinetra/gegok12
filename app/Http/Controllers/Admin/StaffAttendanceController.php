@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MIT
  * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
  */
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Resources\AttendanceUser as AttendanceUserResource;
@@ -11,6 +12,7 @@ use App\Http\Resources\StaffAttendanceResource;
 use App\Http\Requests\StaffAttendanceRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\Users\TeacherUser;
 use App\Traits\AcademicProcess;
 use App\Models\StudentAcademic;
 use Illuminate\Http\Request;
@@ -25,13 +27,25 @@ use Carbon\Carbon;
 use Exception;
 use Log;
 
+/**
+ * Class StaffAttendanceController
+ *
+ * Handles staff attendance operations including
+ * attendance creation, listing absentees, and
+ * staff attendance reports for the admin module.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class StaffAttendanceController extends Controller
 {
     use AcademicProcess;
     use LogActivity;
     use Common;
+
     /**
      * Display a listing of the resource.
+     *
+     * Currently unused.
      *
      * @return \Illuminate\Http\Response
      */
@@ -40,6 +54,14 @@ class StaffAttendanceController extends Controller
         //
     }
 
+    /**
+     * Get staff list and absent reasons.
+     *
+     * Returns active staff members for attendance
+     * along with configured absent reasons.
+     *
+     * @return array
+     */
     public function list()
     {
         $array = [];
@@ -47,55 +69,68 @@ class StaffAttendanceController extends Controller
 
         $academic_year = SiteHelper::getAcademicYear($school_id);
 
+        $staff = User::whereIn('usergroup_id', [5, 8, 10, 11, 12, 13])
+            ->where([
+                ['school_id',Auth::user()->school_id],
+                ['status','active']
+            ])
+            ->get()
+            ->sortBy('userprofile.firstname');
 
-
-        $staff    = User::ByRole(5)->where([['school_id',Auth::user()->school_id],['status','active']])->get()->sortBy('userprofile.firstname');
         $stafflist = TeacherlistResource::collection($staff);
 
-        $absentReasonlist   = AbsentReason::where('status',1)->get();
+        $absentReasonlist = AbsentReason::where('status',1)->get();
 
-        $array['stafflist']       = $stafflist;
-        $array['absentReasonlist']  = $absentReasonlist;
+        $array['stafflist']        = $stafflist;
+        $array['absentReasonlist']= $absentReasonlist;
 
         return $array;
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the staff attendance creation form.
      *
      * @return \Illuminate\Http\Response
      */
     public function create()
     {
         //
-         return view('/admin/staff_attendance/create');
+        return view('/admin/staff_attendance/create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store staff attendance records.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Creates attendance entries for staff,
+     * logs the activity, and returns success response.
+     *
+     * @param StaffAttendanceRequest $request
+     * @return array
      */
     public function store(StaffAttendanceRequest $request)
     {
         //
-       // dd($request->all());
+        // dd($request->all());
         try
         {
-         $school_id      = Auth::user()->school_id;
-            $academic_year  = SiteHelper::getAcademicYear($school_id);
-            $admin          = Auth::id();
+            $school_id     = Auth::user()->school_id;
+            $academic_year = SiteHelper::getAcademicYear($school_id);
+            $admin         = Auth::id();
 
-            $attendance = $this->createStaffAttendance($school_id , $academic_year->id , $admin , $request);
+            $attendance = $this->createStaffAttendance(
+                $school_id,
+                $academic_year->id,
+                $admin,
+                $request
+            );
 
             $message = trans('messages.add_success_msg',['module' => 'Attendance']);
 
-            $ip= $this->getRequestIP();
+            $ip = $this->getRequestIP();
             $this->doActivityLog(
                 $attendance,
                 Auth::user(),
-                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT'] ],
+                ['ip' => $ip, 'details' => $_SERVER['HTTP_USER_AGENT']],
                 LOGNAME_ADD_ATTENDANCE,
                 $message
             );
@@ -103,7 +138,7 @@ class StaffAttendanceController extends Controller
             $res['success'] = $message;
 
             return $res;
-            }
+        }
         catch(Exception $e)
         {
             //Log::info($e->getMessage());
@@ -111,89 +146,122 @@ class StaffAttendanceController extends Controller
         }
     }
 
- 
-     public function staff()
+    /**
+     * Get today absent staff count.
+     *
+     * @return array
+     */
+    public function staff()
     {
         //
-        $school_id      = Auth::user()->school_id;
+        $school_id     = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
-        $absentees = Attendance::ByRole(5)->where([
-                        ['school_id',$school_id],
-                        ['academic_year_id',$academic_year->id],
-                        ['date',date('Y-m-d')],
-                        ['status',0]
-                    ])->count();
 
-        return [ 'studentAbsentees' => $absentees];
+        $absentees = Attendance::ByRole(5)->where([
+            ['school_id',$school_id],
+            ['academic_year_id',$academic_year->id],
+            ['date',date('Y-m-d')],
+            ['status',0]
+        ])->count();
+
+        return [ 'studentAbsentees' => $absentees ];
     }
 
+    /**
+     * Get today absent staff list.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function stafflist()
     {
         //
-        $school_id      = Auth::user()->school_id;
+        $school_id     = Auth::user()->school_id;
         $academic_year = SiteHelper::getAcademicYear($school_id);
+
         $absentees = Attendance::ByRole(5)->where([
-                        ['school_id',$school_id],
-                        ['academic_year_id',$academic_year->id],
-                        ['date',date('Y-m-d')],
-                        ['status',0]
-                    ])->get();
+            ['school_id',$school_id],
+            ['academic_year_id',$academic_year->id],
+            ['date',date('Y-m-d')],
+            ['status',0]
+        ])->get();
+
         $attendance = StaffAttendanceResource::collection($absentees);
 
         return $attendance;
     }
 
+    /**
+     * Get monthly attendance summary for a staff member.
+     *
+     * Calculates total absent days grouped by month
+     * within the academic year.
+     *
+     * @param string $name
+     * @return array
+     */
     public function getStudentAttendance($name)
     {
         //
         $staff = User::where('name',$name)->first();
 
-            $array = [];
-            $academic_year  = SiteHelper::getAcademicYear(Auth::user()->school_id);
-            $startDate  = date('Y-m-d',strtotime($academic_year->start_date));  
-            $endDate    = date('Y-m-d',strtotime($academic_year->end_date));
-            
-            $attendances    = Attendance::with('user')->where([
-                ['school_id',Auth::user()->school_id],
-                ['academic_year_id',$academic_year->id],
-                ['user_id',$staff->id],
-                ['status',0],
-                ['date','>=',$startDate],
-                ['date','<=',$endDate]
-            ])->orderBy('date','DESC')->get()->groupBy([function($attendance) {
-                    return Carbon::parse($attendance->date)->format('M Y'); 
-                },'user_id']);
-            $i = 0;
-            
-            foreach ($attendances as $key => $attendance) 
+        $array = [];
+        $academic_year = SiteHelper::getAcademicYear(Auth::user()->school_id);
+        $startDate = date('Y-m-d',strtotime($academic_year->start_date));
+        $endDate   = date('Y-m-d',strtotime($academic_year->end_date));
+
+        $attendances = Attendance::with('user')->where([
+            ['school_id',Auth::user()->school_id],
+            ['academic_year_id',$academic_year->id],
+            ['user_id',$staff->id],
+            ['status',0],
+            ['date','>=',$startDate],
+            ['date','<=',$endDate]
+        ])
+        ->orderBy('date','DESC')
+        ->get()
+        ->groupBy([
+            function($attendance) {
+                return Carbon::parse($attendance->date)->format('M Y');
+            },
+            'user_id'
+        ]);
+
+        $i = 0;
+
+        foreach ($attendances as $key => $attendance)
+        {
+            foreach ($attendance as $user_id => $value)
             {
-                //$array['months'][$i] = $key;
-                foreach ($attendance as $user_id => $value) 
+                if($attendance[$user_id] != null)
                 {
-                    $user = User::where('id',$user_id)->first();
-                   // $array['staff'][$user->name]['FullName'] = $user->FullName;
-                    if($attendance[$user_id] != null)
-                    {
-                        $array['staff'][$key] = count($value)*0.5;
-                    }
-                    else
-                    {
-                        $array['staff'][$key] = 0;
-                    }
+                    $array['staff'][$key] = count($value) * 0.5;
                 }
-                $i++;
+                else
+                {
+                    $array['staff'][$key] = 0;
+                }
             }
-            return $array;
-        
+            $i++;
+        }
+
+        return $array;
     }
 
+    /**
+     * Show detailed attendance records for a staff member.
+     *
+     * @param string $name
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function showAttendance($name)
     {
         //
-        $staff = User::where('name', $name)->first();
-      
-        $attendances = AttendanceUserResource::collection($staff->AttendanceUserAbsent);
-         
+        $staff = TeacherUser::where('name', $name)->first();
+
+        $attendances = AttendanceUserResource::collection(
+            $staff->AttendanceUserAbsent
+        );
+
         return $attendances;
     }
 }

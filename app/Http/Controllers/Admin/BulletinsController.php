@@ -24,6 +24,14 @@ use Carbon\Carbon;
 use Exception;
 use Log;
 
+/**
+ * Class BulletinsController
+ *
+ * Controller for managing school bulletins/magazines: listing,
+ * creating, downloading and deleting bulletin records.
+ *
+ * @package App\Http\Controllers\Admin
+ */
 class BulletinsController extends Controller
 {
     use LogActivity;
@@ -195,7 +203,7 @@ class BulletinsController extends Controller
         if(Gate::allows('bulletin',$bulletin))
         {
             $file=$bulletin->bulletin_file;
-            $path=$this->getFilePathforDownload(env('FILESYSTEM_DRIVER'),$file);
+            $path=$this->getFilePathforDownload(env('FILESYSTEM_DISK'),$file);
             $name='bulletin_year'.'_'.$bulletin->year.'.pdf';
             $headers = [
                 'Content-Disposition' => 'attachment; filename="'. $name.'"',

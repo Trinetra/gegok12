@@ -1,14 +1,37 @@
 <?php
-/**
- * SPDX-License-Identifier: MIT
- * (c) 2025 GegoSoft Technologies and GegoK12 Contributors
- */
+// SPDX-License-Identifier: MIT
+// (c) 2025 GegoSoft Technologies and GegoK12 Contributors
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Common;
 
+/**
+ * Class StudentAssignment
+ *
+ * Model for managing student assignment submissions and grades.
+ *
+ * @property int $id
+ * @property int $assignment_id
+ * @property int $user_id
+ * @property array $assignment_file
+ * @property float $obtained_marks
+ * @property \DateTime $submitted_on
+ * @property string $comments
+ * @property int $marks_given_by
+ * @property \DateTime $marks_given_on
+ * @property int $status
+ * @property \DateTime $created_at
+ * @property \DateTime $updated_at
+ * @property \DateTime $deleted_at
+ * @property string $assignmentFilePath
+ * @property-read \App\Models\Assignment $assignment
+ * @property-read \App\Models\User $student
+ * @property-read \App\Models\User $teacher
+ * @mixin \Eloquent
+ */
 class StudentAssignment extends Model
 {
     //
@@ -40,30 +63,58 @@ class StudentAssignment extends Model
 
     protected $casts=[ 'assignment_file' => 'array' ];
 
+    /**
+     * Get the assignment for this submission.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function assignment()
     {
         return $this->belongsTo('App\Models\Assignment','assignment_id');
     }
 
+    /**
+     * Get the student who submitted this assignment.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function student()
     {
     	return $this->belongsTo('\App\Models\User','user_id');
     }
 
+    /**
+     * Get the teacher who graded this assignment.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function teacher()
     {
     	return $this->belongsTo('\App\Models\User','marks_given_by');
     }
 
+    /**
+     * Get the assignment file paths.
+     *
+     * @return array
+     */
     public function getAssignmentFilePathAttribute()
-    {
-        $count = count($this->assignment_file);
-        for($i=1 ; $i <= $count ; $i++)
-        {
-            $attachment[$i]['original_path']    = $this->assignment_file[$i];
-            $attachment[$i]['path']             = $this->getFilePath($this->assignment_file[$i]);
-            $attachment[$i]['id']               = $i;
-        }
-        return $attachment;
+{
+    if (!$this->assignment_file || !is_array($this->assignment_file)) {
+        return [];
     }
+
+    $attachment = [];
+
+    foreach ($this->assignment_file as $index => $file) {
+
+        $attachment[] = [
+            'id' => $index,
+            'original_path' => $file,
+            'path' => $this->getFilePath($file),
+        ];
+    }
+
+    return $attachment;
+}
 }

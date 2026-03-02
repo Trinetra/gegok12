@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 <nav class="navbar bg-white w-full flex  lg:flex-row px-4 lg:px-8 py-2 justify-between items-center">
   <div class="nav-brand flex items-center">
     @if(\Auth::user())
@@ -37,7 +36,6 @@
             <!-- Authentication Links -->
             <!-- <li class="mx-2"><a href="">{{ __('Features') }}</a></li> -->
             <!-- <li class="mx-2"><a href="">{{ __('Demo') }}</a></li> -->
-            <li class="mx-2 hidden lg:block"><a href="{{ url('/pricing') }}">{{ __('Pricing') }}</a></li>
             @guest
                 <li class="nav-item px-2">
                     <a class="nav-link" href="{{ route('login') }}" id="login">{{ __('Login') }}</a>

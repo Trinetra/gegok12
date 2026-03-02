@@ -5,6 +5,7 @@ namespace App\Http\Resources\Classwall;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PostDetail;
+use Carbon\Carbon;
 
 class ClassPost extends JsonResource
 {
@@ -29,7 +30,7 @@ class ClassPost extends JsonResource
         [
             'id'                =>  $this->id,
             'description'       =>  $this->description,
-            'post_created_at'   =>  $this->post_created_at->diffForHumans(),
+            'post_created_at'   =>  Carbon::parse($this->post_created_at)->diffForHumans(),
             'attachments'       =>  $this->AttachmentPath,
             'visibility'        =>  $visibility,
             'created_by'        =>  $this->created_by,

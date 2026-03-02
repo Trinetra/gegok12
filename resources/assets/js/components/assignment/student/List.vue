@@ -364,7 +364,7 @@
         created()
         { 
             this.getData();
-            bus.$on('success',data =>{
+            bus.on('success',data =>{
                 if(data != null)
                 {
                     this.closeModal();

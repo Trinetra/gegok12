@@ -238,7 +238,7 @@
 
 <script>
     import { bus } from "../../app";
-    import PortalVue from "portal-vue";
+    
     export default {
         props:['url','slug'],
         data(){
@@ -362,7 +362,7 @@
             setProfileTab(val)
             {
                 this.profile_tab=val;
-                bus.$emit("dataAdmissionTab", this.profile_tab);
+                bus.emit("dataAdmissionTab", this.profile_tab);
             },
         },
         created()
@@ -370,7 +370,7 @@
             axios.get(this.url+'/'+this.slug+'/standardlist').then(response => { 
                 this.qualificationlist = response.data.qualificationlist;    
             });
-            bus.$on("dataAdmissionTab", data => {
+            bus.on("dataAdmissionTab", data => {
                 if(data!='')
                 {
                     this.profile_tab=data;                   

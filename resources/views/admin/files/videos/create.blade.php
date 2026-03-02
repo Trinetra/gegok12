@@ -1,4 +1,3 @@
-{{-- SPDX-License-Identifier: MIT --}}
 @extends('layouts.admin.layout')
 @section('content')
     <div class="w-full">
@@ -6,7 +5,7 @@
             <h1 class="admin-h1 my-3 flex items-center">
                 <a href="{{ url('/admin/showvideo') }}" title="Back" class="rounded-full bg-gray-100 p-2">
                     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 492 492" xml:space="preserve" width="512px" height="512px" class="w-3 h-3 fill-current text-gray-700"><g><g><g><path d="M464.344,207.418l0.768,0.168H135.888l103.496-103.724c5.068-5.064,7.848-11.924,7.848-19.124 c0-7.2-2.78-14.012-7.848-19.088L223.28,49.538c-5.064-5.064-11.812-7.864-19.008-7.864c-7.2,0-13.952,2.78-19.016,7.844    L7.844,226.914C2.76,231.998-0.02,238.77,0,245.974c-0.02,7.244,2.76,14.02,7.844,19.096l177.412,177.412 c5.064,5.06,11.812,7.844,19.016,7.844c7.196,0,13.944-2.788,19.008-7.844l16.104-16.112c5.068-5.056,7.848-11.808,7.848-19.008 c0-7.196-2.78-13.592-7.848-18.652L134.72,284.406h329.992c14.828,0,27.288-12.78,27.288-27.6v-22.788    C492,219.198,479.172,207.418,464.344,207.418z" data-original="#000000" fill="" class="active-path"></path></g></g></g></svg>
-                </a>   
+                </a>
                 <span class="mx-3">Media Files Upload</span>
             </h1>
         </div>
@@ -20,15 +19,15 @@
                         <div>
                             <div>
                                 <div class="flex">
-                                    <div class="w-48 flex items-center py-2"> 
+                                    <div class="w-48 flex items-center py-2">
                                         <input type="radio" name="media" id="uploadmedia" value="uploadmedia" checked>
                                         <span class="text-sm mx-1">Media Upload</span>
                                     </div>
-                                    <div class="w-48 flex items-center py-2"> 
+                                    <div class="w-48 flex items-center py-2">
                                         <input type="radio" name="media" id="studymedia" value="studymedia">
                                         <span class="text-sm mx-1">Study Material</span>
                                     </div>
-                                    <div class="w-48 flex items-center py-2"> 
+                                    <div class="w-48 flex items-center py-2">
                                         <input type="radio" name="media" id="value_education" value="value_education">
                                         <span class="text-sm mx-1">Value Education</span>
                                     </div>
@@ -89,7 +88,7 @@
                                         <option value="video" id="video">Video</option>
                                         <option value="audio" id="audio">Audio</option>
                                         <option value="image" id="image">Image</option>
-                                    </select> 
+                                    </select>
                                     <span class="text-danger text-xs my-1">{{$errors->first('type')}}</span>
                                 </div>
                             </div>
@@ -98,11 +97,11 @@
                         <div class="w-full lg:w-1/2 md:w-1/2 lg:mr-8 md:mr-8 hidden" id="select_audio">
                             <div>
                                 <div class="flex">
-                                    <div class="w-1/2 lg:w-1/3 md:w-1/3 flex items-center tw-form-control mr-1 lg:mr-8 md:mr-8"> 
+                                    <div class="w-1/2 lg:w-1/3 md:w-1/3 flex items-center tw-form-control mr-1 lg:mr-8 md:mr-8">
                                         <input type="radio" name="audio_type" id="attachaudio" value="attach">
                                         <span class="text-sm mx-1">Attach</span>
                                     </div>
-                                    <div class="w-1/2 lg:w-1/3 md:w-1/3 flex items-center tw-form-control lg:mr-8 md:mr-8"> 
+                                    <div class="w-1/2 lg:w-1/3 md:w-1/3 flex items-center tw-form-control lg:mr-8 md:mr-8">
                                         <input type="radio" name="audio_type" id="recordaudio" value="record">
                                         <span class="text-sm mx-1">Record</span>
                                     </div>
@@ -111,7 +110,7 @@
 
                             <div id="attach">
                                 <div class="my-6">
-                                    <div class="w-full items-center"> 
+                                    <div class="w-full items-center">
                                         <input type="file" name="audiofile" class="tw-form-control w-full lg:w-3/4 md:w-3/4">
                                         <span class="text-danger text-xs">{{$errors->first('audiofile')}}</span>
                                     </div>
@@ -122,7 +121,7 @@
                                 <div id="controls">
                                     <button id="recordButton">Record</button>
                                     <button id="stopButton" disabled>Stop</button>
-                                </div> 
+                                </div>
                             </div>
                         </div>
 
@@ -147,11 +146,11 @@
 
                         <div class="my-3 hidden" id="select_video">
                             <div class="flex">
-                                <div class="w-1/2 lg:w-1/3 md:w-1/3 flex items-center tw-form-control mr-1 lg:mr-8 md:mr-8"> 
+                                <div class="w-1/2 lg:w-1/3 md:w-1/3 flex items-center tw-form-control mr-1 lg:mr-8 md:mr-8">
                                     <input type="radio" name="video_type" id="applyurl" value="url">
                                     <span class="text-sm mx-1">Url</span>
                                 </div>
-                                <div class="w-1/2 lg:w-1/3 md:w-1/3 flex items-center tw-form-control lg:mr-8 md:mr-8"> 
+                                <div class="w-1/2 lg:w-1/3 md:w-1/3 flex items-center tw-form-control lg:mr-8 md:mr-8">
                                     <input type="radio" name="video_type" id="pastevideo" value="upload">
                                     <span class="text-sm mx-1">Upload</span>
                                 </div>
@@ -166,7 +165,7 @@
                                 </div>
                             </div>
 
-                            <div id="upload_video" class="hidden">  
+                            <div id="upload_video" class="hidden">
                                 <add-video url="{{ url('/') }}" csrf="{{ csrf_token() }}"></add-video>
                             </div>
                         </div>
@@ -177,9 +176,10 @@
                     </form>
                 </div>
             @else
-                <a href="{{ url('/pricing') }}"> 
-                    <button type="submit" class="no-underline text-white  px-4 my-3 mx-1 flex items-center custom-green py-1 justify-center">Upgrade Plan to Add More Videos</button>
-                </a>
+                <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+                    <p class="font-semibold">Video limit reached</p>
+                    <p class="text-sm">Please contact your administrator to increase the video limit.</p>
+                </div>
             @endif
         </div>
     </div>

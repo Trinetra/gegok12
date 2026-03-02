@@ -9,7 +9,12 @@
                         <label for="description" class="tw-form-label">Description</label>
                     </div>
                     <div class="mb-2">
-                        <quill-editor ref="myQuillEditor" v-model="description" name="description" :options="option"/>
+                        <QuillEditor
+                              v-model:content="description"
+                              contentType="html"
+                              theme="snow"
+                              :modules="editorModules"
+                            />
                         <div class="text-gray-700 text-xs my-1" v-text="(500 - description.length)+'/'+500" style="text-align: right"></div>               
                     </div>
                     <span v-if="errors.description" class="text-red-500 text-xs font-semibold">{{errors.description[0]}}</span>
@@ -39,7 +44,7 @@
                         <label for="attachment" class="tw-form-label">Attachment</label>
                     </div>
                     <div class="mb-2">
-                        <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions" v-on:vdropzone-sending="sendingEvent" v-on:vdropzone-error="errorMessage"></vue-dropzone>
+                        <div ref="dropzone" class="dropzone border rounded p-4 bg-gray-50"></div>
                         <a href="#" class="btn btn-reset reset-btn" @click="removeAllFiles()">Remove All Files</a> 
                     </div>
                 </div> 
@@ -97,7 +102,15 @@
                         <label for="posted_at" class="tw-form-label">Date Time<span class="text-red-500">*</span></label>
                     </div>
                     <div class="mb-2">
-                        <datetime format="DD-MM-YYYY h:i:s" name="posted_at" v-model="posted_at" class="w-full rounded" id="posted_at"></datetime>
+                        <VueDatePicker
+                          v-model="posted_at"
+                          format="dd-MM-yyyy HH:mm:ss"
+                          model-type="format"
+                          :enable-time-picker="true"
+                          :is-24="true"
+                          :auto-apply="true"
+                          input-class-name="w-full rounded"
+                        />
                     </div>
                     <span v-if="errors.posted_at" class="text-red-500 text-xs font-semibold">{{errors.posted_at[0]}}</span>
                 </div> 
@@ -112,17 +125,18 @@
 </template>
 
 <script> 
-    import datetime from 'vuejs-datetimepicker';
-    import vue2Dropzone from 'vue2-dropzone'
-    import 'vue2-dropzone/dist/vue2Dropzone.min.css'
-    import VueQuillEditor from 'vue-quill-editor'
-    import 'quill/dist/quill.core.css' // import styles
-    import 'quill/dist/quill.snow.css' // for snow theme
-    import 'quill/dist/quill.bubble.css' // for bubble theme
+    import { VueDatePicker } from '@vuepic/vue-datepicker'
+    import '@vuepic/vue-datepicker/dist/main.css'
+    import Dropzone from "dropzone"
+    import "dropzone/dist/dropzone.css"
+    Dropzone.autoDiscover = false
+
+    import { QuillEditor } from '@vueup/vue-quill'
+    import '@vueup/vue-quill/dist/vue-quill.snow.css'
     export default {
         components:{ 
-            datetime ,
-            vueDropzone: vue2Dropzone,
+            VueDatePicker ,
+            QuillEditor,
         },
         props:['url' , 'entity_id' , 'entity_name' , 'id' , 'mode'],
         data(){
@@ -135,40 +149,50 @@
                 posted_at:'',
                 post_later:'',
                 count:'',
-                option:{
-                    theme: 'snow',
-                    modules: {
-                        toolbar: [
-                            ['bold', 'italic', 'underline'],
-                            [{ 'list': 'ordered' }, { 'list': 'bullet' }]
-                        ]
-                    },
-                    placeholder: '', 
-                },
-                dropzoneOptions: {
-                    url: this.url+'/'+this.mode+'/classwall/post/edit/attachment/'+this.id,
-                    method:'post',
-                    headers: {
-                        "X-CSRF-TOKEN": document.head.querySelector("[name=csrf-token]").content
-                    },
-                    autoProcessQueue: false,
-                    uploadMultiple: true,
-                    acceptedFiles: ".jpg,.jpeg,.png",
-                    addRemoveLinks:true,
-                    maxFilesize: 0.5,
-                    paramName: "file", // The name that will be used to transfer the file
-                    parallelUploads: 6,
-                    maxFiles:6,
+                editorModules: {
+                  toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    [{ list: 'ordered' }, { list: 'bullet' }]
+                  ]
                 },
                 //visiblelist:[{id:'all_class', name:'All Classes'},{id:'select_class', name:'Select Class'}, {id:'select_page', name:'Select Page'}],
                 visiblelist:[{id:'all_class', name:'All Classes'},{id:'select_class', name:'Class'}],
                 errors:[],
                 success:null,
+                dropzoneInstance: null,
             }
+        },
+        mounted() {
+          this.initDropzone()
         },
 
         methods:
         {
+            initDropzone() {
+              this.dropzoneInstance = new Dropzone(this.$refs.dropzone, {
+                url: this.url + '/' + this.mode + '/classwall/post/edit/attachment/' + this.id,
+                method: 'post',
+                headers: {
+                  "X-CSRF-TOKEN": document.head.querySelector("[name=csrf-token]").content
+                },
+                paramName: "file",
+                uploadMultiple: true,
+                parallelUploads: 6,
+                maxFiles: 6,
+                maxFilesize: 0.5,
+                acceptedFiles: ".jpg,.jpeg,.png",
+                autoProcessQueue: false,
+                addRemoveLinks: true,
+              })
+
+              this.dropzoneInstance.on("sendingmultiple", (files, xhr, formData) => {
+                formData.append("post_id", this.id)
+              })
+
+              this.dropzoneInstance.on("queuecomplete", () => {
+                window.location.reload()
+              })
+            },
             getData()
             {
                 axios.get(this.url+'/'+this.mode+'/classwall/post/editList/'+this.id).then(response => {
@@ -199,60 +223,23 @@
                 }
             }, 
 
-            init() 
-            {
-                let myDropzone = this.$refs.myVueDropzone;
-                // If you use the maxFiles option, make sure you adjust it to the correct amount:
-                let fileCountOnServer = this.attachments.length; // The number of files already uploaded
-                myDropzone.options.maxFiles = myDropzone.options.maxFiles - fileCountOnServer;
+            removeAllFiles() {
+              if (this.dropzoneInstance) {
+                this.dropzoneInstance.removeAllFiles(true)
+              }
             },
 
-            sendingEvent (file, xhr, formData) 
+            deleteAttachment(index)
             {
-                formData.append('count', this.attachments.length);
-            },
-
-            errorMessage(file, message, xhr)
-            {
-                $('.dz-error-message span').text(message.errors.count[0]);
-            },
-
-            processImage() 
-            {
-                let formData=new FormData(); 
-
-                formData.append('attachment_count',this.attachments.length); 
-
-                for(let i=0 ; i < this.attachments.length ; i++)
-                {
-                    if(typeof this.attachments[i] !== "undefined")
+                axios.post(
+                    this.url+'/'+this.mode+'/classwall/post/delete-attachment',
                     {
-                        formData.append('attachment'+i,this.attachments[i]['original_path']);
+                        post_id: this.id,
+                        index: index
                     }
-                    else
-                    {
-                        formData.append('attachment'+i,'');
-                    }
-                }
-
-                axios.post(this.url+'/'+this.mode+'/classwall/post/edit/attachment/'+this.id,formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {
-                    this.success = response.data.success;
-                    this.$refs.myVueDropzone.processQueue();
-                    //window.location.reload();
-                }).catch(error => {
-                    this.errors = error.response.data.errors;
-                });
-            },
-
-            removeAllFiles() 
-            {
-                this.$refs.myVueDropzone.removeAllFiles();
-            },
-
-            deleteAttachment(id)
-            {
-                this.attachments.splice(id,1);
-                this.init();
+                ).then(() => {
+                    this.attachments.splice(index,1)
+                })
             },
 
             submitForm()
@@ -271,7 +258,11 @@
                 formData.append('post_later',this.post_later);
 
                 axios.post(this.url+'/'+this.mode+'/classwall/post/edit/'+this.id,formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(response => {    
-                    this.processImage();
+                    if (this.dropzoneInstance.getQueuedFiles().length > 0) {
+                        this.dropzoneInstance.processQueue();
+                    } else {
+                        window.location.reload();
+                    }
                     this.success = response.data.success;
                     //window.location.reload();
                 }).catch(error => {

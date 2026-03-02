@@ -149,44 +149,49 @@ class PostEditController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function editAttachment(PostAttachmentRequest $request,$id)
+    public function editAttachment(Request $request, $id)
     {
-        //
-        try
-        {
-            $post = Post::where('id',$id)->first();
-            if($request->attachment_count > 0)
-            {
-                $post->attachment_file = null;
-                $post->save();
-                $initial_path = [];
-                for($j = 0 ; $j < $request->attachment_count ; $j++)
-                {
-                    $attachment = 'attachment'.$j;
-                    $initial_path[$j] = $request->$attachment;
+        try {
+
+            $post = Post::findOrFail($id);
+
+            if ($request->hasFile('file')) {
+
+                $files = $request->file('file');
+
+                // If single file, convert to array
+                if (!is_array($files)) {
+                    $files = [$files];
                 }
-                $post->attachment_file = $initial_path;
+
+                // Get existing attachments safely
+                $attachments = $post->attachment_file ?? [];
+
+                if (!is_array($attachments)) {
+                    $attachments = [];
+                }
+
+                foreach ($files as $file) {
+
+                    $path = $this->uploadFile(
+                        Auth::user()->school->slug . '/posts/' . $id,
+                        $file
+                    );
+
+                    $attachments[] = $path;
+                }
+
+                $post->attachment_file = $attachments;
                 $post->save();
             }
 
-            $files = $request->file;
-            
-            if(count($files) > 0) 
-            {
-                $i = $request->count+1;
-                $path = [];
-                foreach($files as $file) 
-                {
-                    $path[$i] = $this->uploadFile(Auth::user()->school->slug.'/posts/'.$id,$file); 
-                    $i++;     
-                }
-                $post->attachment_file = array_merge($post->attachment_file,$path);
-                $post->save();
-            }
-        }
-        catch(Exception $e)
-        {
-            //dd($e->getMessage());
+            return response()->json(['success' => true]);
+
+        } catch (Exception $e) {
+
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }
