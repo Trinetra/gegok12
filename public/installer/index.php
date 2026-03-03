@@ -15,14 +15,22 @@ define('BASE_PATH', dirname(dirname(__DIR__)));
 define('PUBLIC_PATH', dirname(__DIR__));
 define('INSTALLER_PATH', __DIR__);
 
+// Get current step
+$step = isset($_GET['step']) ? (int)$_GET['step'] : 1;
+
 // Check if already installed
-if (file_exists(BASE_PATH . '/storage/installed')) {
-    header('Location: ../');
+$isInstalled = file_exists(BASE_PATH . '/storage/installed');
+$allowCompleteScreen = ($step === 6 && !empty($_SESSION['installer_finalized']));
+
+if ($step === 6 && !$isInstalled) {
+    header('Location: ?step=1');
     exit;
 }
 
-// Get current step
-$step = isset($_GET['step']) ? (int)$_GET['step'] : 1;
+if ($isInstalled && !$allowCompleteScreen) {
+    header('Location: ../');
+    exit;
+}
 $error = '';
 $success = '';
 
@@ -102,6 +110,7 @@ switch ($step) {
         break;
     case 6:
         require_once INSTALLER_PATH . '/views/complete.php';
+        unset($_SESSION['installer_finalized']);
         break;
     default:
         require_once INSTALLER_PATH . '/views/welcome.php';
