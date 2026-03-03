@@ -139,7 +139,7 @@ Use this if you are not using the Visual Installer.
 
 ## Installation Video
 
-[Watch Installation Video](https://www.youtube.com/watch?v=dh1DuLLP-Xk)
+[![GegoK12 Installation Video](public/images/gegok12_cover.jpg)](https://www.youtube.com/watch?v=dh1DuLLP-Xk)
 
 ---
 
