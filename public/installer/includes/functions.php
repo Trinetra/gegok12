@@ -615,7 +615,7 @@ function runInstallationStep($step) {
                 // $result = runCommand('node_modules/.bin/cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js 2>&1');
                 //new
                 $result = runCommand('node_modules/.bin/cross-env NODE_ENV=production npm run production 2>&1');
-                
+
                 $result['message'] = $result['success'] ? 'Assets compiled successfully' : 'Failed to compile assets';
             } else {
                 $result = ['success' => true, 'message' => 'NPM not available or node_modules missing, skipping...', 'output' => ''];
@@ -664,6 +664,7 @@ function runInstallationStep($step) {
         case 'finalize':
             // Create installed marker
             file_put_contents(BASE_PATH . '/storage/installed', date('Y-m-d H:i:s'));
+            $_SESSION['installer_finalized'] = true;
             $result = ['success' => true, 'message' => 'Installation finalized', 'output' => ''];
             break;
 
