@@ -1,6 +1,5 @@
 # GegoK12
 
-[![GitHub Stars](https://img.shields.io/github/stars/Gego-K12/gegok12?style=for-the-badge)](https://github.com/Gego-K12/gegok12/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/Gego-K12/gegok12?style=for-the-badge)](https://github.com/Gego-K12/gegok12/network/members)
 [![GitHub Issues](https://img.shields.io/github/issues/Gego-K12/gegok12?style=for-the-badge)](https://github.com/Gego-K12/gegok12/issues)
 
