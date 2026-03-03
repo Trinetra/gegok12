@@ -139,7 +139,7 @@ Use this if you are not using the Visual Installer.
 
 ## Installation Video
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dh1DuLLP-Xk?si=zwMJ5bsqc3vHoJsy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[Watch Installation Video](https://www.youtube.com/watch?v=dh1DuLLP-Xk)
 
 ---
 
