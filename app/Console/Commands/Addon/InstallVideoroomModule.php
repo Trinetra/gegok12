@@ -124,11 +124,48 @@ class InstallVideoroomModule extends Command
             }
 
             // Step 6: Add to app.js
+            // $appJsPath = resource_path('assets/js/custom_addon.js');
+            // if (!str_contains(file_get_contents($appJsPath), "require('./gvideoroom')")) {
+            //     file_put_contents($appJsPath, file_get_contents($appJsPath) . "\nrequire('./gvideoroom');\n");
+            //     $this->info("Updated app.js");
+            // }
             $appJsPath = resource_path('assets/js/custom_addon.js');
-            if (!str_contains(file_get_contents($appJsPath), "require('./gvideoroom')")) {
-                file_put_contents($appJsPath, file_get_contents($appJsPath) . "\nrequire('./gvideoroom');\n");
-                $this->info("Updated app.js");
+            if (!file_exists($appJsPath)) {
+                $this->error("custom_addon.js not found!");
+                return 1;
             }
+            $content = file_get_contents($appJsPath);
+            $importLine = "import { registerConference } from './gvideoroom'";
+
+            if (!str_contains($content, $importLine)) {
+
+                if (preg_match('/^import .*$/m', $content)) {
+
+                    $content = preg_replace(
+                        '/^import .*$/m',
+                        "$0\n".$importLine,
+                        $content,
+                        1
+                    );
+
+                } else {
+
+                    $content = $importLine . "\n\n" . $content;
+
+                }
+            }
+
+            if (!str_contains($content, "registerConference(app)")) {
+
+                $content = preg_replace(
+                    '/export default function registerCustomAddon\(app\)\s*\{/',
+                    "export default function registerCustomAddon(app) {\n\n    registerConference(app)",
+                    $content
+                );
+
+            }
+            file_put_contents($appJsPath, $content);
+            $this->info("✔ custom_addon.js updated successfully");
 
             // Step 7: NPM install/build
             exec('npm install', $npmOut, $npmStatus);

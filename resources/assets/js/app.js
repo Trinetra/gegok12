@@ -10,10 +10,14 @@ require('./bootstrap');
 import { createApp, defineAsyncComponent } from 'vue'
 import mitt from 'mitt';
 
+
 export const bus = mitt();
 window.bus = bus;
 
-require('./custom_addon');
+import uploader from 'vue-simple-uploader'
+import AudioRecorder from 'vue-audio-recorder'
+
+import registerCustomAddon from './custom_addon'
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -385,5 +389,11 @@ app.component('paginate', Paginate)
 // import 'quill/dist/quill.snow.css';
 // import 'quill/dist/quill.bubble.css';
 // app.use(VueQuillEditor);
+registerCustomAddon(app)
+// app.use(uploader)
+// app.use(AudioRecorder)
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
 
+app.use(Toast)
 app.mount('#app');

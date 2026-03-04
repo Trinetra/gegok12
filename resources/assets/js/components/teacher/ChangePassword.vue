@@ -42,6 +42,12 @@
 <script>
 
   export default {
+  	props: {
+    mode: {
+      type: String,
+      default: 'teacher'
+    }
+  },
     data(){
       return {
 		    oldpassword:'',
@@ -58,7 +64,7 @@
 		  {
 		    this.errors=[];
 
-		    axios.post('/teacher/changepassword',{
+		    axios.post(`/${this.mode}/changepassword`,{
 		      oldpassword:this.oldpassword,
 		      newpassword:this.newpassword,
 		      confirmpassword:this.confirmpassword  
