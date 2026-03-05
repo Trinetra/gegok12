@@ -2,7 +2,7 @@
 <html>
 <head>
    <title>ID CARD</title>
-<link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
 </head>
 <body class="font-sans">
     <div class="" style="">
@@ -19,7 +19,7 @@
                               <table style="width: 100%;">
                                  <tbody>
                                      <tr>
-                                      <td style="padding: 5px;"><img src="{{url('images/dm-logo.png')}}" style="height: 70px;"></td>
+                                      <td style="padding: 5px;">{{--<img src="{{url('images/dm-logo.png')}}" style="height: 70px;">--}}</td>
                                       <td style="width: 90%;padding: 5px;">
                                         <div style="padding-left: 15px;">
                                          <div class="text-base" style="font-weight: 500;color: #fff;font-weight: 800;font-size: 22px;">{{ Auth::user()->school->name }}</div>  

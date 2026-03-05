@@ -53,10 +53,12 @@
               <h2 class="font-semibold text-base text-gray-700 capitalize">staffs
               <span class="text-xs">( Click on checkbox to mark absent )</span></h2>
             </div>
-            <div v-for="(present,index) in presents" class="">
+            <div v-for="(present,index) in presents" :key="present.present_id" class="">
               <div class="flex items-center py-1" :id="present.present_id">
                 <div class="w-6">
-                  <input type="checkbox" name="present_id" v-model="present.present_id" class="tw-form-control w-full" @click="absentStudent($event,present.user,index)">
+                  <input type="checkbox"
+                  :checked="true"
+                  @change="absentStudent($event,present,index)">
                 </div>
                 <div class="mx-2"> 
                   <p class="tw-form-label">{{ present.user_name }}</p>
@@ -71,10 +73,12 @@
             <div class="flex justify-between items-center my-4">
               <h2 class="font-semibold text-base text-gray-700 capitalize">Absent Staffs</h2>
             </div>
-            <div class="flex flex-wrap items-center justify-between py-1" v-for="(absent,index) in absents">
+            <div class="flex flex-wrap items-center justify-between py-1" v-for="(absent,index) in absents" :key="absent.user_id">
               <div class="flex items-center">
                 <div class="w-6">
-                  <input type="checkbox" name="user_id" v-model="absent.user_id" class="tw-form-control w-full">
+                  <input type="checkbox"
+                    checked
+                    @change="presentStudent($event,absent,index)">
                 </div>
                 <div class="mx-2"> 
                   <p class="tw-form-label">{{ absent.user_name }}</p>
@@ -165,70 +169,46 @@
           $('#select').removeClass('hidden').addClass('block');
           $('#select_student_btn').addClass('hidden').removeClass('block');
         }
-        this.presents.splice(0,1);
-        this.absents.splice(0,1);
-        
-        var staffs = this.stafflist;
-        var count = Object.keys(staffs).length;
-        for(var i=0,staffs ; i < count ; i++)
-        { 
+
+        this.presents = [];
+        this.absents = [];
+
+        this.stafflist.forEach(staff => {
           this.presents.push({
-            present_id:staffs[i].teacher_id,
-            user_name:staffs[i].teacher_name,
-            user:staffs[i],
+            present_id: staff.teacher_id,
+            user_name: staff.teacher_name,
+            user: staff
           });
+        });
+      },
+
+      absentStudent(e, staff, index)
+      {
+        if (!e.target.checked)
+        {
+          this.absents.push({
+            user_id: staff.user.teacher_id,
+            user_name: staff.user.teacher_name,
+            reason_id: '',
+            remarks: '',
+          });
+
+          this.presents.splice(index,1);
         }
       },
 
-      absentStudent(e,student,index)
+      presentStudent(e, staff, index)
       {
-        if (!e.target.checked) 
-        { 
-          var staffs = this.stafflist;
-          var count = Object.keys(staffs).length;
-          for(var i=0,staffs ; i < count ; i++)
-          { 
-            if(staffs[i].teacher_id == student.teacher_id)
-            {
-              this.absents.push({
-                user_id:staffs[i].teacher_id,
-                user_name:staffs[i].teacher_name,
-                user:staffs[i],
-                reason_id:'',
-                remarks:'',
-              });
-
-              $('#'+student.teacher_id).removeClass('block').addClass('hidden');
-            }
-          }
-        }
-        else
+        if(!e.target.checked)
         {
+          this.presents.push({
+            present_id: staff.user_id,
+            user_name: staff.user_name
+          });
+
           this.absents.splice(index,1);
         }
       },
-
-      presentStudent(e,student,index)
-      { 
-        if (!e.target.checked) 
-        { 
-          var staffs = this.stafflist;
-          var count = Object.keys(staffs).length;
-          for(var i=0,staffs ; i < count ; i++)
-          { 
-            if(staffs[i].teacher_id == student.teacher_id)
-            {
-              this.presents.push({
-                present_id:staffs[i].teacher_id,
-                user_name:staffs[i].teacher_name,
-                user:staffs[i],
-              });
-              this.absents.splice(index,1);
-            }
-          }
-        }
-      },
-
       savestaffs()
       {
         if($('#btn_div').hasClass('hidden'))

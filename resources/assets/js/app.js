@@ -379,6 +379,15 @@ app.component('librarystaff-filter', () => import('./components/librarycard/Staf
 import Paginate from 'vuejs-paginate-next'
 app.component('paginate', Paginate)
 
+import VueCookies from 'vue3-cookies'
+app.use(VueCookies)
+
+
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+app.use(Toast)
+
+
 // // Plugins used by leave and noticeboard components (registered globally for Vue 3)
 // import 'vue-flash-message/dist/vue-flash-message.min.css';
 // import VueFlashMessage from 'vue-flash-message';
@@ -392,8 +401,6 @@ app.component('paginate', Paginate)
 registerCustomAddon(app)
 // app.use(uploader)
 // app.use(AudioRecorder)
-import Toast from "vue-toastification";
-import "vue-toastification/dist/index.css";
 
-app.use(Toast)
+
 app.mount('#app');

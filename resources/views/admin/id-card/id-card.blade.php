@@ -1,7 +1,7 @@
 @extends('layouts.admin.layout')
 @section('content')
 <div style="display: flex;flex-wrap: wrap;width: 32%;margin-top: 30px;margin-left: 10px;">
-<div style="border: 2px solid #fff;padding: 20px;border-radius:15px;background: url('http://school-plus.test/images/id-card-bg.png');background-size: cover;width: 100%;">
+<div style="border: 2px solid #fff;padding: 20px;border-radius:15px;background: url('/images/id-card-bg.png');background-size: cover;width: 100%;">
   <table style="width: 88%;margin-left: auto;">
     <tbody>
       <tr>
