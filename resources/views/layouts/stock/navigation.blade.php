@@ -69,7 +69,7 @@
                     </div>
                   </div>
                   <div class="py-2 leading-loose">
-                    <li class="hover:bg-gray-200">
+                    {{--<li class="hover:bg-gray-200">
                       <a  href="{{url('/library/changepassword/')}}" dusk="password-link" class="text-sm  no-underline text-black px-3">
                         <span>Change Password</span>
                       </a>
@@ -78,7 +78,7 @@
                       <a href="{{url('/library/changeavatar')}}" class="text-sm  no-underline text-black px-3">
                         <span>Change Avatar</span>
                       </a>
-                    </li>
+                    </li>--}}
                     @if(Auth::user()->isImpersonating())
                       <li class="hover:bg-gray-200">
                         <a href="{{ url('/library/impersonate/stop') }}" class="text-sm no-underline text-black flex px-2 py-1">

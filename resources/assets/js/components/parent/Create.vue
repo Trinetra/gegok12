@@ -44,34 +44,68 @@
                         <label for="select_id" class="tw-form-label">Select Parent</label>
                     </div>
                     <div class="mb-2">
-                        <multiselect v-model="select_id" id="ajax" name="select_id" label="fullname" track-by="fullname" placeholder="Type to search" open-direction="bottom" :options="users" :custom-label="customLabel" :show-labels="false" :multiple="true" :searchable="true" :loading="isLoading" :internal-search="true" :clear-on-select="false" :close-on-select="false" :limit-text="limitText" :max-height="600" :show-no-results="true" :hide-selected="true" @search-change="asyncFind">
+    <multiselect
+        v-model="select_id"
+        id="ajax"
+        name="select_id"
+        label="fullname"
+        track-by="id"
+        placeholder="Type to search parent..."
+        open-direction="bottom"
+        :options="users"
+        :custom-label="customLabel"
+        :multiple="true"
+        :searchable="true"
+        :loading="isLoading"
+        :internal-search="true"
+        :clear-on-select="false"
+        :close-on-select="false"
+        :limit-text="limitText"
+        :max-height="250"
+        :show-no-results="true"
+        :hide-selected="true"
+        @search-change="asyncFind"
+        class="w-full"
+    >
 
-                            <template #tag="{ option, remove }">
-                                <span class="custom__tag">
-                                    <span>{{ (option.fullname) }}</span>
-                                    <span class="custom__remove" @click="remove(option)">❌</span>
-                                </span>
-                            </template>
+        <!-- Selected Tags -->
+        <template #tag="{ option, remove }">
+            <span class="flex items-center gap-1 bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm mr-1">
+                {{ option.fullname }}
+                <span class="cursor-pointer text-red-500" @click="remove(option)">✖</span>
+            </span>
+        </template>
 
-                            <template #clear="props">
-                                <div class="multiselect__clear" v-if="select_id.length" @mousedown.prevent.stop="clearAll(props.search)"></div>
-                            </template>
-                  
-                            <template  #option="props">
-                                <div class="option__desc">
-                                    <span class="option__name">{{ props.option.fullname }}</span>
-                                </div>
-                                <div class="option__desc">
-                                    <span class="option__small"> ( {{ props.option.mobile_no }} )</span>
-                                </div>
-                            </template>
+        <!-- Clear Button -->
+        <template #clear="props">
+            <div
+                class="multiselect__clear"
+                v-if="select_id.length"
+                @mousedown.prevent.stop="clearAll(props.search)"
+            ></div>
+        </template>
 
-                            <template #noResult>
-                              Oops! No users found.
-                            </template>
-                        </multiselect>
-                        <span v-if="errors.select_id" class="text-red-500 text-xs font-semibold">{{errors.select_id[0]}}</span>
-                    </div> 
+        <!-- Dropdown Options -->
+        <template #option="{ option }">
+            <div class="flex flex-col py-1">
+                <span class="font-medium text-sm">{{ option.fullname }}</span>
+                <span class="text-xs text-gray-500">
+                    ({{ option.mobile_no }})
+                </span>
+            </div>
+        </template>
+
+        <!-- No Results -->
+        <template #noResult>
+            <span class="text-gray-400 text-sm px-2">No users found</span>
+        </template>
+
+    </multiselect>
+
+    <span v-if="errors.select_id" class="text-red-500 text-xs font-semibold">
+        {{ errors.select_id[0] }}
+    </span>
+</div> 
                 </div>
             </div>
             <div class="my-6">
@@ -520,3 +554,23 @@
         }
     }
 </script>
+<style>
+    .multiselect {
+    width: 100%;
+}
+
+.multiselect__content-wrapper {
+    max-height: 250px !important;
+    overflow-y: auto !important;
+    z-index: 9999 !important;
+}
+
+.multiselect__tags {
+    min-height: 42px;
+    padding: 6px;
+}
+
+.multiselect__option {
+    padding: 8px 12px;
+}
+</style>

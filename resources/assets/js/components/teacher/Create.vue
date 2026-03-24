@@ -291,7 +291,7 @@
       <div class="tw-form-group w-full lg:w-1/3" v-if=" this.designation != '' && this.designation != 'principal' && this.designation != 'vice_principal' ">
         <div class="lg:mr-8 md:mr-8">
           <div class="mb-2">
-            <label for="reporting_to" class="tw-form-label">Report Tocc</label>
+            <label for="reporting_to" class="tw-form-label">Report To</label>
           </div>
           <div class="mb-2" v-if="this.designation == 'head_of_the_department' ">
             <select name="reporting_to" v-model="reporting_to" id="reporting_to" class="tw-form-control w-full">

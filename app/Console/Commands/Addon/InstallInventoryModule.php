@@ -151,15 +151,23 @@ class InstallInventoryModule extends Command
             file_put_contents($appJsPath, $content);
             $this->info("✔ custom_addon.js updated successfully");
 
+
             // Step 7: NPM install/build
-            exec('npm install', $npmOut, $npmStatus);
-            exec('npm run dev', $devOut, $devStatus);
-            $this->info("NPM build complete");
+            if ($this->confirm('Do you want to run NPM install and build?', true)) {
+                exec('npm install', $npmOut, $npmStatus);
+                exec('npm run dev', $devOut, $devStatus);
+                $this->info("NPM build complete");
+            } else {
+                $this->warn("Skipped NPM install/build");
+            }
 
             // Step 8: Migrate
-            // Artisan::call('migrate', ['--force' => true]);
-            exec("php artisan migrate --force", $output);
-            $this->info("Database migrated");
+            if ($this->confirm('Do you want to run database migrations?', true)) {
+                exec("php artisan migrate --force", $output);
+                $this->info("Database migrated");
+            } else {
+                $this->warn("Skipped migrations");
+            }
 
             Artisan::call('cache:clear');
             Artisan::call('view:clear');
