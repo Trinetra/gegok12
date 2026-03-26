@@ -24,6 +24,8 @@ Route::post('/reset/check', 'Api\UserController@checkReset');
 
 Route::post('/reset/change/password', 'Api\UserController@resetChangePassword');
 
+Route::get('/school/info', 'Api\SchoolController@schooldetail');
+
 Route::group([
 	'prefix' => 'v2', 
 	'namespace' =>'Api' ,

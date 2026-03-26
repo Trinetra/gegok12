@@ -66,4 +66,4 @@ class ReminderMail extends Mailable implements ShouldQueue
                             'content' => $mail_content,
                             ]);
     }
-}}
+}

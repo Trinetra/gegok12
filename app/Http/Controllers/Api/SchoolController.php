@@ -71,4 +71,40 @@ class SchoolController extends Controller
             'data'      =>  $schools
         ],200);
     }
+    public function schooldetail()
+    {
+        //
+        $array = [];
+
+        $school = School::first();
+        $details  = SchoolDetail::select('meta_key','meta_value')->where('school_id',$school->id)->pluck('meta_value','meta_key');
+
+
+        $array['schoolName']            = $school->name;
+        // $array['schoolLogo']            = $details['school_logo']=='-' ? null:$this->getFilePath($details['school_logo']);
+        $logo = (!empty($details['school_logo']) && $details['school_logo'] !== '-')
+            ? $details['school_logo']
+            : 'uploads/demologo.png';
+
+        $array['schoolLogo'] = $this->getFilePath($logo);
+        $array['moto']                  = $details['moto']=='-' ? null:$details['moto'];
+        $array['affiliatedBy']          = $details['affiliated_by']=='-' ? null:$details['affiliated_by'];
+        $array['affiliationNo']         = $details['affiliation_no']=='-' ? null:$details['affiliation_no'];
+        $array['dateOfEstablishment']   = $details['date_of_establishment']=='-' ? null:$details['date_of_establishment'];
+        $array['board']                 = $details['board']=='-' ? null:$details['board'];
+        $array['landlineNo']            = $details['landline_no']=='-' ? null:$details['landline_no'];
+        $array['aboutUs']               = $details['about_us']=='-' ? null:$details['about_us']; 
+        $array['website']               = $details['website']=='-' ? null:$details['website'];
+        $array['address']               = $school->address;
+        $array['country']               = $school->country->name;
+        $array['state']                 = $school->state->name;
+        $array['city']                  = $school->city->name;
+        $array['pincode']               = $school->pincode; 
+        
+        return response()->json([
+            'success'   =>  true,
+            'message'   =>  'School Details',
+            'data'      =>  $array
+        ],200);
+    }
 }

@@ -51,7 +51,7 @@ class CheckSms extends Command
     {
         try
         {
-            $now       = date('Y-m-d H:i:s');
+            $now       = now();
             $queuelist = Reminder::where([['queue_status','=','queue'],['via','=','sms']])->where('executed_at','<=',$now)->get();
 
             foreach($queuelist as $queue)
