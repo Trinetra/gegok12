@@ -17,7 +17,7 @@ use App\Models\User;
  *
  * @package App\Mail
  */
-class EmailVerification extends Mailable
+class EmailVerification extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 

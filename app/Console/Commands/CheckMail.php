@@ -54,8 +54,9 @@ class CheckMail extends Command
     {
         try
         {
-            $now       = date('Y-m-d H:i:s');
-            $queuelist = Reminder::where([['queue_status','=','queue'],['via','=','mail']])->where('executed_at','=',$now)->get();
+            $now = now();
+            $queuelist = Reminder::where([['queue_status','=','queue'],['via','=','mail']])->where('executed_at', '<=', $now)->get();
+
           
             foreach($queuelist as $reminder)
             {
@@ -76,8 +77,7 @@ class CheckMail extends Command
                                 $this->sendToReminderEvent($events,$now,'next'); 
                             }
                         } 
-                        elseif($reminder->data['type'] == 'birthday')
-                        {  
+                        elseif (is_array($reminder->data) && ($reminder->data['type'] ?? '') === 'birthday')                        {  
                             event(new BirthdayReminderMailEvent($reminder));
                         }
 

@@ -43,7 +43,7 @@ class CheckSendMail extends Command
         //
         try
         {
-            $now = date('Y-m-d H:i:s');
+            $now = now();
             $sendmails = SendMail::where('is_executed',0)->where('executed_at','<=',$now)->get();
 
             foreach($sendmails as $sendmail)

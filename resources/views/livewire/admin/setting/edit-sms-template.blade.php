@@ -4,7 +4,7 @@
     {{-- Header --}}
     <div class="flex items-center py-3">
         <div class="bg-gray-200 p-1 rounded-full">
-            <a href="{{ url('admin/setting/sms-templates') }}">
+            <a href="{{ url('admin/setting/smstemplates') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                      viewBox="0 0 24 24" stroke-width="1.5"
                      stroke="currentColor" class="w-4 h-4">

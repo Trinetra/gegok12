@@ -32,7 +32,7 @@
                         <thead class="bg-grey-light">
                             <tr>
                                 <th>Name</th>
-                                <th>Content</th>
+                                {{--<th>Content</th>--}}
                                 <th>Template</th>
                                 <th>Template Id</th>
                                 <th>Status</th>
@@ -45,9 +45,9 @@
                                     <td>
                                         {{ $sms_template->name }}
                                     </td>
-                                    <td>
+                                    {{--<td>
                                         {{ $sms_template->content }}
-                                    </td>
+                                    </td>--}}
                                     <td>
                                         {{ $sms_template->template }}
                                     </td>
