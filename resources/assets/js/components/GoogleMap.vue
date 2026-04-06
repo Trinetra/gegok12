@@ -10,33 +10,45 @@
           Address <span class="text-red-500">*</span>
         </label>
 
-        <div class="relative">
+        <div class="relative flex items-center">
           <input
             ref="addressInput"
             type="text"
             v-model="localAddress"
+            placeholder="Enter a location"
             class="w-full
                    border border-gray-300
                    rounded
-                   px-3 py-2
+                   pl-3 pr-10 py-2
                    text-sm
                    text-gray-800
-                   focus:outline-none"
+                   focus:outline-none
+                   focus:border-blue-400"
+            style="box-sizing: border-box;"
           />
 
-          <!-- Search Icon -->
+          <!-- Search Icon — sits inside the input on the right -->
           <button
             type="button"
             @click="codeAddress"
-            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500"
+            class="absolute right-0 inset-y-0
+                   flex items-center justify-center
+                   w-10
+                   text-gray-400 hover:text-gray-600
+                   focus:outline-none"
+            style="background: transparent; border: none; cursor: pointer;"
           >
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 width="16"
-                 height="16"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
@@ -51,7 +63,7 @@
       <div
         ref="mapCanvas"
         class="w-full border border-gray-300 rounded"
-        style="height:250px;"
+        style="height: 250px;"
       ></div>
     </div>
 
@@ -110,7 +122,7 @@ export default {
       this.map = new Map(this.$refs.mapCanvas, {
         zoom: 15,
         center,
-        mapId: "DEMO_MAP_ID" // You can replace with real Map ID
+        mapId: "DEMO_MAP_ID"
       });
 
       this.marker = new AdvancedMarkerElement({
@@ -125,7 +137,6 @@ export default {
         this.emitLocation(event.latLng.lat(), event.latLng.lng());
       });
 
-      // Autocomplete (OLD still supported but not deprecated for existing projects)
       this.autocomplete = new google.maps.places.Autocomplete(
         this.$refs.addressInput
       );
@@ -161,7 +172,8 @@ export default {
           if (status === "OK") {
             const lat = results[0].geometry.location.lat();
             const lng = results[0].geometry.location.lng();
-
+            
+            this.localAddress = results[0].formatted_address;
             this.emitLocation(lat, lng);
           }
         }
