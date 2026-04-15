@@ -235,4 +235,16 @@ return [
         'Calendar'=> App\Calendar\CalendarFacade::class,
     ],
 
+/*
+    |--------------------------------------------------------------------------
+    | Student Email Domain
+    |--------------------------------------------------------------------------
+    |
+    | This domain is used to auto-generate student email addresses during
+    | bulk import. Format: {admission_number}@{domain}
+    | Example: SS0001@student.myschool.com
+    |
+    */
+
+    'student_email_domain' => env('STUDENT_EMAIL_DOMAIN', 'student.local'),
 ];

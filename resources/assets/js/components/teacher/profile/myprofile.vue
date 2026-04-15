@@ -238,6 +238,18 @@
           <div class="list-reset leading-loose my-2 text-xs" v-for="qualification in user.details.qualification_name">
             <li class="px-6">{{ qualification }}</li>
           </div>
+          <div class="list-reset leading-loose my-2 text-xs" v-if="user.details.ug_degree">
+            <li class="px-6">UG: {{ user.details.ug_degree }}</li>
+          </div>
+          <div class="list-reset leading-loose my-2 text-xs" v-if="user.details.pg_degree">
+            <li class="px-6">PG: {{ user.details.pg_degree }}</li>
+          </div>
+          <div class="list-reset leading-loose my-2 text-xs" v-if="user.details.specialization">
+            <li class="px-6">Specialization: {{ user.details.specialization }}</li>
+          </div>
+          <div class="list-reset leading-loose my-2 text-xs" v-if="user.details.sub_qualification">
+            <li class="px-6">Other Courses: {{ user.details.sub_qualification }}</li>
+          </div>
     </div>
   </div>
 </template>
