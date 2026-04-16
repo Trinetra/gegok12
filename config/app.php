@@ -241,10 +241,13 @@ return [
     |--------------------------------------------------------------------------
     |
     | This domain is used to auto-generate student email addresses during
-    | bulk import. Format: {admission_number}@{domain}
+    | bulk import. The format will be: {admission_number}@{domain}
     | Example: SS0001@student.myschool.com
+    |
+    | If not set, defaults to 'student.local'
     |
     */
 
     'student_email_domain' => env('STUDENT_EMAIL_DOMAIN', 'student.local'),
+
 ];
